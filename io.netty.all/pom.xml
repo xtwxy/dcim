@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <parent>
+    <relativePath>../poms/wrappers/</relativePath>
+    <groupId>com.wincom.dcim.build</groupId>
+    <artifactId>wrapper-bundle-settings</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>io.netty.all</bundle.symbolicName>
+    <wrapped.groupId>io.netty</wrapped.groupId>
+    <wrapped.artifactId>netty-all</wrapped.artifactId>
+    <wrapped.version>4.1.8.Final</wrapped.version>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.wincom.dcim</groupId>
+  <artifactId>io.netty.all</artifactId>
+  <version>4.1.8.Final-001-SNAPSHOT</version>
+
+  <name>${bundle.symbolicName} ${wrapped.version} [osgi]</name>
+
+  <packaging>bundle</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.barchart.udt</groupId>
+      <artifactId>barchart-udt-bundle</artifactId>
+      <version>2.3.0</version>
+    </dependency>	  
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.12</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.12</version>
+    </dependency>
+    <!--
+<dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-java</artifactId>
+    <version>3.2.0</version>
+</dependency>
+<dependency>
+    <groupId>com.google.protobuf.nano</groupId>
+    <artifactId>protobuf-javanano</artifactId>
+    <version>3.1.0</version>
+</dependency>
+<dependency>
+    <groupId>com.jcraft</groupId>
+    <artifactId>jzlib</artifactId>
+    <version>1.1.3</version>
+</dependency>
+<dependency>
+    <groupId>com.ning</groupId>
+    <artifactId>compress-lzf</artifactId>
+    <version>1.0.4</version>
+</dependency>
+-->
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>${wrapped.artifactId}</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+<build>
+ <plugins>
+  <plugin>
+    <groupId>org.apache.felix</groupId>
+    <artifactId>maven-bundle-plugin</artifactId>
+    <extensions>true</extensions>
+    <configuration>
+      <instructions>
+	      <Import-Package>!sun.misc,
+		      !com.google.protobuf,
+		      !com.ning.compress,
+		      !com.ning.compress.lzf,
+		      !com.ning.compress.lzf.util,
+		      !com.google.protobuf.nano,
+		      !com.sun.nio.sctp,
+		      !gnu.io,
+		      !com.jcraft.jzlib,
+		      !sun.security.util,
+		      !sun.security.x509,
+		      !javassist,
+		      !javax.crypto,
+		      !javax.crypto.spec,
+		      !javax.net.ssl,
+		      !javax.security.auth.x500,
+		      !javax.security.cert,
+		      lib.amd64-Linux-gpp.jni,
+		      lib.amd64-Windows-gpp.jni,
+		      lib.arm-Linux-gpp.jni,
+		      lib.i386-Linux-gpp.jni,
+		      lib.i386-MacOSX-gpp.jni,
+		      lib.x86-Windows-gpp.jni,
+		      lib.x86_64-MacOSX-gpp.jni,
+		      !lzma.sdk.lzma,
+		      !net.jpountz.lz4,
+		      !net.jpountz.xxhash,
+		      !org.apache.commons.logging,
+		      !org.apache.log4j,
+		      !org.apache.logging.log4j,
+		      !org.apache.tomcat,
+		      !org.apache.tomcat.jni,
+		      !org.bouncycastle.asn1.x500,
+		      !org.bouncycastle.cert,
+		      !org.bouncycastle.cert.jcajce,
+		      !org.bouncycastle.jce.provider,
+		      !org.bouncycastle.operator,
+		      !org.bouncycastle.operator.jcajce,
+		      !org.eclipse.jetty.alpn,
+		      !org.eclipse.jetty.npn,
+		      !org.jboss.marshalling,
+		      *
+	      </Import-Package>
+
+<!--
+        <Import-Package>sun.misc;resolution:=optional</Import-Package>
+        <Export-Package>org.foo.myproject.api</Export-Package>
+        <Private-Package>org.foo.myproject.*</Private-Package>
+	<Bundle-Activator>org.foo.myproject.impl1.Activator</Bundle-Activator>
+-->
+      </instructions>
+    </configuration>
+  </plugin>
+</plugins>
+</build>
+</project>
