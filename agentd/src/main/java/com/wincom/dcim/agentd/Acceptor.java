@@ -5,12 +5,12 @@
  */
 package com.wincom.dcim.agentd;
 
-import io.netty.channel.Channel;
+import io.netty.channel.socket.SocketChannel;
 
 /**
  *
  * @author master
  */
 public interface Acceptor {
-    public void onAccept(Channel ch);
+    public void onAccept(SocketChannel ch);
 }

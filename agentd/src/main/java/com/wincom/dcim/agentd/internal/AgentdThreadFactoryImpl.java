@@ -6,6 +6,8 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.AgentdThreadFactory;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import java.util.concurrent.ThreadFactory;
 import org.osgi.framework.BundleContext;
@@ -16,16 +18,33 @@ import org.osgi.framework.BundleContext;
  */
 public class AgentdThreadFactoryImpl implements AgentdThreadFactory {
 
-    ThreadFactory delegate = new DefaultThreadFactory("agentd-thread-factory");
-
+    ThreadFactory delegate;
+    EventLoopGroup group;
     private BundleContext bundleContext;
 
     public AgentdThreadFactoryImpl(BundleContext context) {
         this.bundleContext = context;
+        this.delegate = new DefaultThreadFactory("agentd-thread-factory");
+        String initThreadsString = context.getProperty("initial.threads");
+        int threads = 8;
+        if (initThreadsString != null) {
+            try {
+                threads = Integer.parseInt(initThreadsString);
+            } catch (Exception ex) {
+
+            }
+        } else {
+        }
+        this.group = new NioEventLoopGroup(8, this.delegate);
     }
 
     @Override
     public ThreadFactory getThreadFactory() {
-        return delegate;
+        return this.delegate;
+    }
+
+    @Override
+    public EventLoopGroup getEventLoopGroup() {
+        return this.group;
     }
 }

@@ -10,7 +10,11 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.AgentdThreadFactory;
 import com.wincom.dcim.agentd.ClientChannelFactory;
 import com.wincom.dcim.agentd.ServerChannelFactory;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import static java.lang.System.out;
 import java.util.Properties;
 import org.osgi.framework.ServiceReference;
@@ -33,20 +37,30 @@ public final class AgentdServiceActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bc) throws Exception {
-  
+
     }
-    
+
     private void testServerChannelFactory(BundleContext bundleContext) {
         ServiceReference<ServerChannelFactory> serverRef = bundleContext.getServiceReference(ServerChannelFactory.class);
         ServerChannelFactory server = bundleContext.getService(serverRef);
         out.println(serverRef);
         out.println(server);
-        server.create("wangxy", 9080, new Acceptor() {
+        server.create("0.0.0.0", 9080, new Acceptor() {
             @Override
-            public void onAccept(Channel ch) {
-                out.println(ch);
+            public void onAccept(SocketChannel ch) {
+                ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                    @Override
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+                        ctx.writeAndFlush(msg).addListener(new GenericFutureListener() {
+                            @Override
+                            public void operationComplete(Future f) throws Exception {
+                                out.println("write complete.");
+                            }
+                        });
+                    }
+                });
             }
-            
+
         });
     }
 }

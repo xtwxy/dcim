@@ -5,6 +5,7 @@
  */
 package com.wincom.dcim.agentd;
 
+import io.netty.channel.EventLoopGroup;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -13,4 +14,5 @@ import java.util.concurrent.ThreadFactory;
  */
 public interface AgentdThreadFactory {
      public ThreadFactory getThreadFactory();
+     public EventLoopGroup getEventLoopGroup();
 }
