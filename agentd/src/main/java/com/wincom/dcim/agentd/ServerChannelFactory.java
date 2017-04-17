@@ -1,5 +1,5 @@
 package com.wincom.dcim.agentd;
 
 public interface ServerChannelFactory {
-    public Channel create(String host, int port);
+    public void create(String host, int port, Acceptor acceptor);
 }

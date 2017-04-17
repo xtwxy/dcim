@@ -1,47 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>com.wincom.dcim.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
+    <parent>
+        <relativePath>../poms/compiled/</relativePath>
+        <groupId>com.wincom.dcim.build</groupId>
+        <artifactId>compiled-bundle-settings</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <bundle.symbolicName>com.wincom.dcim.agentd</bundle.symbolicName>
+        <bundle.namespace>com.wincom.dcim.agentd</bundle.namespace>
+    </properties>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.wincom.dcim</groupId>
+    <artifactId>agentd</artifactId>
     <version>1.0-SNAPSHOT</version>
-  </parent>
 
-  <properties>
-    <bundle.symbolicName>com.wincom.dcim.agentd</bundle.symbolicName>
-    <bundle.namespace>com.wincom.dcim.agentd</bundle.namespace>
-  </properties>
+    <name>${bundle.symbolicName}</name>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.wincom.dcim</groupId>
-  <artifactId>agentd</artifactId>
-  <version>1.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
 
-  <name>${bundle.symbolicName}</name>
+    <dependencies>
+        <!--
+         | uncomment to add all imported (non-local) bundles to your compilation classpath
+        <dependency>
+          <type>pom</type>
+          <groupId>${parent.groupId}</groupId>
+          <artifactId>provision</artifactId>
+          <optional>true</optional>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.wincom.dcim</groupId>
+            <artifactId>io.netty.all</artifactId>
+            <version>4.1.8.Final-001-SNAPSHOT</version>
+        </dependency>
 
-  <packaging>bundle</packaging>
-
-  <dependencies>
-    <!--
-     | uncomment to add all imported (non-local) bundles to your compilation classpath
-    <dependency>
-      <type>pom</type>
-      <groupId>${parent.groupId}</groupId>
-      <artifactId>provision</artifactId>
-      <optional>true</optional>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_compendium</artifactId>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam</artifactId>
+            <version>4.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-default</artifactId>
+            <version>1.2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit</artifactId>
+            <version>1.2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit-extender-impl</artifactId>
+            <version>1.2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-dir</artifactId>
+            <version>2.5.2</version>
+            <scope>test</scope>
+        </dependency>
+    
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <version>5.0.0</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>

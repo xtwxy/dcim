@@ -5,11 +5,12 @@
  */
 package com.wincom.dcim.agentd;
 
+import io.netty.channel.Channel;
+
 /**
  *
  * @author master
  */
-public interface Channel {
-    public void write(Object msg);
-    
+public interface Connector {
+    public void onConnect(Channel ch);
 }
