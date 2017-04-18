@@ -48,13 +48,13 @@ public final class AgentdServiceActivator implements BundleActivator {
         server.create("0.0.0.0", 9080, new Acceptor() {
             @Override
             public void onAccept(SocketChannel ch) {
+                out.println("connection from: " + ch.remoteAddress());
                 ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                     @Override
                     public void channelRead(ChannelHandlerContext ctx, Object msg) {
                         ctx.writeAndFlush(msg).addListener(new GenericFutureListener() {
                             @Override
                             public void operationComplete(Future f) throws Exception {
-                                out.println("write complete.");
                             }
                         });
                     }
