@@ -7,9 +7,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.wincom.dcim.agentd.AgentdService;
-import com.wincom.dcim.agentd.AgentdThreadFactory;
-import com.wincom.dcim.agentd.ClientChannelFactory;
-import com.wincom.dcim.agentd.ServerChannelFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
@@ -28,10 +25,6 @@ public final class AgentdServiceActivator implements BundleActivator {
         bc.addServiceListener(new ServiceListenerImpl());
 
         bc.registerService(AgentdService.class, new AgentdServiceImpl(bc), props);
-        bc.registerService(AgentdThreadFactory.class, new AgentdThreadFactoryImpl(bc), props);
-        bc.registerService(ClientChannelFactory.class, new ClientChannelFactoryImpl(bc), props);
-        bc.registerService(ServerChannelFactory.class, new ServerChannelFactoryImpl(bc), props);
-
         testServerChannelFactory(bc);
     }
 
@@ -41,11 +34,11 @@ public final class AgentdServiceActivator implements BundleActivator {
     }
 
     private void testServerChannelFactory(BundleContext bundleContext) {
-        ServiceReference<ServerChannelFactory> serverRef = bundleContext.getServiceReference(ServerChannelFactory.class);
-        ServerChannelFactory server = bundleContext.getService(serverRef);
-        out.println(serverRef);
-        out.println(server);
-        server.create("0.0.0.0", 9080, new Acceptor() {
+        ServiceReference<AgentdService> serviceRef = bundleContext.getServiceReference(AgentdService.class);
+        AgentdService service = bundleContext.getService(serviceRef);
+        out.println(serviceRef);
+        out.println(service);
+        service.createServerChannel("0.0.0.0", 9080, new Acceptor() {
             @Override
             public void onAccept(SocketChannel ch) {
                 out.println("connection from: " + ch.remoteAddress());
