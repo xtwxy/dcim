@@ -46,6 +46,9 @@
     <module>provision</module>
     <module>agentd</module>
     <module>io.netty.all</module>
+    <module>mp3000</module>
+    <module>aggregation</module>
+    <module>dds3366d</module>
   </modules>
 
   <build>
@@ -59,7 +62,7 @@
             <param>--platform=felix</param>
           </provision>
         </configuration>
-  <!--
+        <!--
         <executions>
           <execution>
             <id>ide-support</id>
@@ -69,7 +72,7 @@
           </execution>
         </executions>
 -->
-    </plugin>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.6.1</version>
