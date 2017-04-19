@@ -44,13 +44,18 @@ public class MP3000CodecImpl implements Codec {
     }
 
     @Override
-    public void setOutbound(CodecChannel cc) {
+    public void setOutboundCodec(Codec cc) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void setOutbound(String id, CodecChannel cc) {
-        outbound.get(id);
+    public void setOutboundCodec(String channelId, Codec cc) {
+        outbound.get(channelId).setCodec(cc);
+    }
+
+    @Override
+    public void onWriteComplete() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

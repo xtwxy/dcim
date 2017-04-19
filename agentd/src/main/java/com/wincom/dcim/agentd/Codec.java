@@ -6,9 +6,10 @@ public interface Codec {
     public void onTimeout();
     public void onError(Exception e);
     public void onClose();
+    public void onWriteComplete();
     public void onExecutionComplete();
     
     public void setInbound(CodecChannel cc);
-    public void setOutbound(CodecChannel cc);
-    public void setOutbound(String id, CodecChannel cc);
+    public void setOutboundCodec(Codec cc);
+    public void setOutboundCodec(String channelId, Codec cc);
 }

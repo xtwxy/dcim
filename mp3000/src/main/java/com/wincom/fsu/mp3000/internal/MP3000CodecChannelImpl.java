@@ -27,12 +27,12 @@ public class MP3000CodecChannelImpl implements CodecChannel, Connector {
 
     @Override
     public void timeout() {
-        // ignore.
+        // ignore. downstream timout not supported.
     }
 
     @Override
     public void error(Exception e) {
-        // ignore.
+        // ignore. downstream error not supported.
     }
 
     @Override
@@ -82,7 +82,7 @@ public class MP3000CodecChannelImpl implements CodecChannel, Connector {
 
     @Override
     public void fireWriteComplete() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.codec.onWriteComplete();
     }
     
     public void setCodec(Codec c) {
