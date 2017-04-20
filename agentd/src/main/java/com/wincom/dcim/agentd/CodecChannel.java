@@ -1,10 +1,8 @@
 package com.wincom.dcim.agentd;
 
-import com.sun.istack.internal.NotNull;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.DefaultChannelPromise;
-import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -46,7 +44,7 @@ public interface CodecChannel {
          * with an <code>EventLoop</code>.
          * @param eventLoop must not null!
          */
-        public Adapter(@NotNull EventLoopGroup eventLoopGroup) {
+        public Adapter(EventLoopGroup eventLoopGroup) {
             this.eventLoopGroup = eventLoopGroup;
         }
         
