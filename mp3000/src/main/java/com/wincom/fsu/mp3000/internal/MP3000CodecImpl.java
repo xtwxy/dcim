@@ -17,6 +17,13 @@ public class MP3000CodecImpl extends Codec.Adapter {
     private final int PORT_COUNT;
     private final Map<Integer, MP3000CodecChannelImpl> outbound;
 
+    /**
+     * 
+     * @param host host or IP address of MP3000.
+     * @param basePort the start TCP port number. 
+     * @param portCount number of ports.
+     * @param agent reference to agent service.
+     */
     public MP3000CodecImpl(
             String host,
             int basePort,
