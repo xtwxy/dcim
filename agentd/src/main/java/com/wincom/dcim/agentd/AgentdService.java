@@ -13,4 +13,8 @@ public interface AgentdService {
     public ChannelFuture createServerChannel(String host, int port, Acceptor acceptor);
 
     public ChannelFuture createClientChannel(String host, int port, Connector connector);
+
+    public void registerCodecFactory(String key, CodecFactory factory);
+
+    public void unregisterCodecFactory(String key);
 }

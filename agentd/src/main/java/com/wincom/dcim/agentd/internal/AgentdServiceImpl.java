@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.Acceptor;
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.CodecFactory;
 import com.wincom.dcim.agentd.Connector;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
@@ -14,6 +15,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 import org.osgi.framework.BundleContext;
 
@@ -22,6 +25,7 @@ public final class AgentdServiceImpl implements AgentdService {
     private BundleContext bundleContext;
     private ThreadFactory threadFactory;
     private EventLoopGroup eventLoopGroup;
+    private Map<String, CodecFactory> codecFactories;
     
     public AgentdServiceImpl(BundleContext context) {
         this.bundleContext = context;
@@ -37,6 +41,7 @@ public final class AgentdServiceImpl implements AgentdService {
             }
         }
         this.eventLoopGroup = new NioEventLoopGroup(threads, this.threadFactory);
+        this.codecFactories = new HashMap<>();
     }
 
     @Override
@@ -91,6 +96,16 @@ public final class AgentdServiceImpl implements AgentdService {
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public void registerCodecFactory(String key, CodecFactory factory) {
+        this.codecFactories.put(key, factory);
+    }
+
+    @Override
+    public void unregisterCodecFactory(String key) {
+        this.codecFactories.remove(key);
     }
 
 }
