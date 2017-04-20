@@ -1,95 +1,72 @@
 package com.wincom.fsu.mp3000.internal;
 
-import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
+import com.wincom.dcim.agentd.Dependency;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.DefaultChannelPromise;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
-public class MP3000CodecChannelImpl implements CodecChannel, Connector {
-    Channel channel;
-    Codec codec;
-    
-    @Override
-    public void write(Object msg) {
-        ChannelPromise promise = new DefaultChannelPromise(channel);
-        promise.addListener(new GenericFutureListener() {
-            @Override
-            public void operationComplete(Future f) throws Exception {
-                fireWriteComplete();
-            }
-        });
-        channel.writeAndFlush(msg, promise);
-    }
+public class MP3000CodecChannelImpl
+        extends CodecChannel.Adapter
+        implements Connector, Dependency {
 
-    @Override
-    public void timeout() {
-        // ignore. downstream timout not supported.
-    }
+    private String host;
+    private int port;
+    private AgentdService agent;
 
-    @Override
-    public void error(Exception e) {
-        // ignore. downstream error not supported.
-    }
-
-    @Override
-    public void close() {
-        this.channel.close();
-        this.channel = null;
-    }
-
-    @Override
-    public void execute(Runnable r) {
-        // schedule it in the execution group?
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void fireRead(Object msg) {
-        this.codec.decode(msg);
-    }
-
-    @Override
-    public void fireClosed() {
-        this.codec.onClose();
-    }
-
-    @Override
-    public void fireTimeout() {
-        this.codec.onTimeout();
-    }
-
-    @Override
-    public void fireError(Exception e) {
-        this.codec.onError(e);
-    }
-
-    @Override
-    public void fireExecute() {
-        this.codec.onExecutionComplete();
+    public MP3000CodecChannelImpl(
+            String host,
+            int port,
+            AgentdService agent
+    ) {
+        super(agent.getEventLoopGroup());
+        this.host = host;
+        this.port = port;
+        this.agent = agent;
     }
 
     @Override
     public void onConnect(Channel ch) {
-        if(this.channel != null) {
-            this.channel.close();
+        if (getChannel() != null) {
+            getChannel().close();
         }
-        this.channel = ch;
+        setChannel(ch);
     }
 
     @Override
-    public void fireWriteComplete() {
-        this.codec.onWriteComplete();
+    public void write(Object msg) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                MP3000CodecChannelImpl.super.write(msg);
+            }
+        };
+        getEventLoopGroup().submit(withDependencies(r));
     }
-    
-    public void setCodec(Codec c) {
-        if(this.codec != null) {
-            codec.setInbound(null);
+
+    @Override
+    public Runnable withDependencies(Runnable target) {
+        Runnable r = target;
+        if (getChannel() == null || !getChannel().isOpen()) {
+            // connect
+            r = new Runnable() {
+                @Override
+                public void run() {
+                    agent.createClientChannel(
+                            host,
+                            port,
+                            new Connector() {
+                        @Override
+                        public void onConnect(Channel ch) {
+                            MP3000CodecChannelImpl.this.onConnect(ch);
+                            target.run();
+                        }
+                    }
+                    );
+                }
+
+            };
         }
-        this.codec = c;
-        c.setInbound(this);
+        return r;
     }
 }
