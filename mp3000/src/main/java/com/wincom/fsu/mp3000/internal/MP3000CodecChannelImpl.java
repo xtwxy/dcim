@@ -4,6 +4,7 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
 import com.wincom.dcim.agentd.Dependency;
+import com.wincom.dcim.agentd.DependencyAdaptor;
 import io.netty.channel.Channel;
 
 public class MP3000CodecChannelImpl
@@ -49,7 +50,7 @@ public class MP3000CodecChannelImpl
         Runnable r = target;
         if (getChannel() == null || !getChannel().isOpen()) {
             // connect
-            r = new Runnable() {
+            r = new DependencyAdaptor(target) {
                 @Override
                 public void run() {
                     agent.createClientChannel(
