@@ -57,7 +57,7 @@ public class MP3000CodecImpl extends Codec.Adapter {
     public void setOutboundCodec(String channelId, Codec cc) {
         int port = Integer.parseInt(channelId);
         if (port >= 0 && port < this.PORT_COUNT) {
-            outbound.get(port).setCodec(cc);
+            outbound.get(port).setOutboundCodec(cc);
         }
     }
 }

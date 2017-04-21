@@ -6,15 +6,19 @@ import com.wincom.dcim.agentd.Connector;
 import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.DependencyAdaptor;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 
 public class MP3000CodecChannelImpl
         extends CodecChannel.Adapter
         implements Connector, Dependency {
 
-    private String host;
-    private int port;
-    private AgentdService agent;
+    private final String host;
+    private final int port;
+    private final AgentdService agent;
+
+    private Channel channel;
 
     public MP3000CodecChannelImpl(
             String host,
@@ -33,6 +37,14 @@ public class MP3000CodecChannelImpl
             getChannel().close();
         }
         setChannel(ch);
+        
+        ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+            @Override
+            public void channelRead(ChannelHandlerContext ctx, Object msg) {
+                fireRead(msg);
+            }
+        });
+
     }
 
     @Override
@@ -40,7 +52,7 @@ public class MP3000CodecChannelImpl
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                MP3000CodecChannelImpl.super.write(msg, promise);
+                channel.writeAndFlush(msg, promise);
             }
         };
         getEventLoopGroup().submit(withDependencies(r));
@@ -63,12 +75,19 @@ public class MP3000CodecChannelImpl
                             MP3000CodecChannelImpl.this.onConnect(ch);
                             target.run();
                         }
-                    }
-                    );
+                    });
                 }
-
             };
         }
         return r;
     }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
+
 }

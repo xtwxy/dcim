@@ -1,6 +1,5 @@
 package com.wincom.dcim.agentd;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.EventLoopGroup;
 
@@ -30,14 +29,15 @@ public interface CodecChannel {
 
     public static class Adapter implements CodecChannel {
 
-        private Channel channel;
-        private Codec codec;
-        private EventLoopGroup eventLoopGroup;
+        private Codec inboundCodec;
+        private Codec outboundCodec;
+        private final EventLoopGroup eventLoopGroup;
         
         /**
          * Construct an <code>CodecChannel</code> instance 
          * with an <code>EventLoop</code>.
-         * @param eventLoop must not null!
+         * <code>eventLoop</code> must not null!
+         * @param eventLoopGroup
          */
         public Adapter(EventLoopGroup eventLoopGroup) {
             this.eventLoopGroup = eventLoopGroup;
@@ -45,7 +45,7 @@ public interface CodecChannel {
         
         @Override
         public void write(Object msg, ChannelPromise promise) {
-            channel.writeAndFlush(msg, promise);
+            inboundCodec.encode(msg, promise);
         }
 
         @Override
@@ -60,8 +60,7 @@ public interface CodecChannel {
 
         @Override
         public void close() {
-            this.channel.close();
-            this.channel = null;
+            // ignore. 
         }
 
         @Override
@@ -71,47 +70,47 @@ public interface CodecChannel {
 
         @Override
         public void fireRead(Object msg) {
-            this.codec.decode(msg);
+            this.outboundCodec.decode(msg);
         }
 
         @Override
         public void fireClosed() {
-            this.codec.onClose();
+            this.outboundCodec.onClose();
         }
 
         @Override
         public void fireTimeout() {
-            this.codec.onTimeout();
+            this.outboundCodec.onTimeout();
         }
 
         @Override
         public void fireError(Exception e) {
-            this.codec.onError(e);
+            this.outboundCodec.onError(e);
         }
 
         @Override
         public void fireExecutionComplete() {
-            this.codec.onExecutionComplete();
-        }
-
-        public void setCodec(Codec c) {
-            if (this.codec != null) {
-                codec.setInbound(null);
-            }
-            this.codec = c;
-            c.setInbound(this);
-        }
-
-        public Channel getChannel() {
-            return channel;
-        }
-
-        public void setChannel(Channel channel) {
-            this.channel = channel;
+            this.outboundCodec.onExecutionComplete();
         }
 
         public EventLoopGroup getEventLoopGroup() {
             return eventLoopGroup;
+        }
+
+        public void setOutboundCodec(Codec c) {
+            if (this.outboundCodec != null) {
+                outboundCodec.setInbound(null);
+            }
+            this.outboundCodec = c;
+            c.setInbound(this);
+        }
+
+        public Codec getInboundCodec() {
+            return inboundCodec;
+        }
+
+        public void setInboundCodec(Codec inboundCodec) {
+            this.inboundCodec = inboundCodec;
         }
     }
 }

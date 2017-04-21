@@ -45,11 +45,7 @@ public final class AgentdServiceActivator implements BundleActivator {
                 ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                     @Override
                     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-                        ctx.writeAndFlush(msg).addListener(new GenericFutureListener() {
-                            @Override
-                            public void operationComplete(Future f) throws Exception {
-                            }
-                        });
+                        ctx.writeAndFlush(msg);
                     }
                 });
             }

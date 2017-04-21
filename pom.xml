@@ -49,6 +49,7 @@
     <module>mp3000</module>
     <module>aggregation</module>
     <module>dds3366d</module>
+    <module>modbus</module>
   </modules>
 
   <build>

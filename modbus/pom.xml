@@ -9,13 +9,13 @@
     </parent>
 
     <properties>
-        <bundle.symbolicName>com.wincom.dcim.integration.aggregation</bundle.symbolicName>
-        <bundle.namespace>com.wincom.dcim.integration</bundle.namespace>
+        <bundle.symbolicName>com.wincom.protocol.modbus</bundle.symbolicName>
+        <bundle.namespace>com.wincom.protocol.modbus</bundle.namespace>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.wincom.dcim.integration</groupId>
-    <artifactId>aggregation</artifactId>
+    <groupId>com.wincom.protocol</groupId>
+    <artifactId>modbus</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <name>${bundle.symbolicName}</name>
@@ -23,6 +23,17 @@
     <packaging>bundle</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>com.wincom.dcim</groupId>
+            <artifactId>agentd</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wincom.dcim</groupId>
+            <artifactId>io.netty.all</artifactId>
+            <version>4.1.8.Final-001-SNAPSHOT</version>
+        </dependency>
+
         <!--
          | uncomment to add all imported (non-local) bundles to your compilation classpath
         <dependency>
@@ -32,22 +43,6 @@
           <optional>true</optional>
         </dependency>
         -->
-        <dependency>
-            <groupId>com.wincom.dcim</groupId>
-            <artifactId>agentd</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wincom.fsu</groupId>
-            <artifactId>mp3000</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wincom.driver</groupId>
-            <artifactId>dds3366d</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
