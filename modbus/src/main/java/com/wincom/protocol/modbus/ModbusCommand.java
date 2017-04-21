@@ -1,5 +1,7 @@
 package com.wincom.protocol.modbus;
 
+import com.google.common.primitives.UnsignedBytes;
+
 /**
  *
  * @author master
@@ -31,7 +33,7 @@ public enum ModbusCommand {
                 return c;
             }
         }
-        throw new IllegalArgumentException("Unknown modbus function code: " + b);
+        throw new IllegalArgumentException("Unknown modbus function code 0x" + UnsignedBytes.toString(b, 16));
     }
     
     private byte code;
