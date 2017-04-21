@@ -6,6 +6,7 @@ import com.wincom.dcim.agentd.Connector;
 import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.DependencyAdaptor;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelPromise;
 
 public class MP3000CodecChannelImpl
         extends CodecChannel.Adapter
@@ -35,11 +36,11 @@ public class MP3000CodecChannelImpl
     }
 
     @Override
-    public void write(Object msg) {
+    public void write(Object msg, ChannelPromise promise) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                MP3000CodecChannelImpl.super.write(msg);
+                MP3000CodecChannelImpl.super.write(msg, promise);
             }
         };
         getEventLoopGroup().submit(withDependencies(r));

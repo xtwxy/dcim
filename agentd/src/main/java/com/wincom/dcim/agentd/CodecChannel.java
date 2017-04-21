@@ -2,15 +2,12 @@ package com.wincom.dcim.agentd;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
-import io.netty.channel.DefaultChannelPromise;
 import io.netty.channel.EventLoopGroup;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
 public interface CodecChannel {
 
     /* Calls */
-    public void write(Object msg);
+    public void write(Object msg, ChannelPromise promise);
 
     public void timeout();
 
@@ -21,8 +18,6 @@ public interface CodecChannel {
     public void execute(Runnable r);
 
     /* Callbacks */
-    public void fireWriteComplete();
-
     public void fireRead(Object msg);
 
     public void fireClosed();
@@ -49,18 +44,7 @@ public interface CodecChannel {
         }
         
         @Override
-        public void write(Object msg) {
-            ChannelPromise promise = new DefaultChannelPromise(this.channel);
-            promise.addListener(new GenericFutureListener() {
-                @Override
-                public void operationComplete(Future f) throws Exception {
-                    if(f.isSuccess()) {
-                        fireWriteComplete();
-                    } else {
-                        fireError(new RuntimeException("Operation failed."));
-                    }
-                }
-            });
+        public void write(Object msg, ChannelPromise promise) {
             channel.writeAndFlush(msg, promise);
         }
 
@@ -108,11 +92,6 @@ public interface CodecChannel {
         @Override
         public void fireExecutionComplete() {
             this.codec.onExecutionComplete();
-        }
-
-        @Override
-        public void fireWriteComplete() {
-            this.codec.onWriteComplete();
         }
 
         public void setCodec(Codec c) {
