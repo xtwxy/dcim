@@ -6,7 +6,7 @@ import com.google.common.primitives.UnsignedBytes;
  *
  * @author master
  */
-public enum ModbusCommand {
+public enum ModbusFunction {
     READ_COILS((byte) 0x01),
     READ_DISCRETE_INPUTS((byte) 0x02),
     READ_MULTIPLE_HOLDING_REGISTERS((byte) 0x03),
@@ -16,7 +16,7 @@ public enum ModbusCommand {
     WRITE_MULTIPLE_HOLDING_COILS((byte) 0x15),
     WRITE_MULTIPLE_HOLDING_REGISTERS((byte) 0x16);
 
-    ModbusCommand(byte code) {
+    ModbusFunction(byte code) {
         this.code = code;
     }
 
@@ -27,8 +27,8 @@ public enum ModbusCommand {
     public void setCode(byte code) {
         this.code = code;
     }
-    public static ModbusCommand from(byte b) {
-        for(ModbusCommand c : ModbusCommand.class.getEnumConstants()) {
+    public static ModbusFunction from(byte b) {
+        for(ModbusFunction c : ModbusFunction.class.getEnumConstants()) {
             if(c.getCode() == b) {
                 return c;
             }

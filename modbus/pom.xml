@@ -38,6 +38,18 @@
             <artifactId>com.google.guava</artifactId>
             <version>18.0-001-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        
         <!--
          | uncomment to add all imported (non-local) bundles to your compilation classpath
         <dependency>

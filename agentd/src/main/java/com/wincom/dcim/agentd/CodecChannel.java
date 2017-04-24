@@ -3,7 +3,7 @@ package com.wincom.dcim.agentd;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.EventLoopGroup;
 
-public interface CodecChannel {
+public interface CodecChannel extends Dependency {
 
     /* Calls */
     public void write(Object msg, ChannelPromise promise);
@@ -111,6 +111,11 @@ public interface CodecChannel {
 
         public void setInboundCodec(Codec inboundCodec) {
             this.inboundCodec = inboundCodec;
+        }
+
+        @Override
+        public Runnable withDependencies(Runnable r) {
+            return r;
         }
     }
 }

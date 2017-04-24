@@ -3,13 +3,12 @@ package com.wincom.protocol.modbus.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
-import com.wincom.dcim.agentd.Dependency;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 
 public class ModbusCodecChannelImpl
         extends CodecChannel.Adapter
-        implements Connector, Dependency {
+        implements Connector {
 
     private int address;
     private AgentdService agent;
