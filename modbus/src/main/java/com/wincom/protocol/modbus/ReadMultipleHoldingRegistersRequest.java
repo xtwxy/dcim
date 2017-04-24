@@ -69,7 +69,7 @@ public class ReadMultipleHoldingRegistersRequest
         depth++;
         appendValue(buf, depth, "Slave Address", "0x" + UnsignedBytes.toString(slaveAddress, 16));
         appendValue(buf, depth, "Function Code", "0x" + UnsignedBytes.toString(function.getCode(), 16));
-        appendValue(buf, depth, "Slave Address", "0x" + Integer.toHexString(0xffff & startAddress));
+        appendValue(buf, depth, "Start of Register Address", "0x" + Integer.toHexString(0xffff & startAddress));
         appendValue(buf, depth, "Number of Registers", "0x" + Integer.toHexString(0xffff & numberOfRegisters));
         appendValue(buf, depth, "CRC16", "0x" + Integer.toHexString(0xffff & crc16));
     }
