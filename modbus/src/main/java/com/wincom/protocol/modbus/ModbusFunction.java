@@ -12,9 +12,9 @@ public enum ModbusFunction {
     READ_MULTIPLE_HOLDING_REGISTERS((byte) 0x03),
     READ_INPUT_REGISTERS((byte) 0x04),
     WRITE_SINGLE_COIL((byte) 0x05),
-    WRITE_SINGLE_HOLDING_REGISTERS((byte) 0x06),
-    WRITE_MULTIPLE_HOLDING_COILS((byte) 0x15),
-    WRITE_MULTIPLE_HOLDING_REGISTERS((byte) 0x16);
+    WRITE_SINGLE_HOLDING_REGISTER((byte) 0x06),
+    WRITE_MULTIPLE_HOLDING_COILS((byte) 0x0f),
+    WRITE_MULTIPLE_HOLDING_REGISTERS((byte) 0x10);
 
     ModbusFunction(byte code) {
         this.code = code;

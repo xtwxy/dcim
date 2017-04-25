@@ -13,7 +13,9 @@ public class CRCTest {
     @Test
     public void testCrc16() {
         //01 03 09 24 00 0E 87 99
-        byte[] b = new byte[]{0x01, 0x03, 0x09, 0x24, 0x00, 0x0E, (byte) 0x87, (byte) 0x99};
+        byte[] b = new byte[]{
+            0x01, 0x03, 0x09, 0x24, 0x00, 0x0E, (byte) 0x87, (byte) 0x99
+        };
 
         ByteBuffer buf = ByteBuffer.allocate(b.length);
 

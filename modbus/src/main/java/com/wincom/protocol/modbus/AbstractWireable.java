@@ -38,6 +38,18 @@ public abstract class AbstractWireable implements Wireable {
     }
 
     @Nonnull
+    protected static StringBuilder appendValue(@Nonnull StringBuilder buf, int depth, String name, short[] value) {
+        indent(buf, depth);
+        buf.append(name).append(": ");
+        for(short s : value) {
+            buf.append(Integer.toHexString(0xffff & s)).append(' ');
+        }
+        buf.append('\n');
+        
+        return buf;
+    }
+
+    @Nonnull
     protected static StringBuilder appendValue(@Nonnull StringBuilder buf, int depth, String name, Object value) {
         indent(buf, depth);
         buf.append(name).append(": ").append(value).append('\n');

@@ -22,8 +22,9 @@ public class CRC {
                 }
             }
         }
+
         crc = ((crc >> 8) & 0xff) | ((crc << 8) & 0xff00);
-        System.out.printf("crc16: 0x%04x\n", 0xffff & crc);
+
         return (short) (0xffff & crc);
     }
 }
