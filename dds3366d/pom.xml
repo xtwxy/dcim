@@ -23,6 +23,34 @@
     <packaging>bundle</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>com.wincom.dcim</groupId>
+            <artifactId>agentd</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wincom.dcim</groupId>
+            <artifactId>io.netty.all</artifactId>
+            <version>4.1.8.Final-001-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        
+
         <!--
          | uncomment to add all imported (non-local) bundles to your compilation classpath
         <dependency>

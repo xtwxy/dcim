@@ -3,8 +3,11 @@ package com.wincom.protocol.modbus.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
+import com.wincom.protocol.modbus.ModbusFrame;
+import com.wincom.protocol.modbus.ModbusPayload;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
+import java.nio.ByteBuffer;
 
 public class ModbusCodecChannelImpl
         extends CodecChannel.Adapter
@@ -27,11 +30,20 @@ public class ModbusCodecChannelImpl
     }
 
     @Override
-    public void write(Object msg, ChannelPromise promise) {
+    public void write(final Object msg, final ChannelPromise promise) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                ModbusCodecChannelImpl.super.write(msg, promise);
+                if(msg instanceof ModbusPayload) {
+                    ModbusPayload payload = (ModbusPayload) msg;
+                    ModbusFrame frame = new ModbusFrame();
+                    frame.setSlaveAddress((byte)(0xff & address));
+                    frame.setPayload(payload);
+                    ByteBuffer buf = ByteBuffer.allocate(frame.getWireLength());
+                    ModbusCodecChannelImpl.super.write(buf, promise);
+                } else {
+                    promise.setFailure(new IllegalArgumentException("Not a ModbusPayload: " + msg));
+                }
             }
         };
         getEventLoopGroup().submit(withDependencies(r));
