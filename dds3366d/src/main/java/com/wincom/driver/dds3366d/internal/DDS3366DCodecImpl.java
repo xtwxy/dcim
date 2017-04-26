@@ -5,7 +5,6 @@ import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Dependency;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelPromise;
 
 /**
  * Composition of TCP connections to a MP3000.
@@ -28,7 +27,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependency {
     }
 
     @Override
-    public void encode(Object msg, ChannelPromise promise) {
+    public void encode(Object msg, Runnable promise) {
     }
 
     @Override

@@ -9,6 +9,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 
 public class MP3000CodecChannelImpl
         extends CodecChannel.Adapter
@@ -48,11 +50,18 @@ public class MP3000CodecChannelImpl
     }
 
     @Override
-    public void write(Object msg, ChannelPromise promise) {
+    public void write(Object msg, Runnable promise) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                channel.writeAndFlush(msg, promise);
+                ChannelPromise cp = channel.voidPromise();
+                cp.addListener(new GenericFutureListener() {
+                    @Override
+                    public void operationComplete(Future f) throws Exception {
+                        promise.run();
+                    }
+                });
+                channel.writeAndFlush(msg, cp);
             }
         };
         getEventLoopGroup().submit(withDependencies(r));

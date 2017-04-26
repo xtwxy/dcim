@@ -4,7 +4,6 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelPromise;
 
 public class DDS3366DCodecChannelImpl
         extends CodecChannel.Adapter
@@ -25,7 +24,7 @@ public class DDS3366DCodecChannelImpl
     }
 
     @Override
-    public void write(Object msg, ChannelPromise promise) {
+    public void write(Object msg, Runnable promise) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
