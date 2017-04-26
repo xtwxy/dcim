@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus.internal;
 
+import com.wincom.protocol.modbus.ModbusFrame;
 import com.wincom.protocol.modbus.WriteMultipleHoldingRegistersResponse;
 import java.nio.ByteBuffer;
 import org.junit.Test;
@@ -17,13 +18,15 @@ public class WriteMultipleHoldingRegistersResponseTest {
             0x01, 0x10, 0x00, 0x00, 0x00, 0x02, 0x41, (byte)0xc8
         };
 
+        ModbusFrame frame = new ModbusFrame();
         WriteMultipleHoldingRegistersResponse response = new WriteMultipleHoldingRegistersResponse();
-        response.setSlaveAddress((byte) 0x01);
+        frame.setSlaveAddress((byte) 0x01);
+        frame.setPayload(response);
         response.setStartAddress((short) 0x0000);
         response.setNumberOfRegisters((short) 0x0002);
 
-        ByteBuffer buf = ByteBuffer.allocate(response.getWireLength());
-        response.toWire(buf);
+        ByteBuffer buf = ByteBuffer.allocate(frame.getWireLength());
+        frame.toWire(buf);
 
         assertArrayEquals(b, buf.array());
 
