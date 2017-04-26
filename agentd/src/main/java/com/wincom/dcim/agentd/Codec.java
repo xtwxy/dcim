@@ -1,9 +1,7 @@
 package com.wincom.dcim.agentd;
 
-import io.netty.channel.ChannelPromise;
-
 public interface Codec {
-    public void encode(Object msg, ChannelPromise promise);
+    public void encode(Object msg, Runnable promise);
     public void decode(Object msg);
     public void onTimeout();
     public void onError(Exception e);
@@ -18,7 +16,7 @@ public interface Codec {
         private CodecChannel inboundCodecChannel;
         
         @Override
-        public void encode(Object msg, ChannelPromise promise) {
+        public void encode(Object msg, Runnable promise) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

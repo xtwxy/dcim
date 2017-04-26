@@ -30,7 +30,7 @@ public class ModbusCodecChannelImpl
     }
 
     @Override
-    public void write(final Object msg, final ChannelPromise promise) {
+    public void write(final Object msg, final Runnable promise) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -39,10 +39,10 @@ public class ModbusCodecChannelImpl
                     ModbusFrame frame = new ModbusFrame();
                     frame.setSlaveAddress((byte)(0xff & address));
                     frame.setPayload(payload);
-                    ByteBuffer buf = ByteBuffer.allocate(frame.getWireLength());
-                    ModbusCodecChannelImpl.super.write(buf, promise);
+
+                    ModbusCodecChannelImpl.super.write(frame, promise);
                 } else {
-                    promise.setFailure(new IllegalArgumentException("Not a ModbusPayload: " + msg));
+                    fireError(new IllegalArgumentException("Not a ModbusPayload: " + msg));
                 }
             }
         };

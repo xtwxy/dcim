@@ -4,8 +4,8 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Dependency;
+import com.wincom.protocol.modbus.ModbusFrame;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelPromise;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
     private CodecChannel inbound;
     private final Map<Integer, ModbusCodecChannelImpl> outbound;
     private AgentdService agent;
-    
+
     private ConcurrentLinkedDeque<Runnable> queue;
 
     /**
@@ -36,24 +36,42 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
     }
 
     @Override
-    public void encode(Object msg, ChannelPromise promise) {
-        
-        boolean isFirst = false;
-        
-        if(queue.isEmpty()) {
-            isFirst = true;
-        }
-        
-        queue.add(new Runnable(){
+    public void encode(Object msg, Runnable promise) {
+
+        ModbusFrame frame = (ModbusFrame) msg;
+        ByteBuffer buffer = ByteBuffer.allocate(frame.getWireLength());
+        frame.toWire(buffer);
+        final Runnable writeCompleteAction = new Runnable() {
             @Override
             public void run() {
-                if(msg instanceof ByteBuffer) {
-                    inbound.write(msg, promise);
-                } else {
-                    promise.setFailure(new IllegalArgumentException("Not a ByteBuffer: " + msg));
+                Runnable r = queue.poll();
+                if (r != null) {
+                    r = queue.peek();
+                    if (r != null) {
+                        inbound.execute(r);
+                    }
                 }
+                promise.run();
+            }
+
+        };
+
+        boolean isFirst = false;
+        if (queue.isEmpty()) {
+            isFirst = true;
+        }
+
+        queue.add(new Runnable() {
+            @Override
+            public void run() {
+                inbound.write(buffer, writeCompleteAction);
             }
         });
+
+        if (isFirst) {
+            Runnable r = queue.peek();
+            inbound.execute(r);
+        }
     }
 
     @Override

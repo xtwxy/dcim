@@ -1,12 +1,11 @@
 package com.wincom.dcim.agentd;
 
-import io.netty.channel.ChannelPromise;
 import io.netty.channel.EventLoopGroup;
 
 public interface CodecChannel extends Dependency {
 
     /* Calls */
-    public void write(Object msg, ChannelPromise promise);
+    public void write(Object msg, Runnable promise);
 
     public void timeout();
 
@@ -44,7 +43,7 @@ public interface CodecChannel extends Dependency {
         }
         
         @Override
-        public void write(Object msg, ChannelPromise promise) {
+        public void write(Object msg, Runnable promise) {
             inboundCodec.encode(msg, promise);
         }
 
