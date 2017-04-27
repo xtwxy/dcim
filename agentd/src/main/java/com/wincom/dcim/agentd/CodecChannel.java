@@ -78,7 +78,7 @@ public interface CodecChannel extends IoCompletionNotifier, Dependency {
         }
 
         @Override
-        public void fireExecutionComplete() {
+        public void fireComplete() {
             this.outboundCodec.onComplete();
         }
 

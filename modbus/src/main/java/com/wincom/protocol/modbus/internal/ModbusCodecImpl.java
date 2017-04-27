@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
 
-    private final Map<Integer, ModbusCodecChannelImpl> outbound;
+    private final Map<Byte, ModbusCodecChannelImpl> outbound;
     private AgentdService agent;
 
     private ConcurrentLinkedDeque<Runnable> queue;
@@ -40,22 +40,9 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
     @Override
     public void encode(Object msg, IoCompletionHandler handler) {
 
-        request = (ModbusFrame) msg;
-        ByteBuffer buffer = ByteBuffer.allocate(request.getWireLength());
-        request.toWire(buffer);
-        final IoCompletionHandler writeCompletionHandler = new IoCompletionHandler.Adapter(handler) {
-            @Override
-            public void onComplete() {
-                Runnable r = queue.poll();
-                if (r != null) {
-                    r = queue.peek();
-                    if (r != null) {
-                        getInbound().execute(r);
-                    }
-                }
-                handler.onComplete();
-            }
-        };
+        final ModbusFrame frame = (ModbusFrame) msg;
+        ByteBuffer buffer = ByteBuffer.allocate(frame.getWireLength());
+        frame.toWire(buffer);
 
         synchronized (queue) {
             boolean isFirst = false;
@@ -67,7 +54,8 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
             queue.add(new Runnable() {
                 @Override
                 public void run() {
-                    getInbound().write(buffer, writeCompletionHandler);
+                    request = frame;
+                    getInbound().write(buffer, handler);
                 }
             });
 
@@ -85,12 +73,22 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
             return;
         }
         
+        byte[] src = null;
+        byte[] dst = null;
         switch (request.getFunction()) {
             case READ_COILS:
                 break;
             case READ_DISCRETE_INPUTS:
                 break;
             case READ_MULTIPLE_HOLDING_REGISTERS:
+                if(readBuffer.remaining() < 3) break;
+
+                src = readBuffer.array();
+                final int LENGTH = 5 + src[2];
+                if(readBuffer.remaining() < LENGTH) break;
+                dst = new byte[LENGTH];
+                decode(src, dst);
+                
                 break;
             case READ_INPUT_REGISTERS:
                 break;
@@ -100,23 +98,32 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
                 break;
             case WRITE_SINGLE_HOLDING_REGISTER:
             case WRITE_MULTIPLE_HOLDING_REGISTERS:
-                if(readBuffer.remaining() >= 8) {
-                    byte[] dst = new byte[8];
-                    byte[] src = readBuffer.array();
-                    System.arraycopy(src, 0, dst, 0, dst.length);
-                    ByteBuffer buf = ByteBuffer.wrap(dst);
-                    ModbusFrame frame = new ModbusFrame();
-                    try {
-                        frame.fromWire(buf);
-                    } catch (Throwable t) {
-                        // TODO: error handling.
-                    }
-                    // TODO: complete request/response cycle.
-                    readBuffer.position(dst.length);
-                    readBuffer.compact();
-                }
+                if(readBuffer.remaining() < 8) break;
+
+                dst = new byte[8];
+                src = readBuffer.array();
+                decode(src, dst);
                 break;
         }
+    }
+
+    private void decode(byte[] src, byte[] dst) {
+        System.arraycopy(src, 0, dst, 0, dst.length);
+        ByteBuffer buf = ByteBuffer.wrap(dst);
+        ModbusFrame frame = new ModbusFrame();
+        try {
+            frame.fromWire(buf);
+        } catch (Exception e) {
+            outbound.get(request.getSlaveAddress()).fireError(e);
+            readBuffer.position(dst.length);
+            readBuffer.compact();
+            dequeue();
+            return;
+        }
+        outbound.get(request.getSlaveAddress()).fireComplete();
+        readBuffer.position(dst.length);
+        readBuffer.compact();
+        dequeue();
     }
 
     private boolean locateModbusAddress() {
@@ -141,8 +148,11 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
             ByteBuf buf = (ByteBuf) msg;
             readBuffer.put(buf.nioBuffer());
             buf.release();
+        } else if (msg instanceof ByteBuffer) {
+            ByteBuffer buf = (ByteBuffer) msg;
+            readBuffer.put(buf);
         } else {
-            throw new IllegalArgumentException("Not a ByteBuf: " + msg);
+            throw new IllegalArgumentException("Not a ByteBuf or ByteBuffer: " + msg);
         }
     }
 
@@ -159,11 +169,21 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
         ModbusCodecChannelImpl codecChannel = new ModbusCodecChannelImpl(address, agent);
         codecChannel.setInboundCodec(this);
         codecChannel.setOutboundCodec(cc);
-        outbound.put(address, codecChannel);
+        outbound.put((byte)(0xff & address), codecChannel);
     }
 
     @Override
     public Runnable withDependencies(Runnable r) {
         return getInbound().withDependencies(r);
+    }
+    
+    private void dequeue() {
+        synchronized (queue) {
+            queue.poll();
+            Runnable r = queue.peek();
+            if(r != null) {
+                getInbound().execute(r);
+            }
+        }
     }
 }

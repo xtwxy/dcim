@@ -14,6 +14,6 @@ public interface IoCompletionNotifier {
 
     public void fireError(Exception e);
 
-    public void fireExecutionComplete();
+    public void fireComplete();
 
 }
