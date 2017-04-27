@@ -4,6 +4,7 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Dependency;
+import com.wincom.dcim.agentd.IoCompletionHandler;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -27,7 +28,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependency {
     }
 
     @Override
-    public void encode(Object msg, Runnable promise) {
+    public void encode(Object msg, IoCompletionHandler handler) {
     }
 
     @Override

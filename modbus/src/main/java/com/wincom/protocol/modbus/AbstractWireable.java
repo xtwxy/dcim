@@ -13,7 +13,7 @@ public abstract class AbstractWireable implements Wireable {
     @Nonnull
     protected static StringBuilder indent(@Nonnull StringBuilder buf, int depth) {
         for (int i = 0; i < depth; i++) {
-            buf.append("  ");
+            buf.append(" ");
         }
         return buf;
     }
@@ -50,13 +50,6 @@ public abstract class AbstractWireable implements Wireable {
     }
 
     @Nonnull
-    protected static StringBuilder appendValue(@Nonnull StringBuilder buf, int depth, String name, Object value) {
-        indent(buf, depth);
-        buf.append(name).append(": ").append(value).append('\n');
-        return buf;
-    }
-
-    @Nonnull
     protected static StringBuilder appendChild(@Nonnull StringBuilder buf, int depth, @Nonnull String name, @CheckForNull Wireable value) {
         if (value == null) {
             appendHeader(buf, depth, name);
@@ -68,7 +61,14 @@ public abstract class AbstractWireable implements Wireable {
         return buf;
     }
 
-    @Override
+     @Nonnull
+    protected static StringBuilder appendValue(@Nonnull StringBuilder buf, int depth, @Nonnull String name, @CheckForNull Object value) {
+        indent(buf, depth);
+        buf.append(name).append(": ").append(value).append('\n');
+        return buf;
+    }
+
+   @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
         indent(buf, depth).append(super.toString()).append('\n');
     }

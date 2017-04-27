@@ -2,10 +2,10 @@ package com.wincom.dcim.agentd;
 
 import io.netty.channel.EventLoopGroup;
 
-public interface CodecChannel extends Dependency {
+public interface CodecChannel extends IoCompletionNotifier, Dependency {
 
     /* Calls */
-    public void write(Object msg, Runnable promise);
+    public void write(Object msg, IoCompletionHandler handler);
 
     public void timeout();
 
@@ -15,16 +15,6 @@ public interface CodecChannel extends Dependency {
 
     public void execute(Runnable r);
 
-    /* Callbacks */
-    public void fireRead(Object msg);
-
-    public void fireClosed();
-
-    public void fireTimeout();
-
-    public void fireError(Exception e);
-
-    public void fireExecutionComplete();
 
     public static class Adapter implements CodecChannel {
 
@@ -43,8 +33,8 @@ public interface CodecChannel extends Dependency {
         }
         
         @Override
-        public void write(Object msg, Runnable promise) {
-            inboundCodec.encode(msg, promise);
+        public void write(Object msg, IoCompletionHandler handler) {
+            inboundCodec.encode(msg, handler);
         }
 
         @Override
@@ -89,7 +79,7 @@ public interface CodecChannel extends Dependency {
 
         @Override
         public void fireExecutionComplete() {
-            this.outboundCodec.onExecutionComplete();
+            this.outboundCodec.onComplete();
         }
 
         public EventLoopGroup getEventLoopGroup() {

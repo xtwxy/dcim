@@ -32,7 +32,7 @@ public class ReadMultipleHoldingRegistersRequestTest {
 
         System.out.println(request);
     }
-
+    
     @Test
     public void testMarshal2() {
         byte[] b = new byte[]{

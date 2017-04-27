@@ -66,12 +66,12 @@ public enum ModbusFunction {
     WRITE_SINGLE_HOLDING_REGISTER((byte) 0x06) {
         @Override
         public ModbusPayload createRequest() {
-            throw new UnsupportedOperationException("Not supported yet."); 
+            return new WriteSingleHoldingRegisterRequest(); 
         }
 
         @Override
         public ModbusPayload createResponse() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return new WriteSingleHoldingRegisterResponse();
         }
     },
     WRITE_MULTIPLE_HOLDING_COILS((byte) 0x0f) {

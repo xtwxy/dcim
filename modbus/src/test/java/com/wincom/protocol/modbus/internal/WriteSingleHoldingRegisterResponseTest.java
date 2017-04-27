@@ -12,9 +12,12 @@ import static org.junit.Assert.assertArrayEquals;
  */
 public class WriteSingleHoldingRegisterResponseTest {
 
+    byte[] b = new byte[]{
+        0x01, 0x06, 0x00, 0x02, 0x00, 0x02, (byte) 0xa9, (byte) 0xcb
+    };
+
     @Test
     public void testMarshal1() {
-        byte[] b = new byte[]{0x01, 0x06, 0x00, 0x02, 0x00, 0x02, (byte) 0xa9, (byte) 0xcb};
 
         ModbusFrame frame = new ModbusFrame();
         WriteSingleHoldingRegisterResponse response = new WriteSingleHoldingRegisterResponse();
@@ -29,5 +32,18 @@ public class WriteSingleHoldingRegisterResponseTest {
         assertArrayEquals(b, buf.array());
 
         System.out.println(response);
+    }
+    
+    @Test
+    public void testUnmarshal1() {
+        ByteBuffer buf = ByteBuffer.allocate(b.length);
+        buf.put(b);
+        buf.flip();
+        
+        ModbusFrame frame = new ModbusFrame();
+
+        frame.fromWire(buf);
+
+        System.out.println(frame);
     }
 }

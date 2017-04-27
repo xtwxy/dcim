@@ -3,6 +3,7 @@ package com.wincom.driver.dds3366d.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
+import com.wincom.dcim.agentd.IoCompletionHandler;
 import io.netty.channel.Channel;
 
 public class DDS3366DCodecChannelImpl
@@ -24,11 +25,11 @@ public class DDS3366DCodecChannelImpl
     }
 
     @Override
-    public void write(Object msg, Runnable promise) {
+    public void write(Object msg, IoCompletionHandler handler) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                DDS3366DCodecChannelImpl.super.write(msg, promise);
+                DDS3366DCodecChannelImpl.super.write(msg, handler);
             }
         };
         getEventLoopGroup().submit(withDependencies(r));

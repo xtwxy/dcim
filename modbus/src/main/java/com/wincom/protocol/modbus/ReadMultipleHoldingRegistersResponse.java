@@ -49,6 +49,7 @@ public class ReadMultipleHoldingRegistersResponse
     public void fromWire(ByteBuffer buffer) {
         buffer.order(ByteOrder.BIG_ENDIAN);
         numberOfBytes = buffer.get();
+        setNumberOfBytes(numberOfBytes);
         buffer.get(bytes);
     }
 

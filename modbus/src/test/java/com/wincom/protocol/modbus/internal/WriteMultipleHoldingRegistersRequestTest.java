@@ -1,7 +1,6 @@
 package com.wincom.protocol.modbus.internal;
 
 import com.wincom.protocol.modbus.ModbusFrame;
-import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersResponse;
 import com.wincom.protocol.modbus.WriteMultipleHoldingRegistersRequest;
 import java.nio.ByteBuffer;
 import org.junit.Test;

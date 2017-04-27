@@ -11,14 +11,14 @@ import static org.junit.Assert.assertArrayEquals;
  * @author master
  */
 public class ReadMultipleHoldingRegistersResponseTest {
+    private byte[] b = new byte[]{
+        0x01, 0x03, 0x0C, 0x41, (byte) 0xC8, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x41, (byte) 0xEA, 0x66, 0x66, 0x27, 
+        (byte) 0xAD
+    };
 
     @Test
     public void testMarshal1() {
-        byte[] b = new byte[]{
-            0x01, 0x03, 0x0C, 0x41, (byte) 0xC8, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x41, (byte) 0xEA, 0x66, 0x66, 0x27, 
-            (byte) 0xAD
-        };
 
         ModbusFrame frame = new ModbusFrame();
         ReadMultipleHoldingRegistersResponse response = new ReadMultipleHoldingRegistersResponse();
@@ -34,5 +34,18 @@ public class ReadMultipleHoldingRegistersResponseTest {
 
         System.out.println(response);
         assertArrayEquals(b, buf.array());
+    }
+
+    @Test
+    public void testUnmarshal1() {
+        ByteBuffer buf = ByteBuffer.allocate(b.length);
+        buf.put(b);
+        buf.flip();
+        
+        ModbusFrame frame = new ModbusFrame();
+
+        frame.fromWire(buf);
+
+        System.out.println(frame);
     }
 }

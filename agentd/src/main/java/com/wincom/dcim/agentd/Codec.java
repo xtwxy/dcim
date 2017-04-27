@@ -1,12 +1,8 @@
 package com.wincom.dcim.agentd;
 
-public interface Codec {
-    public void encode(Object msg, Runnable promise);
+public interface Codec extends IoCompletionHandler {
+    public void encode(Object msg, IoCompletionHandler handler);
     public void decode(Object msg);
-    public void onTimeout();
-    public void onError(Exception e);
-    public void onClose();
-    public void onExecutionComplete();
     
     public void setInbound(CodecChannel cc);
     public void setOutboundCodec(Codec cc);
@@ -16,7 +12,7 @@ public interface Codec {
         private CodecChannel inboundCodecChannel;
         
         @Override
-        public void encode(Object msg, Runnable promise) {
+        public void encode(Object msg, IoCompletionHandler handler) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
@@ -41,13 +37,17 @@ public interface Codec {
         }
 
         @Override
-        public void onExecutionComplete() {
+        public void onComplete() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
         public void setInbound(CodecChannel cc) {
             this.inboundCodecChannel = cc;
+        }
+
+        public CodecChannel getInbound() {
+            return inboundCodecChannel;
         }
 
         @Override

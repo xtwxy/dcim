@@ -12,12 +12,12 @@ import static org.junit.Assert.assertArrayEquals;
  */
 public class WriteMultipleHoldingRegistersResponseTest {
 
+    byte[] b = new byte[]{
+        0x01, 0x10, 0x00, 0x00, 0x00, 0x02, 0x41, (byte)0xc8
+    };
+
     @Test
     public void testMarshal1() {
-        byte[] b = new byte[]{
-            0x01, 0x10, 0x00, 0x00, 0x00, 0x02, 0x41, (byte)0xc8
-        };
-
         ModbusFrame frame = new ModbusFrame();
         WriteMultipleHoldingRegistersResponse response = new WriteMultipleHoldingRegistersResponse();
         frame.setSlaveAddress((byte) 0x01);
@@ -31,5 +31,18 @@ public class WriteMultipleHoldingRegistersResponseTest {
         assertArrayEquals(b, buf.array());
 
         System.out.println(response);
+    }
+    
+    @Test
+    public void testUnmarshal1() {
+        ByteBuffer buf = ByteBuffer.allocate(b.length);
+        buf.put(b);
+        buf.flip();
+        
+        ModbusFrame frame = new ModbusFrame();
+
+        frame.fromWire(buf);
+
+        System.out.println(frame);
     }
 }

@@ -19,8 +19,16 @@ public class ModbusFrame
     private ModbusPayload payload;
     short crc16;
 
-    private transient boolean slave = true;
+    private transient boolean slave;
 
+    public ModbusFrame() {
+        slave = true;
+    }
+
+    public ModbusFrame(boolean slave) {
+        this.slave = slave;
+    }
+    
     @Override
     public int getWireLength() {
         return 1 // slave address
@@ -69,7 +77,7 @@ public class ModbusFrame
         appendValue(buf, depth, "Slave Address", "0x" + UnsignedBytes.toString(slaveAddress, 16));
         appendValue(buf, depth, "Function Code", "0x" + UnsignedBytes.toString(function.getCode(), 16));
 
-        appendValue(buf, depth, "Payload", payload);
+        appendChild(buf, depth, "Payload", payload);
 
         appendValue(buf, depth, "CRC16", "0x" + Integer.toHexString(0xffff & crc16));
     }

@@ -5,6 +5,7 @@ import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
 import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.DependencyAdaptor;
+import com.wincom.dcim.agentd.IoCompletionHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -50,7 +51,7 @@ public class MP3000CodecChannelImpl
     }
 
     @Override
-    public void write(Object msg, Runnable promise) {
+    public void write(Object msg, IoCompletionHandler handler) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -58,7 +59,11 @@ public class MP3000CodecChannelImpl
                 cp.addListener(new GenericFutureListener() {
                     @Override
                     public void operationComplete(Future f) throws Exception {
-                        promise.run();
+                        if(f.isSuccess()) {
+                            handler.onComplete();
+                        } else {
+                            handler.onError(new RuntimeException("Operation not successful: " + f.toString()));
+                        }
                     }
                 });
                 channel.writeAndFlush(msg, cp);

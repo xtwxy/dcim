@@ -3,6 +3,7 @@ package com.wincom.protocol.modbus.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
+import com.wincom.dcim.agentd.IoCompletionHandler;
 import com.wincom.protocol.modbus.ModbusFrame;
 import com.wincom.protocol.modbus.ModbusPayload;
 import io.netty.channel.Channel;
@@ -30,7 +31,7 @@ public class ModbusCodecChannelImpl
     }
 
     @Override
-    public void write(final Object msg, final Runnable promise) {
+    public void write(final Object msg, final IoCompletionHandler handler) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -40,7 +41,7 @@ public class ModbusCodecChannelImpl
                     frame.setSlaveAddress((byte)(0xff & address));
                     frame.setPayload(payload);
 
-                    ModbusCodecChannelImpl.super.write(frame, promise);
+                    ModbusCodecChannelImpl.super.write(frame, handler);
                 } else {
                     fireError(new IllegalArgumentException("Not a ModbusPayload: " + msg));
                 }
