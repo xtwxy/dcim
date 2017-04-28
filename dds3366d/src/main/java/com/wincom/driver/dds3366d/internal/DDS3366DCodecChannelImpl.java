@@ -32,8 +32,6 @@ public class DDS3366DCodecChannelImpl
 
     @Override
     public Dependency withDependencies(Dependency target) {
-        Dependency r = target;
-        // TODO: implement dependencies.
-        return r;
+        return getInboundCodec().withDependencies(target);
     }
 }
