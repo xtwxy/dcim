@@ -12,7 +12,7 @@ import java.util.Properties;
  */
 public class ModbusCodecFactoryImpl implements CodecFactory {
 
-    private AgentdService agent;
+    private final AgentdService agent;
 
     /**
      * Constructs an <code>MP3000CodecImpl</code> instance with an

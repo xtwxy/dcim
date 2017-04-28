@@ -2,7 +2,7 @@ package com.wincom.dcim.agentd;
 
 import io.netty.channel.EventLoopGroup;
 
-public interface CodecChannel extends IoCompletionNotifier, Dependency {
+public interface CodecChannel extends IoCompletionNotifier, Dependable {
 
     /* Calls */
     public void write(Object msg, IoCompletionHandler handler);
@@ -103,7 +103,7 @@ public interface CodecChannel extends IoCompletionNotifier, Dependency {
         }
 
         @Override
-        public Runnable withDependencies(Runnable r) {
+        public Dependency withDependencies(Dependency r) {
             return r;
         }
     }

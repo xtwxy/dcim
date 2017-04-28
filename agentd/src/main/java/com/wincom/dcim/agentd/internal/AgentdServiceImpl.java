@@ -91,11 +91,7 @@ public final class AgentdServiceImpl implements AgentdService {
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .option(ChannelOption.SO_KEEPALIVE, true);
-        try {
-            return boot.connect(host, port).sync().channel().closeFuture();
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
+        return boot.connect(host, port);
     }
 
     @Override

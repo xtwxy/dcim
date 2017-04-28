@@ -3,8 +3,8 @@ package com.wincom.fsu.mp3000.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
+import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.Dependency;
-import com.wincom.dcim.agentd.DependencyAdaptor;
 import com.wincom.dcim.agentd.IoCompletionHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,7 +15,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 public class MP3000CodecChannelImpl
         extends CodecChannel.Adapter
-        implements Connector, Dependency {
+        implements Connector {
 
     private final String host;
     private final int port;
@@ -52,7 +52,7 @@ public class MP3000CodecChannelImpl
 
     @Override
     public void write(Object msg, IoCompletionHandler handler) {
-        Runnable r = new Runnable() {
+        ChainedDependency r = new ChainedDependency() {
             @Override
             public void run() {
                 ChannelPromise cp = channel.voidPromise();
@@ -73,21 +73,26 @@ public class MP3000CodecChannelImpl
     }
 
     @Override
-    public Runnable withDependencies(Runnable target) {
-        Runnable r = target;
+    public Dependency withDependencies(Dependency target) {
+        Dependency r = target;
         if (getChannel() == null || !getChannel().isOpen()) {
             // connect
-            r = new DependencyAdaptor(target) {
+            r = new ChainedDependency(target) {
                 @Override
                 public void run() {
                     agent.createClientChannel(
                             host,
                             port,
-                            new Connector() {
+                            new Connector.Adapter() {
                         @Override
                         public void onConnect(Channel ch) {
                             MP3000CodecChannelImpl.this.onConnect(ch);
                             target.run();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            MP3000CodecChannelImpl.this.onError(e);
                         }
                     });
                 }
@@ -102,6 +107,25 @@ public class MP3000CodecChannelImpl
 
     public void setChannel(Channel channel) {
         this.channel = channel;
+    }
+
+    @Override
+    public void onTimeout() {
+    }
+
+    @Override
+    public void onError(Exception e) {
+        this.channel = null;
+    }
+
+    @Override
+    public void onClose() {
+        this.channel = null;
+    }
+
+    @Override
+    public void onComplete() {
+        this.channel = null;
     }
 
 }

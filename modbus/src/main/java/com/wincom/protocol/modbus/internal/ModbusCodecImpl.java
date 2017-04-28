@@ -1,6 +1,7 @@
 package com.wincom.protocol.modbus.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
@@ -16,14 +17,14 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  *
  * @author master
  */
-public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
+public class ModbusCodecImpl extends Codec.Adapter {
 
     private final Map<Byte, ModbusCodecChannelImpl> outbound;
-    private AgentdService agent;
+    private final AgentdService agent;
 
-    private ConcurrentLinkedDeque<Runnable> queue;
-    private ByteBuffer readBuffer;
-    ModbusFrame request;
+    private final ConcurrentLinkedDeque<Runnable> queue;
+    private final ByteBuffer readBuffer;
+    private ModbusFrame request;
 
     /**
      *
@@ -32,6 +33,7 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
     public ModbusCodecImpl(
             AgentdService agent
     ) {
+        this.agent = agent;
         this.outbound = new HashMap<>();
         this.queue = new ConcurrentLinkedDeque<>();
         this.readBuffer = ByteBuffer.allocate(2048);
@@ -164,7 +166,7 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
      * @param cc the <code>Codec</code> to be connected.
      */
     @Override
-    public void setOutboundCodec(String channelId, Codec cc) {
+    synchronized public void setOutboundCodec(String channelId, Codec cc) {
         int address = Integer.parseInt(channelId);
         ModbusCodecChannelImpl codecChannel = new ModbusCodecChannelImpl(address, agent);
         codecChannel.setInboundCodec(this);
@@ -173,7 +175,7 @@ public class ModbusCodecImpl extends Codec.Adapter implements Dependency {
     }
 
     @Override
-    public Runnable withDependencies(Runnable r) {
+    public Dependency withDependencies(Dependency r) {
         return getInbound().withDependencies(r);
     }
     

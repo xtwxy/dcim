@@ -1,18 +1,20 @@
 package com.wincom.driver.dds3366d.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecChannel;
-import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
 import io.netty.buffer.ByteBuf;
+import com.wincom.dcim.agentd.Dependable;
+import com.wincom.dcim.agentd.Dependency;
 
 /**
  * Composition of TCP connections to a MP3000.
  *
  * @author master
  */
-public class DDS3366DCodecImpl extends Codec.Adapter implements Dependency {
+public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
 
     private CodecChannel inbound;
     private DDS3366DCodecChannelImpl outbound;
@@ -60,7 +62,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependency {
     }
 
     @Override
-    public Runnable withDependencies(Runnable r) {
+    public Dependency withDependencies(Dependency r) {
         return inbound.withDependencies(r);
     }
 }

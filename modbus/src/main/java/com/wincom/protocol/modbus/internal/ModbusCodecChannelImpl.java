@@ -1,21 +1,18 @@
 package com.wincom.protocol.modbus.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.CodecChannel;
-import com.wincom.dcim.agentd.Connector;
+import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
 import com.wincom.protocol.modbus.ModbusFrame;
 import com.wincom.protocol.modbus.ModbusPayload;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelPromise;
-import java.nio.ByteBuffer;
 
 public class ModbusCodecChannelImpl
-        extends CodecChannel.Adapter
-        implements Connector {
+        extends CodecChannel.Adapter {
 
-    private int address;
-    private AgentdService agent;
+    private final int address;
+    private final AgentdService agent;
 
     public ModbusCodecChannelImpl(
             int address,
@@ -27,12 +24,8 @@ public class ModbusCodecChannelImpl
     }
 
     @Override
-    public void onConnect(Channel ch) {
-    }
-
-    @Override
     public void write(final Object msg, final IoCompletionHandler handler) {
-        Runnable r = new Runnable() {
+        ChainedDependency r = new ChainedDependency() {
             @Override
             public void run() {
                 if(msg instanceof ModbusPayload) {
@@ -51,9 +44,7 @@ public class ModbusCodecChannelImpl
     }
 
     @Override
-    public Runnable withDependencies(Runnable target) {
-        Runnable r = target;
-        // TODO: implement dependencies.
-        return r;
+    public Dependency withDependencies(Dependency target) {
+        return getInboundCodec().withDependencies(target);
     }
 }

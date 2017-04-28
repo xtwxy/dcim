@@ -1,14 +1,13 @@
 package com.wincom.driver.dds3366d.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.CodecChannel;
-import com.wincom.dcim.agentd.Connector;
+import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
-import io.netty.channel.Channel;
 
 public class DDS3366DCodecChannelImpl
-        extends CodecChannel.Adapter
-        implements Connector {
+        extends CodecChannel.Adapter {
 
     private AgentdService agent;
 
@@ -21,12 +20,8 @@ public class DDS3366DCodecChannelImpl
     }
 
     @Override
-    public void onConnect(Channel ch) {
-    }
-
-    @Override
     public void write(Object msg, IoCompletionHandler handler) {
-        Runnable r = new Runnable() {
+        ChainedDependency r = new ChainedDependency() {
             @Override
             public void run() {
                 DDS3366DCodecChannelImpl.super.write(msg, handler);
@@ -36,8 +31,8 @@ public class DDS3366DCodecChannelImpl
     }
 
     @Override
-    public Runnable withDependencies(Runnable target) {
-        Runnable r = target;
+    public Dependency withDependencies(Dependency target) {
+        Dependency r = target;
         // TODO: implement dependencies.
         return r;
     }

@@ -1,6 +1,6 @@
 package com.wincom.dcim.agentd;
 
-public interface Codec extends IoCompletionHandler {
+public interface Codec extends IoCompletionHandler, Dependable {
     public void encode(Object msg, IoCompletionHandler handler);
     public void decode(Object msg);
     
@@ -58,6 +58,11 @@ public interface Codec extends IoCompletionHandler {
         @Override
         public void setOutboundCodec(String channelId, Codec cc) {
             throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Dependency withDependencies(Dependency r) {
+            return r;
         }
         
     }
