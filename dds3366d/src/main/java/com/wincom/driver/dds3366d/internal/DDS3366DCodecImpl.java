@@ -7,7 +7,7 @@ import com.wincom.dcim.agentd.IoCompletionHandler;
 import io.netty.buffer.ByteBuf;
 import com.wincom.dcim.agentd.Dependable;
 import com.wincom.dcim.agentd.Dependency;
-import com.wincom.dcim.agentd.Signal;
+import com.wincom.dcim.agentd.domain.Signal;
 import java.util.Map;
 
 /**
@@ -32,7 +32,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
 
     @Override
     public void encode(Object msg, IoCompletionHandler handler) {
-        Map<String, Signal> signals = (Map<String, Signal>) msg;
+        if()
     }
 
     @Override

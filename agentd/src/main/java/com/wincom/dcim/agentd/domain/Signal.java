@@ -1,4 +1,4 @@
-package com.wincom.dcim.agentd;
+package com.wincom.dcim.agentd.domain;
 
 /**
  *
@@ -20,9 +20,6 @@ public abstract class Signal {
     public Signal(Type type) {
         this.type = type;
     }
-    
-    abstract public <T extends Object> T value();
-    abstract public <T extends Object> void value(T v);
     
     private Type type;
 }

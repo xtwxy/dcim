@@ -1,4 +1,4 @@
-package com.wincom.dcim.agentd;
+package com.wincom.dcim.agentd.domain;
 
 /**
  *
@@ -12,14 +12,12 @@ public class StringSignal extends Signal {
         value = null;
     }
 
-    @Override
     public String value() {
         return value;
     }
 
-    @Override
-    public <T extends Object> void value(T v) {
-        value = (String)v;
+    public void value(String v) {
+        value = v;
     }
     
     

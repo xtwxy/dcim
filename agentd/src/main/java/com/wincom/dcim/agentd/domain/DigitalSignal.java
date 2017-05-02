@@ -1,4 +1,6 @@
-package com.wincom.dcim.agentd;
+package com.wincom.dcim.agentd.domain;
+
+import com.wincom.dcim.agentd.domain.Signal;
 
 /**
  *
@@ -11,14 +13,12 @@ public class DigitalSignal extends Signal {
         super(Type.DIGITAL);
     }
 
-    @Override
     public Boolean value() {
         return value;
     }
 
-    @Override
-    public <T extends Object> void value(T v) {
-        value = (Boolean)v;
+    public void value(Boolean v) {
+        value = v;
     }
     
     

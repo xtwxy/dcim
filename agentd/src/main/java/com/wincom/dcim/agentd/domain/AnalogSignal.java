@@ -1,4 +1,4 @@
-package com.wincom.dcim.agentd;
+package com.wincom.dcim.agentd.domain;
 
 /**
  *
@@ -12,14 +12,12 @@ public class AnalogSignal extends Signal {
         value = 0.0d;
     }
 
-    @Override
     public Double value() {
         return value;
     }
 
-    @Override
-    public <T extends Object> void value(T v) {
-        value = (Double)v;
+    public void value(Double v) {
+        value = v;
     }
     
     
