@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class SetSignalValues {
 
-    public static class Request {
+    public static class Request implements Message {
 
         private Map<String, Signal> values;
 
@@ -26,12 +26,13 @@ public class SetSignalValues {
             this.values = values;
         }
         
+        @Override
         public void apply(Handler handler) {
             handler.apply(this);
         }
     }
     
-    public static class Response {
+    public static class Response implements Message {
 
         private Map<String, ResultCode> results;
 
@@ -51,6 +52,7 @@ public class SetSignalValues {
             this.results = results;
         }
         
+        @Override
         public void apply(Handler handler) {
             handler.apply(this);
         }

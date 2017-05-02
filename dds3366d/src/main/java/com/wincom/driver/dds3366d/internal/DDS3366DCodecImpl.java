@@ -32,7 +32,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
 
     @Override
     public void encode(Object msg, IoCompletionHandler handler) {
-        if()
+        //if()
     }
 
     @Override

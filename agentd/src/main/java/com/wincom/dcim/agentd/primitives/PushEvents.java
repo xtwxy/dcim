@@ -5,7 +5,7 @@ import com.wincom.dcim.agentd.domain.Event;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PushEvents {
+public class PushEvents implements Message {
 
     private List<Event> events;
 
@@ -25,6 +25,7 @@ public class PushEvents {
         this.events = events;
     }
 
+    @Override
     public void apply(Handler handler) {
         handler.apply(this);
     }
