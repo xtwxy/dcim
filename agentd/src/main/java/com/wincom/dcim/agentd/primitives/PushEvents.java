@@ -27,6 +27,6 @@ public class PushEvents implements Message {
 
     @Override
     public void apply(Handler handler) {
-        handler.apply(this);
+        handler.handlePushEvents(this);
     }
 }

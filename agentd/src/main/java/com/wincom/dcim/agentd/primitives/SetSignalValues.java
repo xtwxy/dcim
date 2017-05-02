@@ -28,7 +28,7 @@ public class SetSignalValues {
         
         @Override
         public void apply(Handler handler) {
-            handler.apply(this);
+            handler.handleSetSignalValuesRequest(this);
         }
     }
     
@@ -54,7 +54,7 @@ public class SetSignalValues {
         
         @Override
         public void apply(Handler handler) {
-            handler.apply(this);
+            handler.handleSetSignalValuesResponse(this);
         }
     }
 }

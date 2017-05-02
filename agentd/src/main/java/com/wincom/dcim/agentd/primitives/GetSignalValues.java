@@ -33,7 +33,7 @@ public class GetSignalValues {
         
         @Override
         public void apply(Handler handler) {
-            handler.apply(this);
+            handler.handleGetSignalValuesRequest(this);
         }
     }
     
@@ -57,7 +57,7 @@ public class GetSignalValues {
         
         @Override
         public void apply(Handler handler) {
-            handler.apply(this);
+            handler.handleGetSignalValuesRequest(this);
         }
     }
 }
