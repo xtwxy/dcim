@@ -10,7 +10,10 @@ import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.PushEvents;
 import com.wincom.dcim.agentd.primitives.SetSignalValues;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -24,7 +27,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
     private DDS3366DCodecChannelImpl outbound;
     private AgentdService agent;
 
-    private final Handler handler;
+    private final Map<Class, Handler> handlers;
     private final ConcurrentLinkedDeque<Runnable> queue;
 
     /**
@@ -36,54 +39,15 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
     ) {
         this.agent = agent;
         this.queue = new ConcurrentLinkedDeque<>();
-        this.handler = new Handler.Adapter() {
-            @Override
-            public void handleGetSignalValuesRequest(GetSignalValues.Request r) {
-
-            }
-
-            @Override
-            public void handleGetSignalValuesRequest(GetSignalValues.Response r) {
-                outbound.fireRead(r);
-            }
-
-            @Override
-            public void handleSetSignalValuesRequest(SetSignalValues.Request r) {
-
-            }
-
-            @Override
-            public void handleSetSignalValuesResponse(SetSignalValues.Response r) {
-                outbound.fireRead(r);
-            }
-        };
+        this.handlers = new HashMap<>();
+        initHandlers(this.handlers);
     }
 
     @Override
     public void encode(Object msg, IoCompletionHandler handler) {
         Message message = (Message) msg;
-                
-        
-        synchronized (queue) {
-            boolean isFirst = false;
-            /* to avoid of using if(queue.size() == 1) test. */
-            if (queue.isEmpty()) {
-                isFirst = true;
-            }
 
-            queue.add(new Runnable() {
-                @Override
-                public void run() {
-                    
-                }
-            });
-
-            if (isFirst) {
-                Runnable r = queue.peek();
-                getInbound().execute(r);
-            }
-        }
-
+        message.apply(this.handlers.get(msg));
     }
 
     @Override
@@ -123,9 +87,62 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
         synchronized (queue) {
             queue.poll();
             Runnable r = queue.peek();
-            if(r != null) {
+            if (r != null) {
                 getInbound().execute(r);
             }
         }
+    }
+
+    private void initHandlers(Map<Class, Handler> handler) {
+        handler.put(GetSignalValues.Request.class, new Handler() {
+            @Override
+            public void handle(Message m) {
+                synchronized (queue) {
+                    boolean isFirst = false;
+                    /* to avoid of using if(queue.size() == 1) test. */
+                    if (queue.isEmpty()) {
+                        isFirst = true;
+                    }
+
+                    queue.add(new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    });
+
+                    if (isFirst) {
+                        Runnable r = queue.peek();
+                        getInbound().execute(r);
+                    }
+                }
+            }
+        });
+        handler.put(GetSignalValues.Response.class, new Handler() {
+            @Override
+            public void handle(Message m) {
+
+            }
+        });
+
+        handler.put(SetSignalValues.Request.class, new Handler() {
+            @Override
+            public void handle(Message m) {
+
+            }
+        });
+        handler.put(SetSignalValues.Response.class, new Handler() {
+            @Override
+            public void handle(Message m) {
+
+            }
+        });
+
+        handler.put(PushEvents.class, new Handler() {
+            @Override
+            public void handle(Message m) {
+
+            }
+        });
     }
 }

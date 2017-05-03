@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class GetSignalValues {
 
-    public static class Request implements Message {
+    public static class Request extends Message.Adapter {
 
         private Set<String> keys;
 
@@ -30,14 +30,9 @@ public class GetSignalValues {
         public void setKeys(Set<String> keys) {
             this.keys = keys;
         }
-        
-        @Override
-        public void apply(Handler handler) {
-            handler.handleGetSignalValuesRequest(this);
-        }
     }
     
-    public static class Response implements Message {
+    public static class Response extends Message.Adapter {
         private Map<String, Signal> values;
         
         public Response() {
@@ -53,11 +48,6 @@ public class GetSignalValues {
 
         public void setValues(Map<String, Signal> values) {
             this.values = values;
-        }
-        
-        @Override
-        public void apply(Handler handler) {
-            handler.handleGetSignalValuesRequest(this);
         }
     }
 }
