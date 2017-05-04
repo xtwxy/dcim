@@ -6,7 +6,7 @@ import com.wincom.dcim.agentd.CodecFactory;
 import java.util.Properties;
 
 /**
- * Factory to create MP3000 <code>Codec</code>.
+ * Factory to initial MP3000 <code>Codec</code>.
  *
  * @author master
  */

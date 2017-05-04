@@ -11,7 +11,7 @@ import org.junit.Test;
 public class ReadStatusResponseTest {
     @Test
     public void testMarshal0() {
-        ReadStatusResponse response = new ReadStatusResponse();
+        ReadStatus.Response response = new ReadStatus.Response();
         
         response.setActivePowerCombo(300.99);
         response.setCurrent(2000.44);
