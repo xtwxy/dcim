@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.SimpleFormatter;
 
 import static java.lang.System.out;
 

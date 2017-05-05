@@ -1,6 +1,6 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
-import com.wincom.dcim.agentd.primitives.GetSignalValues;
+import com.wincom.dcim.agentd.primitives.State;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.protocol.modbus.AbstractWireable;
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * @author master
  */
-public class ReadSettings implements StateBuilder {
+public class ReadSettings {
     private final Set<String> keys;
 
     public ReadSettings() {
@@ -26,25 +26,19 @@ public class ReadSettings implements StateBuilder {
         keys.add("ct");
     }
 
-    @Override
-    public State initial() {
-        return stopState();
-    }
-
-    @Override
-    public State initial(Message m) {
-        if(m instanceof GetSignalValues.Request) {
-            GetSignalValues.Request r = (GetSignalValues.Request) m;
-            HashSet<String> theKeys = new HashSet<>(r.getKeys());
-            theKeys.retainAll(keys);
-            if(theKeys.isEmpty()) {
-                return stopState();
-            } else {
-                return sendRequestState();
-            }
-        }
-        throw new IllegalArgumentException(m.toString());
-    }
+//    public State initial(Message m) {
+//        if(m instanceof GetSignalValues.Request) {
+//            GetSignalValues.Request r = (GetSignalValues.Request) m;
+//            HashSet<String> theKeys = new HashSet<>(r.getKeys());
+//            theKeys.retainAll(keys);
+//            if(theKeys.isEmpty()) {
+//                return stopState();
+//            } else {
+//                return sendRequestState();
+//            }
+//        }
+//        throw new IllegalArgumentException(m.toString());
+//    }
 
     private State sendRequestState() {
         return new State.Adapter();

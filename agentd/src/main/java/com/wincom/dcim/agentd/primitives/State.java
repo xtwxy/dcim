@@ -1,4 +1,4 @@
-package com.wincom.driver.dds3366d.internal.primitives;
+package com.wincom.dcim.agentd.primitives;
 
 import com.wincom.dcim.agentd.primitives.Message;
 
@@ -65,7 +65,7 @@ public interface State {
         private State fail;
 
         public Adapter() {
-
+            this.next = this;
         }
 
         public Adapter(State success, State fail) {
@@ -81,7 +81,7 @@ public interface State {
 
         @Override
         public boolean stopped() {
-            return next != null;
+            return success == null;
         }
 
         @Override

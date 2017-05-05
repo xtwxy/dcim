@@ -1,6 +1,5 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
-import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.protocol.modbus.*;
@@ -13,7 +12,7 @@ import java.util.Set;
 /**
  * @author master
  */
-public class ReadStatus implements StateBuilder {
+public class ReadStatus {
     private final Set<String> keys;
 
     public ReadStatus() {
@@ -26,26 +25,6 @@ public class ReadStatus implements StateBuilder {
         keys.add("power");
         keys.add("powerFactor");
         keys.add("frequency");
-    }
-
-    @Override
-    public Message initial() {
-        return new Request();
-    }
-
-    @Override
-    public Message initial(Message m) {
-        if(m instanceof GetSignalValues.Request) {
-            GetSignalValues.Request r = (GetSignalValues.Request) m;
-            HashSet<String> theKeys = new HashSet<>(r.getKeys());
-            theKeys.retainAll(keys);
-            if(theKeys.isEmpty()) {
-                return new Stop();
-            } else {
-                return new Request();
-            }
-        }
-        throw new IllegalArgumentException(m.toString());
     }
 
     public static class Request implements Message {
