@@ -1,9 +1,7 @@
 package com.wincom.dcim.agentd.primitives;
 
-import static java.lang.System.out;
-
 /**
- * State/State Machine.
+ * State of State Machine.
  *
  * Created by master on 5/4/17.
  */
@@ -11,11 +9,15 @@ public interface State {
 
     /**
      * Life cycle event handler for enter this state.
+     * 
+     * For each state, this may only be called once.
      */
     public void enter();
 
     /**
      * Life cycle event handler for exit this state.
+     * 
+     * For each state, this may only be called once.
      */
     public void exit();
 
@@ -136,12 +138,10 @@ public interface State {
 
         @Override
         public void enter() {
-            out.println("enter steps:");
         }
 
         @Override
         public void exit() {
-            out.println("exit.");
         }
     }
 }

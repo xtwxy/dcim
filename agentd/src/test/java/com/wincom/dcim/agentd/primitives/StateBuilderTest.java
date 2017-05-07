@@ -52,10 +52,10 @@ public class StateBuilderTest {
                     }
                 });
 
-        State sm = builder.build();
+        State initial = builder.build();
 
         out.println("Start: ");
-        runStateMachine(sm);
+        runStateMachine(initial);
         out.println("Stop.");
         assertEquals(3, step);
     }
@@ -93,10 +93,10 @@ public class StateBuilderTest {
                     }
                 });
 
-        State sm = builder.build();
+        State initial = builder.build();
 
         out.println("Start: ");
-        runStateMachine(sm);
+        runStateMachine(initial);
         out.println("Stop.");
         assertEquals(4, step);
     }
@@ -127,15 +127,22 @@ public class StateBuilderTest {
                     }
                 });
 
-        State sm = builder.build();
+        State initial = builder.build();
 
         out.println("Start: ");
-        runStateMachine(sm);
+        runStateMachine(initial);
         out.println("Stop.");
         assertEquals(2, step);
     }
 
-    private void runStateMachine(State sm) {
+    private void runStateMachine(State initial) {
+        State sm = new StateMachine(initial);
+        sm.enter();
+        while(!sm.stopped()) {
+            sm.on(message);
+        }
+    }
+    private void runStateMachine0(State sm) {
         State current = sm;
         State prev = null;
 
@@ -146,6 +153,7 @@ public class StateBuilderTest {
 
             prev = current;
             current = current.on(message);
+            
             if (prev != current && prev != null) {
                 prev.exit();
             }
