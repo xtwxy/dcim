@@ -119,7 +119,7 @@ public class StateBuilder {
                         node = node.parent;
                     }
                 } else {
-                    // reach the root, stop                                                                                                                                                                                                                                                                                                                                                      
+                    // reach the root, stop
                     break;
                 }
 

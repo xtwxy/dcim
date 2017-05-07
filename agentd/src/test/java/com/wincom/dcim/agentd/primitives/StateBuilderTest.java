@@ -1,9 +1,5 @@
 package com.wincom.dcim.agentd.primitives;
 
-import com.wincom.dcim.agentd.primitives.State;
-import com.wincom.dcim.agentd.primitives.StateBuilder;
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.Message;
 import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -26,7 +22,7 @@ public class StateBuilderTest {
         @Override
         public void handle(Message m) {
             step++;
-            out.println("success step: " + step);
+            out.printf("step: %d, \n", step);
         }
     };
 
@@ -58,12 +54,12 @@ public class StateBuilderTest {
 
         State sm = builder.build();
 
-        State current = sm;
-        while (!current.stopped()) {
-            current = current.on(message);
-        }
+        out.println("Start: ");
+        runStateMachine(sm);
+        out.println("Stop.");
         assertEquals(3, step);
     }
+
     @Test
     public void testBuildStateMachine1() {
 
@@ -99,12 +95,12 @@ public class StateBuilderTest {
 
         State sm = builder.build();
 
-        State current = sm;
-        while (!current.stopped()) {
-            current = current.on(message);
-        }
+        out.println("Start: ");
+        runStateMachine(sm);
+        out.println("Stop.");
         assertEquals(4, step);
     }
+
     @Test
     public void testBuildStateMachine2() {
 
@@ -133,10 +129,26 @@ public class StateBuilderTest {
 
         State sm = builder.build();
 
-        State current = sm;
-        while (!current.stopped()) {
-            current = current.on(message);
-        }
+        out.println("Start: ");
+        runStateMachine(sm);
+        out.println("Stop.");
         assertEquals(2, step);
+    }
+
+    private void runStateMachine(State sm) {
+        State current = sm;
+        State prev = null;
+
+        while (!current.stopped()) {
+            if (prev != current) {
+                current.enter();
+            }
+
+            prev = current;
+            current = current.on(message);
+            if (prev != current && prev != null) {
+                prev.exit();
+            }
+        }
     }
 }
