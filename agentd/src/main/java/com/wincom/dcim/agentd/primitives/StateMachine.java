@@ -29,13 +29,21 @@ public class StateMachine implements State {
         }
     }
 
+    private void transition() {
+        if (prev != current) {
+            current.enter();
+        }
+        if (prev != current && prev != null) {
+            prev.exit();
+        }
+    }
+
     @Override
     public State on(Message m) {
         prev = current;
         current = current.on(m);
 
-        exit();
-        enter();
+        transition();
 
         return current;
     }
