@@ -5,6 +5,7 @@ import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.protocol.modbus.ModbusFrame;
 import io.netty.buffer.ByteBuf;
 import java.nio.ByteBuffer;
@@ -175,8 +176,8 @@ public class ModbusCodecImpl extends Codec.Adapter {
     }
 
     @Override
-    public Dependency withDependencies(Dependency r) {
-        return getInbound().withDependencies(r);
+    public StateMachine withDependencies(com.wincom.dcim.agentd.statemachine.StateMachine sm) {
+        return getInbound().withDependencies(sm);
     }
     
     private void dequeue() {

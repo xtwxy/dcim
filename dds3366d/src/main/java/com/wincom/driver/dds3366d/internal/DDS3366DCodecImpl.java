@@ -5,7 +5,6 @@ import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.IoCompletionHandler;
 import io.netty.buffer.ByteBuf;
-import com.wincom.dcim.agentd.Dependable;
 import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.primitives.Handler;
@@ -15,13 +14,16 @@ import com.wincom.dcim.agentd.primitives.SetSignalValues;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import com.wincom.dcim.agentd.Target;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 
 /**
  * Composition of TCP connections to a MP3000.
  *
  * @author master
  */
-public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
+public class DDS3366DCodecImpl extends Codec.Adapter implements Target {
 
     private CodecChannel inbound;
     private DDS3366DCodecChannelImpl outbound;
@@ -47,7 +49,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
     public void encode(Object msg, IoCompletionHandler handler) {
         Message message = (Message) msg;
 
-        message.apply(this.handlers.get(msg));
+        message.apply(null, this.handlers.get(msg));
     }
 
     @Override
@@ -79,8 +81,8 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
     }
 
     @Override
-    public Dependency withDependencies(Dependency r) {
-        return inbound.withDependencies(r);
+    public StateMachine withDependencies(com.wincom.dcim.agentd.statemachine.StateMachine sm) {
+        return inbound.withDependencies(sm);
     }
 
     private void dequeue() {
@@ -96,7 +98,7 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
     private void initHandlers(Map<Class, Handler> handler) {
         handler.put(GetSignalValues.Request.class, new Handler() {
             @Override
-            public void handle(Message m) {
+            public void handle(HandlerContext ctx, Message m) {
                 synchronized (queue) {
                     boolean isFirst = false;
                     /* to avoid of using if(queue.size() == 1) test. */
@@ -120,27 +122,27 @@ public class DDS3366DCodecImpl extends Codec.Adapter implements Dependable {
         });
         handler.put(GetSignalValues.Response.class, new Handler() {
             @Override
-            public void handle(Message m) {
+            public void handle(HandlerContext ctx, Message m) {
 
             }
         });
 
         handler.put(SetSignalValues.Request.class, new Handler() {
             @Override
-            public void handle(Message m) {
+            public void handle(HandlerContext ctx, Message m) {
 
             }
         });
         handler.put(SetSignalValues.Response.class, new Handler() {
             @Override
-            public void handle(Message m) {
+            public void handle(HandlerContext ctx, Message m) {
 
             }
         });
 
         handler.put(PushEvents.class, new Handler() {
             @Override
-            public void handle(Message m) {
+            public void handle(HandlerContext ctx, Message m) {
 
             }
         });

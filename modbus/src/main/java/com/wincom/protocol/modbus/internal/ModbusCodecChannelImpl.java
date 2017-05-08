@@ -3,8 +3,8 @@ package com.wincom.protocol.modbus.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.CodecChannel;
-import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.protocol.modbus.ModbusFrame;
 import com.wincom.protocol.modbus.ModbusPayload;
 
@@ -44,7 +44,7 @@ public class ModbusCodecChannelImpl
     }
 
     @Override
-    public Dependency withDependencies(Dependency target) {
+    public StateMachine withDependencies(com.wincom.dcim.agentd.statemachine.StateMachine target) {
         return getInboundCodec().withDependencies(target);
     }
 }

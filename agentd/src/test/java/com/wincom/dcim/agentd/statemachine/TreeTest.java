@@ -1,4 +1,4 @@
-package com.wincom.dcim.agentd.primitives;
+package com.wincom.dcim.agentd.statemachine;
 
 import static java.lang.System.out;
 import org.junit.Test;

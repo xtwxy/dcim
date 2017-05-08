@@ -1,4 +1,4 @@
-package com.wincom.dcim.agentd.primitives;
+package com.wincom.dcim.agentd.statemachine;
 
 /**
  * Created by master on 5/4/17.

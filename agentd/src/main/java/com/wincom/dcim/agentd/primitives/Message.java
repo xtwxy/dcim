@@ -6,13 +6,13 @@ package com.wincom.dcim.agentd.primitives;
  */
 public interface Message {
 
-    public void apply(Handler handler);
+    public void apply(HandlerContext ctx, Handler handler);
 
     public static class Adapter implements Message {
 
         @Override
-        public void apply(Handler handler) {
-            handler.handle(this);
+        public void apply(HandlerContext ctx, Handler handler) {
+            handler.handle(ctx, this);
         }
 
     }

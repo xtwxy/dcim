@@ -1,6 +1,7 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
 import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.protocol.modbus.*;
 
@@ -30,8 +31,8 @@ public class ReadStatus {
     public static class Request implements Message {
 
         @Override
-        public void apply(Handler handler) {
-            handler.handle(this);
+        public void apply(HandlerContext ctx, Handler handler) {
+            handler.handle(null, this);
         }
    }
 
@@ -87,8 +88,8 @@ public class ReadStatus {
         }
 
         @Override
-        public void apply(Handler handler) {
-            handler.handle(this);
+        public void apply(HandlerContext ctx, Handler handler) {
+            handler.handle(null, this);
         }
 
         public double getActivePowerCombo() {

@@ -1,68 +1,26 @@
 package com.wincom.dcim.agentd;
 
-public interface Codec extends IoCompletionHandler, Dependable {
-    public void encode(Object msg, IoCompletionHandler handler);
-    public void decode(Object msg);
-    
-    public void setInbound(CodecChannel cc);
-    public void setOutboundCodec(Codec cc);
-    public void setOutboundCodec(String channelId, Codec cc);
+import com.wincom.dcim.agentd.statemachine.StateMachine;
+
+public interface Codec extends Target {
+    public Object encode(Object msg);
+    public Object decode(Object msg);
     
     public static class Adapter implements Codec {
-        private CodecChannel inboundCodecChannel;
         
         @Override
-        public void encode(Object msg, IoCompletionHandler handler) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Object encode(Object msg) {
+            return msg;
         }
 
         @Override
-        public void decode(Object msg) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Object decode(Object msg) {
+            return msg;
         }
 
         @Override
-        public void onTimeout() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void onError(Exception e) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void onClose() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void onComplete() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void setInbound(CodecChannel cc) {
-            this.inboundCodecChannel = cc;
-        }
-
-        public CodecChannel getInbound() {
-            return inboundCodecChannel;
-        }
-
-        @Override
-        public void setOutboundCodec(Codec cc) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void setOutboundCodec(String channelId, Codec cc) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Dependency withDependencies(Dependency r) {
-            return r;
+        public StateMachine withDependencies(StateMachine sm) {
+            return sm;
         }
         
     }

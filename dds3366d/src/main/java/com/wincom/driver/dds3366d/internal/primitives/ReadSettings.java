@@ -1,8 +1,11 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
-import com.wincom.dcim.agentd.primitives.State;
+import com.wincom.dcim.agentd.primitives.GetSignalValues;
+import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import com.wincom.protocol.modbus.AbstractWireable;
 
 import java.nio.ByteBuffer;
@@ -10,38 +13,85 @@ import java.nio.ByteOrder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * @author master
  */
 public class ReadSettings {
-    private final Set<String> keys;
 
-    public ReadSettings() {
+    private final Set<String> keys;
+    private final Map<Class, Handler> handlers;
+
+    public ReadSettings(Map<Class, Handler> handlers) {
         keys = new HashSet();
         keys.add("clock");
         keys.add("slaveAddress");
         keys.add("pt");
         keys.add("ct");
+        
+        this.handlers = handlers;
     }
 
-//    public State initial(Message m) {
-//        if(m instanceof GetSignalValues.Request) {
-//            GetSignalValues.Request r = (GetSignalValues.Request) m;
-//            HashSet<String> theKeys = new HashSet<>(r.getKeys());
-//            theKeys.retainAll(keys);
-//            if(theKeys.isEmpty()) {
-//                return stopState();
-//            } else {
-//                return sendRequestState();
-//            }
-//        }
-//        throw new IllegalArgumentException(m.toString());
-//    }
+    public State initial(Message m) {
+        if (m instanceof GetSignalValues.Request) {
+            GetSignalValues.Request r = (GetSignalValues.Request) m;
+            HashSet<String> theKeys = new HashSet<>(r.getKeys());
+            theKeys.retainAll(keys);
+            if (theKeys.isEmpty()) {
+                return stopState();
+            } else {
+                return sendRequestState();
+            }
+        }
+        return stopState();
+    }
 
     private State sendRequestState() {
-        return new State.Adapter();
+        StateBuilder builder = StateBuilder
+                .initial().state(new State.Adapter() {
+                    @Override
+                    public State enter() {
+                        // install request completion handler.
+                        // send request
+                        Request r = new Request();
+                        r.apply(null, handlers.get(Request.class));
+                    }
+
+                    @Override
+                    public State on(Message m) {
+                        // wait for send request to complete.
+                        return success();
+                    }
+
+                    @Override
+                    public State exit() {
+                        // un-install request completion handler.
+                    }
+                })
+                .success().state(new State.Adapter() {
+                    @Override
+                    public State enter() {
+                        // install response handler
+                    }
+
+                    @Override
+                    public State on(Message m) {
+                        // wait for response
+                        if(m instanceof Response) {
+                            Response r = (Response) m;
+                            r.apply(null, handlers.get(Response.class));
+                        }
+                        return success();
+                    }
+
+                    @Override
+                    public State exit() {
+                        // remove response handler.
+                    }
+                });
+        return builder.build();
     }
 
     private State stopState() {
@@ -51,13 +101,12 @@ public class ReadSettings {
     public static class Request implements Message {
 
         @Override
-        public void apply(Handler handler) {
-            handler.handle(this);
+        public void apply(HandlerContext ctx, Handler handler) {
+            handler.handle(null, this);
         }
-   }
+    }
 
-    public static class Response extends AbstractWireable implements Message
-    {
+    public static class Response extends AbstractWireable implements Message {
 
         private short sec;
         private short min;
@@ -106,8 +155,8 @@ public class ReadSettings {
         }
 
         @Override
-        public void apply(Handler handler) {
-            handler.handle(this);
+        public void apply(HandlerContext ctx, Handler handler) {
+            handler.handle(null, this);
         }
 
         public Date getDate() {
@@ -129,13 +178,13 @@ public class ReadSettings {
             c.clear();
             c.setTime(d);
 
-            sec = (short) (0xffff& c.get(Calendar.SECOND));
-            min = (short) (0xffff& c.get(Calendar.MINUTE));
-            hour = (short) (0xffff& c.get(Calendar.HOUR_OF_DAY));
-            week = (short) (0xffff& c.get(Calendar.DAY_OF_WEEK));
-            date = (short) (0xffff& c.get(Calendar.DAY_OF_MONTH));
-            month = (short) (0xffff& c.get(Calendar.MONTH));
-            year = (short) (0xffff& c.get(Calendar.YEAR));
+            sec = (short) (0xffff & c.get(Calendar.SECOND));
+            min = (short) (0xffff & c.get(Calendar.MINUTE));
+            hour = (short) (0xffff & c.get(Calendar.HOUR_OF_DAY));
+            week = (short) (0xffff & c.get(Calendar.DAY_OF_WEEK));
+            date = (short) (0xffff & c.get(Calendar.DAY_OF_MONTH));
+            month = (short) (0xffff & c.get(Calendar.MONTH));
+            year = (short) (0xffff & c.get(Calendar.YEAR));
         }
 
         public short getSlaveAddress() {

@@ -1,4 +1,7 @@
-package com.wincom.dcim.agentd.primitives;
+package com.wincom.dcim.agentd.statemachine;
+
+import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
 
 /**
  * State of State Machine.
@@ -11,23 +14,26 @@ public interface State {
      * Life cycle event handler for enter this state.
      * 
      * For each state, this may only be called once.
+     * @return 
      */
-    public void enter();
+    public State enter();
 
     /**
      * Life cycle event handler for exit this state.
      * 
      * For each state, this may only be called once.
+     * @return 
      */
-    public void exit();
+    public State exit();
 
     /**
      * Accept incoming <code>Message</code>.
      *
+     * @param ctx
      * @param m
      * @return
      */
-    public State on(Message m);
+    public State on(HandlerContext ctx, Message m);
 
     /**
      * Test if it is stopped state.
@@ -94,7 +100,7 @@ public interface State {
         }
 
         @Override
-        public State on(Message m) {
+        public State on(HandlerContext ctx, Message m) {
             return this;
         }
 
@@ -137,11 +143,13 @@ public interface State {
         }
 
         @Override
-        public void enter() {
+        public State enter() {
+            return this;
         }
 
         @Override
-        public void exit() {
+        public State exit() {
+            return this;
         }
     }
 }

@@ -14,7 +14,7 @@ public class HandlerDispatchTest {
     private final Handler handler = new Handler() {
 
         @Override
-        public void handle(Message m) {
+        public void handle(HandlerContext ctx, Message m) {
             method = 0;
         }
     };
@@ -22,7 +22,7 @@ public class HandlerDispatchTest {
     @Test
     public void testGetSignalValuesRequest() {
         Message msg = new GetSignalValues.Request();
-        msg.apply(handler);
+        msg.apply(null, handler);
         assertEquals(0, method);
     }
 }

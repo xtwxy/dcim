@@ -4,8 +4,11 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
 import com.wincom.dcim.agentd.ChainedDependency;
-import com.wincom.dcim.agentd.Dependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
+import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.State;
+import com.wincom.dcim.agentd.statemachine.StateBuilder;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -40,7 +43,7 @@ public class MP3000CodecChannelImpl
             getChannel().close();
         }
         setChannel(ch);
-        
+
         ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
             @Override
             public void channelRead(ChannelHandlerContext ctx, Object msg) {
@@ -59,7 +62,7 @@ public class MP3000CodecChannelImpl
                 cp.addListener(new GenericFutureListener() {
                     @Override
                     public void operationComplete(Future f) throws Exception {
-                        if(f.isSuccess()) {
+                        if (f.isSuccess()) {
                             handler.onComplete();
                         } else {
                             handler.onError(new RuntimeException("Operation not successful: " + f.toString()));
@@ -73,32 +76,43 @@ public class MP3000CodecChannelImpl
     }
 
     @Override
-    public Dependency withDependencies(Dependency target) {
-        Dependency r = target;
+    public StateMachine withDependencies(StateMachine target) {
         if (getChannel() == null || !getChannel().isOpen()) {
             // connect
-            r = new ChainedDependency(target) {
-                @Override
-                public void run() {
-                    agent.createClientChannel(
-                            host,
-                            port,
-                            new Connector.Adapter() {
+            StateBuilder builder = StateBuilder
+                    .initial().state(new State.Adapter() {
                         @Override
-                        public void onConnect(Channel ch) {
-                            MP3000CodecChannelImpl.this.onConnect(ch);
-                            target.run();
+                        public State enter() {
+                            agent.createClientChannel(
+                                    host,
+                                    port,
+                                    new Connector.Adapter() {
+                                @Override
+                                public void onConnect(Channel ch) {
+                                    MP3000CodecChannelImpl.this.onConnect(ch);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    MP3000CodecChannelImpl.this.onError(e);
+                                }
+                            });
                         }
 
                         @Override
-                        public void onError(Exception e) {
-                            MP3000CodecChannelImpl.this.onError(e);
+                        public State on(Message m) {
+                            return success();
                         }
-                    });
-                }
-            };
+
+                        @Override
+                        public State exit() {
+
+                        }
+                    })
+                    .success().state(target.initial());
+            return new StateMachine(builder);
         }
-        return r;
+        return target;
     }
 
     public Channel getChannel() {

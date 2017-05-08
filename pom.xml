@@ -50,6 +50,7 @@
     <module>aggregation</module>
     <module>dds3366d</module>
     <module>modbus</module>
+    <module>actorsys</module>
   </modules>
 
   <build>
