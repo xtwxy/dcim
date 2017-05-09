@@ -5,7 +5,6 @@ import com.wincom.dcim.agentd.CodecFactory;
 import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
-import com.wincom.dcim.agentd.statemachine.nettyimpl.HandlerContextImpl;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -110,4 +109,10 @@ public final class AgentdServiceImpl implements AgentdService {
         this.codecFactories.remove(key);
     }
 
+    @Override
+    public HandlerContext createHandlerContext() {
+        return new HandlerContextImpl(eventLoopGroup);
+    }
+
+    
 }

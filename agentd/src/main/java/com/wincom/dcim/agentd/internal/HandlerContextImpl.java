@@ -1,5 +1,6 @@
-package com.wincom.dcim.agentd.statemachine.nettyimpl;
+package com.wincom.dcim.agentd.internal;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.ExecuteRunnable;
@@ -22,6 +23,7 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
     private final EventLoopGroup eventLoopGroup;
     private final Map<Class, Handler> handlers;
 
+    @VisibleForTesting
     public HandlerContextImpl(StateMachine machine,
             Channel channel,
             EventLoopGroup eventLoopGroup
@@ -32,6 +34,7 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
         this.handlers = new HashMap<>();
         initHandlers();
     }
+    @VisibleForTesting
     public HandlerContextImpl(
             EventLoopGroup eventLoopGroup
     ) {

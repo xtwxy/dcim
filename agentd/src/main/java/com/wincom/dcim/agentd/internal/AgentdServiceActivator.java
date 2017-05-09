@@ -11,7 +11,6 @@ import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
-import com.wincom.dcim.agentd.statemachine.nettyimpl.HandlerContextImpl;
 import static java.lang.System.out;
 import java.util.Properties;
 import org.osgi.framework.ServiceReference;

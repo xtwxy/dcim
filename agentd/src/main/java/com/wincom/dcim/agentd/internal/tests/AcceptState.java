@@ -8,7 +8,7 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
-import com.wincom.dcim.agentd.statemachine.nettyimpl.HandlerContextImpl;
+import com.wincom.dcim.agentd.internal.HandlerContextImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -23,13 +23,15 @@ import java.nio.ByteBuffer;
  * @author master
  */
 public class AcceptState extends State.Adapter {
+
     private final AgentdService service;
     private final HandlerContext handlerContext;
+
     public AcceptState(AgentdService service, HandlerContext handlerContext) {
         this.service = service;
         this.handlerContext = handlerContext;
     }
-    
+
     @Override
     public State enter() {
         service.createServerChannel(handlerContext, "0.0.0.0", 9080);
@@ -56,13 +58,11 @@ public class AcceptState extends State.Adapter {
                     return this;
                 }
             });
-            final HandlerContext clientContext
-                    = new HandlerContextImpl(
-                            new StateMachine(connection),
-                            a.getChannel(),
-                            service.getEventLoopGroup()
-                    );
-
+            final HandlerContextImpl clientContext
+                    = (HandlerContextImpl) service.createHandlerContext();
+            clientContext.setStateMachine(new StateMachine(connection));
+            clientContext.setChannel(a.getChannel());
+            
             a.getChannel().pipeline()
                     .addLast(new IdleStateHandler(0, 0, 6))
                     .addLast(new ChannelInboundHandlerAdapter() {

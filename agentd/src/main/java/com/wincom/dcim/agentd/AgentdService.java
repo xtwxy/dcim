@@ -18,4 +18,6 @@ public interface AgentdService {
     public void registerCodecFactory(String key, CodecFactory factory);
 
     public void unregisterCodecFactory(String key);
+    
+    public HandlerContext createHandlerContext();
 }

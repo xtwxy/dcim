@@ -1,4 +1,4 @@
-package com.wincom.dcim.agentd.statemachine.nettyimpl;
+package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.primitives.ExecuteRunnable;
 import com.wincom.dcim.agentd.primitives.Handler;

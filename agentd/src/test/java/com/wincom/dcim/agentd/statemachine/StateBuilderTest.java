@@ -3,7 +3,7 @@ package com.wincom.dcim.agentd.statemachine;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.statemachine.nettyimpl.HandlerContextImpl;
+import com.wincom.dcim.agentd.internal.HandlerContextImpl;
 import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
