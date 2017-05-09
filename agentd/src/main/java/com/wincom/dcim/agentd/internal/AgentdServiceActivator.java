@@ -7,8 +7,15 @@ import org.osgi.framework.BundleContext;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.NetworkService;
+import com.wincom.dcim.agentd.internal.tests.AcceptState;
+import com.wincom.dcim.agentd.internal.tests.ConnectState;
+import com.wincom.dcim.agentd.internal.tests.ReceiveState;
 import com.wincom.dcim.agentd.primitives.Accept;
+import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.State;
+import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import static java.lang.System.out;
 import java.util.Properties;
 import org.osgi.framework.ServiceReference;
@@ -36,9 +43,50 @@ public final class AgentdServiceActivator implements BundleActivator {
         NetworkService service = bundleContext.getService(serviceRef);
         out.println(serviceRef);
         out.println(service);
-
-        final HandlerContext handlerContext = service.createHandlerContext();
         
+        createAcceptor(service);
+        createConnection(service);
+    }
+
+    private void createAcceptor(NetworkService service) {
+        HandlerContext handlerContext = service.createHandlerContext();
+        StateBuilder server = StateBuilder
+                .initial().state(new AcceptState(service, handlerContext));
+
+        server.fail().state(new State.Adapter() {
+            @Override
+            public State on(HandlerContext ctx, Message m) {
+                out.println("Create server failed.");
+                return success();
+            }
+        });
+
+        handlerContext.getStateMachine()
+                .buildWith(server)
+                .enter();
+
         handlerContext.send(new Accept("0.0.0.0", 9080));
     }
+
+    private void createConnection(NetworkService service) {
+        HandlerContext handlerContext = service.createHandlerContext();
+        StateBuilder server = StateBuilder
+                .initial().state(new ConnectState(service, handlerContext))
+                .success().state(new ReceiveState());
+
+        server.fail().state(new State.Adapter() {
+            @Override
+            public State on(HandlerContext ctx, Message m) {
+                out.println("Create server failed.");
+                return success();
+            }
+        });
+
+        handlerContext.getStateMachine()
+                .buildWith(server)
+                .enter();
+
+        handlerContext.send(new Connect("192.168.0.68", 2001));
+    }
+
 }

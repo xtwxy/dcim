@@ -38,7 +38,6 @@ public class AcceptHandler implements Handler {
     @Override
     public void handle(HandlerContext ctx, Message m) {
         if (m instanceof Accept) {
-            createAcceptorMachine(ctx);
 
             Accept a = (Accept) m;
             log.info(String.format("creating acceptor on %s:%d", a.getHost(), a.getPort()));
@@ -59,22 +58,5 @@ public class AcceptHandler implements Handler {
 
             boot.bind(a.getHost(), a.getPort());
         }
-    }
-
-    private void createAcceptorMachine(HandlerContext ctx) {
-        StateBuilder server = StateBuilder
-                .initial().state(new AcceptState(service, ctx));
-
-        server.fail().state(new State.Adapter() {
-            @Override
-            public State on(HandlerContext ctx, Message m) {
-                out.println("Create server failed.");
-                return success();
-            }
-        });
-
-        ctx.getStateMachine()
-                .buildWith(server)
-                .enter();
     }
 }

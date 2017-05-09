@@ -45,7 +45,6 @@ public class ConnectHandler implements Handler {
                         }
 
                     })
-                    .option(ChannelOption.SO_BACKLOG, 128)
                     .option(ChannelOption.SO_KEEPALIVE, true);
             boot.connect(a.getHost(), a.getPort());
         }

@@ -1,24 +1,14 @@
 package com.wincom.dcim.agentd.internal.tests;
 
 import com.wincom.dcim.agentd.NetworkService;
+import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.Accepted;
-import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
-import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
-import com.wincom.dcim.agentd.primitives.ReadTimeout;
-import com.wincom.dcim.agentd.primitives.Timeout;
-import com.wincom.dcim.agentd.primitives.Unknown;
-import com.wincom.dcim.agentd.primitives.WriteTimeout;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
-import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,70 +35,22 @@ public class AcceptState extends State.Adapter {
             
             log.info("Connection accepted: " + a.getChannel());
             
-            StateBuilder connection = StateBuilder.initial().state(new State.Adapter() {
-                @Override
-                public State on(HandlerContext ctx, Message m) {
-                    if (m instanceof BytesReceived) {
-                        ctx.send(m);
-                        BytesReceived br = (BytesReceived) m;
-                        ByteBuffer buffer = br.getByteBuffer();
-                    }
-                    return this;
-                }
-            });
+            // fork a new state machine to handle connection.
+            // 1.create receive state.
+            StateBuilder connection = StateBuilder.initial().state(new ReceiveState());
+            // 2.create new context for the newly forked state machine.
             final StreamHandlerContextImpl clientContext
                     = (StreamHandlerContextImpl) service.createHandlerContext();
-            clientContext.setStateMachine(new StateMachine(connection));
+            // 3.bind context to the newly forked state machine.
+            clientContext.getStateMachine().buildWith(connection);
+            // 4.set channel for communication with underlying service...
             clientContext.setChannel(a.getChannel());
-            
+            // 5.initialize event generator for this channel.
             a.getChannel().pipeline()
                     .addLast(new IdleStateHandler(0, 0, 6))
-                    .addLast(new ChannelInboundHandlerAdapter() {
-                        @Override
-                        public void channelRead(ChannelHandlerContext ctx, Object msg) {
-                            ByteBuffer buffer = null;
-                            if (msg instanceof ByteBuffer) {
-                                buffer = (ByteBuffer) buffer;
-                                clientContext.fire(new BytesReceived(buffer));
-                            } else if (msg instanceof ByteBuf) {
-                                ByteBuf buf = (ByteBuf) msg;
-                                buffer = buf.nioBuffer();
-
-                                clientContext.fire(new BytesReceived(buffer));
-
-                                buf.release();
-                            } else {
-                                clientContext.fire(new Unknown(msg));
-                            }
-
-                        }
-
-                        @Override
-                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                            if (evt instanceof IdleStateEvent) {
-                                IdleStateEvent e = (IdleStateEvent) evt;
-                                if (null == e.state()) {
-                                    clientContext.fire(new Timeout());
-                                } else {
-                                    switch (e.state()) {
-                                        case READER_IDLE:
-                                            clientContext.fire(new ReadTimeout());
-                                            break;
-                                        case WRITER_IDLE:
-                                            clientContext.fire(new WriteTimeout());
-                                            break;
-                                        case ALL_IDLE:
-                                            clientContext.fire(new Timeout());
-                                            break;
-                                        default:
-                                            clientContext.fire(new Timeout());
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-                    });
-
+                    .addLast(new ChannelInboundHandler(clientContext));
+            
+            // continue accepting new connections in this state machine...
             return this;
         } else {
             return fail();
