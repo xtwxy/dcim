@@ -1,7 +1,7 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.Accept;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
@@ -23,12 +23,12 @@ import com.wincom.dcim.agentd.statemachine.StateMachine;
 public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
 
     private Channel channel;
-    private final AgentdService service;
+    private final NetworkService service;
     private final Map<Class, Handler> handlers;
 
     /**
      * This Constructor is *ONLY* called by internal implementations, 
-     * call <code>AgentdService#createHandlerContext()</code> instead.
+     * call <code>NetworkService#createHandlerContext()</code> instead.
      * 
      * @param machine
      * @param channel
@@ -37,7 +37,7 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
     @VisibleForTesting
     StreamHandlerContextImpl(StateMachine machine,
             Channel channel,
-            AgentdService service
+            NetworkService service
     ) {
         super(machine);
         this.service = service;
@@ -46,13 +46,13 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
     }
     /**
      * This Constructor is *ONLY* called by internal implementations, 
-     * call <code>AgentdService#createHandlerContext()</code> instead.
+     * call <code>NetworkService#createHandlerContext()</code> instead.
      * 
      * @param eventLoopGroup 
      */
     @VisibleForTesting
     StreamHandlerContextImpl(
-            AgentdService service
+            NetworkService service
     ) {
         this(new StateMachine(), null, service);
     }

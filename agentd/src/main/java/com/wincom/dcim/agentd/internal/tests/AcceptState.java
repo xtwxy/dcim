@@ -1,6 +1,6 @@
 package com.wincom.dcim.agentd.internal.tests;
 
-import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
@@ -30,10 +30,10 @@ public class AcceptState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
     
-    private final AgentdService service;
+    private final NetworkService service;
     private final HandlerContext handlerContext;
 
-    public AcceptState(AgentdService service, HandlerContext handlerContext) {
+    public AcceptState(NetworkService service, HandlerContext handlerContext) {
         this.service = service;
         this.handlerContext = handlerContext;
     }

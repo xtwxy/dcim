@@ -6,6 +6,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.Accept;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import static java.lang.System.out;
@@ -21,6 +22,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         bc.addServiceListener(new ServiceListenerImpl());
 
         bc.registerService(AgentdService.class, new AgentdServiceImpl(bc), props);
+        bc.registerService(NetworkService.class, new NetworkServiceImpl(bc), props);
         testServerChannelFactory(bc);
     }
 
@@ -30,8 +32,8 @@ public final class AgentdServiceActivator implements BundleActivator {
     }
 
     private void testServerChannelFactory(BundleContext bundleContext) {
-        ServiceReference<AgentdService> serviceRef = bundleContext.getServiceReference(AgentdService.class);
-        AgentdService service = bundleContext.getService(serviceRef);
+        ServiceReference<NetworkService> serviceRef = bundleContext.getServiceReference(NetworkService.class);
+        NetworkService service = bundleContext.getService(serviceRef);
         out.println(serviceRef);
         out.println(service);
 

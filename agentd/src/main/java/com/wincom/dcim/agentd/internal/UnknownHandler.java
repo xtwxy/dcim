@@ -1,6 +1,6 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
@@ -17,9 +17,9 @@ public class UnknownHandler implements Handler {
     Logger log = LoggerFactory.getLogger(this.getClass());
     
     private final Channel channel;
-    private final AgentdService service;
+    private final NetworkService service;
 
-    public UnknownHandler(Channel channel, AgentdService service) {
+    public UnknownHandler(Channel channel, NetworkService service) {
         this.channel = channel;
         this.service = service;
     }

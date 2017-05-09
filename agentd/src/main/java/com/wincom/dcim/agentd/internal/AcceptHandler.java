@@ -1,6 +1,6 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.internal.tests.AcceptState;
 import com.wincom.dcim.agentd.primitives.Accept;
 import com.wincom.dcim.agentd.primitives.Accepted;
@@ -28,9 +28,9 @@ public class AcceptHandler implements Handler {
     Logger log = LoggerFactory.getLogger(this.getClass());
     
     private final Channel channel;
-    private final AgentdService service;
+    private final NetworkService service;
 
-    public AcceptHandler(Channel channel, AgentdService service) {
+    public AcceptHandler(Channel channel, NetworkService service) {
         this.channel = channel;
         this.service = service;
     }

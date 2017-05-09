@@ -1,6 +1,6 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.Failed;
@@ -19,9 +19,9 @@ import io.netty.util.concurrent.GenericFutureListener;
 public class CloseConnectionHandler implements Handler {
 
     private final Channel channel;
-    private final AgentdService service;
+    private final NetworkService service;
 
-    public CloseConnectionHandler(Channel channel, AgentdService service) {
+    public CloseConnectionHandler(Channel channel, NetworkService service) {
         this.channel = channel;
         this.service = service;
     }
