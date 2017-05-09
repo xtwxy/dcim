@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
-import static java.lang.System.out;
 
 /**
  *
@@ -19,7 +18,7 @@ import static java.lang.System.out;
  */
 public class HandlerContextImpl extends HandlerContext.Adapter {
 
-    private final Channel channel;
+    private Channel channel;
     private final EventLoopGroup eventLoopGroup;
     private final Map<Class, Handler> handlers;
 
@@ -33,6 +32,11 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
         this.handlers = new HashMap<>();
         initHandlers();
     }
+    public HandlerContextImpl(
+            EventLoopGroup eventLoopGroup
+    ) {
+        this(new StateMachine(), null, eventLoopGroup);
+    }
 
     @Override
     public void send(Message m) {
@@ -44,9 +48,13 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
         getStateMachine().on(this, m);
     }
 
-    private final void initHandlers() {
+    private void initHandlers() {
         handlers.put(BytesReceived.class, new SendBytesHandler(channel, eventLoopGroup));
         handlers.put(CloseConnection.class, new CloseConnectionHandler(channel, eventLoopGroup));
         handlers.put(ExecuteRunnable.class, new ExecuteRunnableHandler(channel, eventLoopGroup));
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 }

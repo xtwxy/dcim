@@ -4,7 +4,7 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecFactory;
 import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.Connected;
-import com.wincom.dcim.agentd.statemachine.StateMachine;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.nettyimpl.HandlerContextImpl;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
@@ -57,7 +57,7 @@ public final class AgentdServiceImpl implements AgentdService {
     }
 
     @Override
-    public ChannelFuture createServerChannel(String host, int port, StateMachine sm) {
+    public ChannelFuture createServerChannel(HandlerContext ctx, String host, int port) {
         ServerBootstrap boot = new ServerBootstrap();
         boot
                 .group(this.eventLoopGroup)
@@ -65,7 +65,9 @@ public final class AgentdServiceImpl implements AgentdService {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        sm.on(new HandlerContextImpl(sm, ch, eventLoopGroup), new Accepted(ch));
+                        HandlerContextImpl impl = (HandlerContextImpl) ctx;
+                        impl.setChannel(ch);
+                        ctx.fire(new Accepted(ch));
                     }
 
                 })
@@ -79,7 +81,7 @@ public final class AgentdServiceImpl implements AgentdService {
     }
 
     @Override
-    public ChannelFuture createClientChannel(String host, int port, StateMachine sm) {
+    public ChannelFuture createClientChannel(HandlerContext ctx, String host, int port) {
         Bootstrap boot = new Bootstrap();
         boot
                 .group(this.eventLoopGroup)
@@ -87,7 +89,9 @@ public final class AgentdServiceImpl implements AgentdService {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        sm.on(new HandlerContextImpl(sm, ch, eventLoopGroup), new Connected(ch));
+                        HandlerContextImpl impl = (HandlerContextImpl) ctx;
+                        impl.setChannel(ch);
+                        ctx.fire(new Connected(ch));
                     }
 
                 })

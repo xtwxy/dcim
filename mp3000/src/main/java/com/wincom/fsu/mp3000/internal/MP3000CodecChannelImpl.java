@@ -83,10 +83,7 @@ public class MP3000CodecChannelImpl
                     .initial().state(new State.Adapter() {
                         @Override
                         public State enter() {
-                            agent.createClientChannel(
-                                    host,
-                                    port,
-                                    new Connector.Adapter() {
+                            agent.createClientChannel(new Connector.Adapter() {
                                 @Override
                                 public void onConnect(Channel ch) {
                                     MP3000CodecChannelImpl.this.onConnect(ch);
@@ -96,7 +93,8 @@ public class MP3000CodecChannelImpl
                                 public void onError(Exception e) {
                                     MP3000CodecChannelImpl.this.onError(e);
                                 }
-                            });
+                            }, host,
+                                    port);
                         }
 
                         @Override
