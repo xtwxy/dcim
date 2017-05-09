@@ -27,7 +27,7 @@ public class ReceiveState extends State.Adapter {
             ByteBuffer buffer = br.getByteBuffer();
             return this;
         } else if (m instanceof Timeout) {
-            log.info("channelActive");
+            log.info("Timeout: " + m);
             byte[] ba = new byte[4096];
             for (int i = 0; i < ba.length; ++i) {
                 ba[i] = (byte) (0xff & (i % 10 + '0'));
