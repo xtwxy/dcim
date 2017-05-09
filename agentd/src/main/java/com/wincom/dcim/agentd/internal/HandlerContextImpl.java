@@ -23,8 +23,16 @@ public final class HandlerContextImpl extends HandlerContext.Adapter {
     private final EventLoopGroup eventLoopGroup;
     private final Map<Class, Handler> handlers;
 
+    /**
+     * This Constructor is *ONLY* called by internal implementations, 
+     * call <code>AgentdService#createHandlerContext()</code> instead.
+     * 
+     * @param machine
+     * @param channel
+     * @param eventLoopGroup 
+     */
     @VisibleForTesting
-    public HandlerContextImpl(StateMachine machine,
+    HandlerContextImpl(StateMachine machine,
             Channel channel,
             EventLoopGroup eventLoopGroup
     ) {
@@ -33,8 +41,14 @@ public final class HandlerContextImpl extends HandlerContext.Adapter {
         this.handlers = new HashMap<>();
         setChannel(channel);
     }
+    /**
+     * This Constructor is *ONLY* called by internal implementations, 
+     * call <code>AgentdService#createHandlerContext()</code> instead.
+     * 
+     * @param eventLoopGroup 
+     */
     @VisibleForTesting
-    public HandlerContextImpl(
+    HandlerContextImpl(
             EventLoopGroup eventLoopGroup
     ) {
         this(new StateMachine(), null, eventLoopGroup);
