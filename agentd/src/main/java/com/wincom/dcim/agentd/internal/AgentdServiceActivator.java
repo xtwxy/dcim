@@ -86,7 +86,7 @@ public final class AgentdServiceActivator implements BundleActivator {
                 .buildWith(server)
                 .enter();
 
-        handlerContext.send(new Connect("192.168.0.68", 2001));
+        handlerContext.send(new Connect("192.168.0.68", 9080));
     }
 
 }

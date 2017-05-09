@@ -4,6 +4,7 @@ import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.Timeout;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.statemachine.State;
 import java.nio.ByteBuffer;
@@ -24,6 +25,16 @@ public class ReceiveState extends State.Adapter {
             ctx.send(m);
             BytesReceived br = (BytesReceived) m;
             ByteBuffer buffer = br.getByteBuffer();
+            return this;
+        } else if (m instanceof Timeout) {
+            log.info("channelActive");
+            byte[] ba = new byte[4096];
+            for (int i = 0; i < ba.length; ++i) {
+                ba[i] = (byte) (0xff & (i % 10 + '0'));
+            }
+            ByteBuffer buffer = ByteBuffer.wrap(ba);
+            ctx.send(new BytesReceived(buffer));
+
             return this;
         } else if (m instanceof WriteComplete) {
             return this;
