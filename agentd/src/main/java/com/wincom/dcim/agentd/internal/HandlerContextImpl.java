@@ -17,7 +17,7 @@ import com.wincom.dcim.agentd.statemachine.StateMachine;
  *
  * @author master
  */
-public class HandlerContextImpl extends HandlerContext.Adapter {
+public final class HandlerContextImpl extends HandlerContext.Adapter {
 
     private Channel channel;
     private final EventLoopGroup eventLoopGroup;
@@ -29,10 +29,9 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
             EventLoopGroup eventLoopGroup
     ) {
         super(machine);
-        this.channel = channel;
         this.eventLoopGroup = eventLoopGroup;
         this.handlers = new HashMap<>();
-        initHandlers();
+        setChannel(channel);
     }
     @VisibleForTesting
     public HandlerContextImpl(
@@ -57,7 +56,8 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
         handlers.put(ExecuteRunnable.class, new ExecuteRunnableHandler(channel, eventLoopGroup));
     }
 
-    public void setChannel(Channel channel) {
+    public final void setChannel(Channel channel) {
         this.channel = channel;
+        initHandlers();
     }
 }

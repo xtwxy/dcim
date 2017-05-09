@@ -1,9 +1,11 @@
-package com.wincom.dcim.agentd.statemachine;
+package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.internal.HandlerContextImpl;
+import com.wincom.dcim.agentd.statemachine.State;
+import com.wincom.dcim.agentd.statemachine.StateBuilder;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -149,7 +151,7 @@ public class StateBuilderTest {
     private void runStateMachine0(StateMachine sm) {
         HandlerContext ctx = new HandlerContextImpl(sm, null, null);
 
-        State current = sm.initial;
+        State current = sm.initial();
         State prev = null;
 
         while (!current.stopped()) {
