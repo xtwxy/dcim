@@ -142,14 +142,14 @@ public class StateBuilderTest {
     }
 
     private void runStateMachine(StateMachine sm) {
-        HandlerContext ctx = new HandlerContextImpl(sm, null, null);
+        HandlerContext ctx = new StreamHandlerContextImpl(sm, null, null);
         sm.enter();
         while(!sm.stopped()) {
             sm.on(ctx, message);
         }
     }
     private void runStateMachine0(StateMachine sm) {
-        HandlerContext ctx = new HandlerContextImpl(sm, null, null);
+        HandlerContext ctx = new StreamHandlerContextImpl(sm, null, null);
 
         State current = sm.initial();
         State prev = null;

@@ -8,15 +8,19 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
-import com.wincom.dcim.agentd.internal.HandlerContextImpl;
+import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
+import com.wincom.dcim.agentd.primitives.ReadTimeout;
+import com.wincom.dcim.agentd.primitives.Timeout;
+import com.wincom.dcim.agentd.primitives.Unknown;
+import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
-import static java.lang.System.out;
 import java.nio.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -24,6 +28,8 @@ import java.nio.ByteBuffer;
  */
 public class AcceptState extends State.Adapter {
 
+    Logger log = LoggerFactory.getLogger(this.getClass());
+    
     private final AgentdService service;
     private final HandlerContext handlerContext;
 
@@ -33,16 +39,12 @@ public class AcceptState extends State.Adapter {
     }
 
     @Override
-    public State enter() {
-        service.createServerChannel(handlerContext, "0.0.0.0", 9080);
-        return this;
-    }
-
-    @Override
     public State on(HandlerContext context, Message m) {
         if (m instanceof Accepted) {
             Accepted a = (Accepted) m;
-
+            
+            log.info("Connection accepted: " + a.getChannel());
+            
             StateBuilder connection = StateBuilder.initial().state(new State.Adapter() {
                 @Override
                 public State on(HandlerContext ctx, Message m) {
@@ -50,16 +52,12 @@ public class AcceptState extends State.Adapter {
                         ctx.send(m);
                         BytesReceived br = (BytesReceived) m;
                         ByteBuffer buffer = br.getByteBuffer();
-//                        while (buffer.hasRemaining()) {
-//                            out.printf("%02x ", 0xff & buffer.get());
-//                        }
-//                        out.println();
                     }
                     return this;
                 }
             });
-            final HandlerContextImpl clientContext
-                    = (HandlerContextImpl) service.createHandlerContext();
+            final StreamHandlerContextImpl clientContext
+                    = (StreamHandlerContextImpl) service.createHandlerContext();
             clientContext.setStateMachine(new StateMachine(connection));
             clientContext.setChannel(a.getChannel());
             
@@ -80,7 +78,7 @@ public class AcceptState extends State.Adapter {
 
                                 buf.release();
                             } else {
-                                out.println("unknow msg");
+                                clientContext.fire(new Unknown(msg));
                             }
 
                         }
@@ -90,22 +88,20 @@ public class AcceptState extends State.Adapter {
                             if (evt instanceof IdleStateEvent) {
                                 IdleStateEvent e = (IdleStateEvent) evt;
                                 if (null == e.state()) {
-                                    out.println(e);
-                                    ctx.writeAndFlush(Unpooled.wrappedBuffer("What happend?\n".getBytes()));
+                                    clientContext.fire(new Timeout());
                                 } else {
                                     switch (e.state()) {
                                         case READER_IDLE:
-                                            ctx.writeAndFlush(Unpooled.wrappedBuffer("Hello? Anyone there?\n".getBytes()));
+                                            clientContext.fire(new ReadTimeout());
                                             break;
                                         case WRITER_IDLE:
-                                            ctx.writeAndFlush(Unpooled.wrappedBuffer("I'd lost for words.\n".getBytes()));
+                                            clientContext.fire(new WriteTimeout());
                                             break;
                                         case ALL_IDLE:
-                                            ctx.writeAndFlush(Unpooled.wrappedBuffer("Let's talk!\n".getBytes()));
+                                            clientContext.fire(new Timeout());
                                             break;
                                         default:
-                                            out.println(e);
-                                            ctx.writeAndFlush(Unpooled.wrappedBuffer("What happend?\n".getBytes()));
+                                            clientContext.fire(new Timeout());
                                             break;
                                     }
                                 }

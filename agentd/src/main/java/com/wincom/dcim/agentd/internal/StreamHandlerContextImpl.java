@@ -1,26 +1,29 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.primitives.Accept;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
+import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.ExecuteRunnable;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import io.netty.channel.Channel;
-import io.netty.channel.EventLoopGroup;
 import java.util.HashMap;
 import java.util.Map;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 
 /**
  *
  * @author master
  */
-public final class HandlerContextImpl extends HandlerContext.Adapter {
+public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
 
     private Channel channel;
-    private final EventLoopGroup eventLoopGroup;
+    private final AgentdService service;
     private final Map<Class, Handler> handlers;
 
     /**
@@ -32,12 +35,12 @@ public final class HandlerContextImpl extends HandlerContext.Adapter {
      * @param eventLoopGroup 
      */
     @VisibleForTesting
-    HandlerContextImpl(StateMachine machine,
+    StreamHandlerContextImpl(StateMachine machine,
             Channel channel,
-            EventLoopGroup eventLoopGroup
+            AgentdService service
     ) {
         super(machine);
-        this.eventLoopGroup = eventLoopGroup;
+        this.service = service;
         this.handlers = new HashMap<>();
         setChannel(channel);
     }
@@ -48,10 +51,10 @@ public final class HandlerContextImpl extends HandlerContext.Adapter {
      * @param eventLoopGroup 
      */
     @VisibleForTesting
-    HandlerContextImpl(
-            EventLoopGroup eventLoopGroup
+    StreamHandlerContextImpl(
+            AgentdService service
     ) {
-        this(new StateMachine(), null, eventLoopGroup);
+        this(new StateMachine(), null, service);
     }
 
     @Override
@@ -65,13 +68,24 @@ public final class HandlerContextImpl extends HandlerContext.Adapter {
     }
 
     private void initHandlers() {
-        handlers.put(BytesReceived.class, new SendBytesHandler(channel, eventLoopGroup));
-        handlers.put(CloseConnection.class, new CloseConnectionHandler(channel, eventLoopGroup));
-        handlers.put(ExecuteRunnable.class, new ExecuteRunnableHandler(channel, eventLoopGroup));
+        handlers.put(BytesReceived.class, new SendBytesHandler(channel, service));
+        handlers.put(CloseConnection.class, new CloseConnectionHandler(channel, service));
+        handlers.put(ExecuteRunnable.class, new ExecuteRunnableHandler(channel, service));
+        handlers.put(Accept.class, new AcceptHandler(channel, service));
+        handlers.put(Connect.class, new ConnectHandler(channel, service));
+        handlers.put(Unknown.class, new UnknownHandler(channel, service));
     }
 
     public final void setChannel(Channel channel) {
         this.channel = channel;
         initHandlers();
+    }
+
+    public Handler getHandlers(Class clazz) {
+        Handler h = handlers.get(clazz);
+        if(h != null) {
+            return h;
+        }
+        return handlers.get(Unknown.class);
     }
 }

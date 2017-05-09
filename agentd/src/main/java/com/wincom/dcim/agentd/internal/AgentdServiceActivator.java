@@ -6,11 +6,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.wincom.dcim.agentd.AgentdService;
-import com.wincom.dcim.agentd.internal.tests.AcceptState;
+import com.wincom.dcim.agentd.primitives.Accept;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.statemachine.State;
-import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import static java.lang.System.out;
 import java.util.Properties;
 import org.osgi.framework.ServiceReference;
@@ -38,21 +35,8 @@ public final class AgentdServiceActivator implements BundleActivator {
         out.println(serviceRef);
         out.println(service);
 
-        final HandlerContext handlerContext = new HandlerContextImpl(service.getEventLoopGroup());
-
-        StateBuilder server = StateBuilder
-                .initial().state(new AcceptState(service, handlerContext));
-
-        server.fail().state(new State.Adapter() {
-            @Override
-            public State on(HandlerContext ctx, Message m) {
-                out.println("Create server failed.");
-                return success();
-            }
-        });
-
-        handlerContext.getStateMachine()
-                .buildWith(server)
-                .enter();
+        final HandlerContext handlerContext = service.createHandlerContext();
+        
+        handlerContext.send(new Accept("0.0.0.0", 9080));
     }
 }

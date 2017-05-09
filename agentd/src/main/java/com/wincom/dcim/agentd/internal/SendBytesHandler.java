@@ -1,5 +1,6 @@
 package com.wincom.dcim.agentd.internal;
 
+import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.primitives.Handler;
@@ -21,11 +22,11 @@ import io.netty.util.concurrent.GenericFutureListener;
 public class SendBytesHandler implements Handler {
 
     private final Channel channel;
-    private final EventLoopGroup eventLoopGroup;
+    private final AgentdService service;
 
-    public SendBytesHandler(Channel channel, EventLoopGroup eventLoopGroup) {
+    public SendBytesHandler(Channel channel, AgentdService service) {
         this.channel = channel;
-        this.eventLoopGroup = eventLoopGroup;
+        this.service = service;
     }
 
     @Override

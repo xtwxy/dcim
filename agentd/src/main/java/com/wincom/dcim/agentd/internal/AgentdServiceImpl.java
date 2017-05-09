@@ -64,7 +64,7 @@ public final class AgentdServiceImpl implements AgentdService {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        HandlerContextImpl impl = (HandlerContextImpl) ctx;
+                        StreamHandlerContextImpl impl = (StreamHandlerContextImpl) ctx;
                         impl.setChannel(ch);
                         ctx.fire(new Accepted(ch));
                     }
@@ -88,7 +88,7 @@ public final class AgentdServiceImpl implements AgentdService {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        HandlerContextImpl impl = (HandlerContextImpl) ctx;
+                        StreamHandlerContextImpl impl = (StreamHandlerContextImpl) ctx;
                         impl.setChannel(ch);
                         ctx.fire(new Connected(ch));
                     }
@@ -111,7 +111,7 @@ public final class AgentdServiceImpl implements AgentdService {
 
     @Override
     public HandlerContext createHandlerContext() {
-        return new HandlerContextImpl(eventLoopGroup);
+        return new StreamHandlerContextImpl(this);
     }
 
     
