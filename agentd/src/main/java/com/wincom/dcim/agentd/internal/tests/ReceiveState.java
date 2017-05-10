@@ -4,6 +4,7 @@ import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.Timeout;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.statemachine.State;
@@ -22,9 +23,8 @@ public class ReceiveState extends State.Adapter {
     @Override
     public State on(HandlerContext ctx, Message m) {
         if (m instanceof BytesReceived) {
-            ctx.send(m);
-            BytesReceived br = (BytesReceived) m;
-            ByteBuffer buffer = br.getByteBuffer();
+            // echo back the bytes.
+            ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
             return this;
         } else if (m instanceof Timeout) {
             log.info("Timeout: " + m);
@@ -33,14 +33,16 @@ public class ReceiveState extends State.Adapter {
                 ba[i] = (byte) (0xff & (i % 10 + '0'));
             }
             ByteBuffer buffer = ByteBuffer.wrap(ba);
-            ctx.send(new BytesReceived(buffer));
+            ctx.send(new SendBytes(buffer));
 
             return this;
         } else if (m instanceof WriteComplete) {
+            ctx.onSendComplete();
             return this;
         } else {
             log.warn("unknown message: " + m);
             ctx.send(new CloseConnection());
+            ctx.onSendComplete();
             return fail();
         }
     }

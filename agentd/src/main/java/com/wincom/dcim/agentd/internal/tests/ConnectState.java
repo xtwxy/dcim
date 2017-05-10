@@ -32,7 +32,7 @@ public class ConnectState extends State.Adapter {
         if (m instanceof Connected) {
             Connected a = (Connected) m;
 
-            log.info("Connection established: " + a.getChannel());
+            log.info("Connection established: " + a.getChannel().remoteAddress());
             
             final StreamHandlerContextImpl clientContext
                     = (StreamHandlerContextImpl) context;
@@ -41,9 +41,12 @@ public class ConnectState extends State.Adapter {
             a.getChannel().pipeline()
                     .addLast(new IdleStateHandler(0, 0, 6))
                     .addLast(new ChannelInboundHandler(context));
-
+            
+            context.onSendComplete();
+            
             return success();
         } else {
+            log.info("Connect failed.");
             return fail();
         }
     }

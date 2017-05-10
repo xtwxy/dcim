@@ -51,6 +51,7 @@ public class AcceptState extends State.Adapter {
                     .addLast(new ChannelInboundHandler(clientContext));
             
             // continue accepting new connections in this state machine...
+            context.onSendComplete();
             return this;
         } else {
             return fail();

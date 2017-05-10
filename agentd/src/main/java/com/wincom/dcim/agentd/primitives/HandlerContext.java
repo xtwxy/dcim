@@ -3,6 +3,9 @@ package com.wincom.dcim.agentd.primitives;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,6 +19,20 @@ public interface HandlerContext {
      * @param m
      */
     public void send(Message m);
+
+    /**
+     * Called by the sender when a message is processed, the result maybe
+     * success or not.
+     */
+    public void onSendComplete();
+
+    /**
+     * Get handler by class type of the message.
+     *
+     * @param clazz
+     * @return
+     */
+    public Handler getHandler(Class clazz);
 
     /**
      * Fire message from the underlying service to the state machine.
@@ -46,6 +63,7 @@ public interface HandlerContext {
      * @return
      */
     public StateMachine getStateMachine();
+
     /**
      * Set state machine.
      *
@@ -55,12 +73,51 @@ public interface HandlerContext {
 
     public static abstract class Adapter implements HandlerContext {
 
+        Logger log = LoggerFactory.getLogger(this.getClass());
+
         private StateMachine machine;
-        private Map<Object, Object> variables;
+        private final Map<Object, Object> variables;
+        protected final ConcurrentLinkedQueue<Message> queue;
+        private boolean inprogress;
 
         public Adapter(StateMachine machine) {
             this.machine = machine;
             this.variables = new HashMap<>();
+            this.queue = new ConcurrentLinkedQueue<>();
+            this.inprogress = false;
+        }
+
+        @Override
+        public void send(Message m) {
+            synchronized (queue) {
+                if (!inprogress) {
+                    inprogress = true;
+                } else {
+                    queue.add(m);
+                    return;
+                }
+            }
+            doSend(m);
+        }
+
+        protected void doSend(Message m) {
+            m.apply(this, getHandler(m.getClass()));
+        }
+
+        @Override
+        public void onSendComplete() {
+            if (inprogress) {
+                Message m = null;
+                synchronized (queue) {
+                    if (queue.isEmpty()) {
+                        inprogress = false;
+                        return;
+                    } else {
+                        m = queue.poll();
+                    }
+                }
+                doSend(m);
+            }
         }
 
         @Override
@@ -82,6 +139,5 @@ public interface HandlerContext {
         public void setStateMachine(StateMachine sm) {
             machine = sm;
         }
-
     }
 }

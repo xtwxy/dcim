@@ -1,11 +1,11 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -30,7 +30,7 @@ public class SendBytesHandler implements Handler {
 
     @Override
     public void handle(HandlerContext ctx, Message m) {
-        if (m instanceof BytesReceived) {
+        if (m instanceof SendBytes) {
             ChannelPromise cp = channel.newPromise();
             cp.addListener(new GenericFutureListener(){
                 @Override
@@ -42,7 +42,7 @@ public class SendBytesHandler implements Handler {
                     }
                 }
             });
-            ByteBuf buf = Unpooled.wrappedBuffer(((BytesReceived) m).getByteBuffer());
+            ByteBuf buf = Unpooled.wrappedBuffer(((SendBytes) m).getByteBuffer());
             
             channel.writeAndFlush(buf, cp);
         }

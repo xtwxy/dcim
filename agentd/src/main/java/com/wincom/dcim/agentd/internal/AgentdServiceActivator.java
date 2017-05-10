@@ -43,9 +43,9 @@ public final class AgentdServiceActivator implements BundleActivator {
         NetworkService service = bundleContext.getService(serviceRef);
         out.println(serviceRef);
         out.println(service);
-        
+
         createAcceptor(service);
-        createConnection(service);
+        //createConnection(service);
     }
 
     private void createAcceptor(NetworkService service) {
@@ -70,11 +70,12 @@ public final class AgentdServiceActivator implements BundleActivator {
 
     private void createConnection(NetworkService service) {
         HandlerContext handlerContext = service.createHandlerContext();
-        StateBuilder server = StateBuilder
-                .initial().state(new ConnectState(service, handlerContext))
-                .success().state(new ReceiveState());
+        StateBuilder client = StateBuilder
+                .initial().state(new ConnectState(service, handlerContext));
+        
+        client.success().state(new ReceiveState());
 
-        server.fail().state(new State.Adapter() {
+        client.fail().state(new State.Adapter() {
             @Override
             public State on(HandlerContext ctx, Message m) {
                 out.println("Create server failed.");
@@ -83,10 +84,10 @@ public final class AgentdServiceActivator implements BundleActivator {
         });
 
         handlerContext.getStateMachine()
-                .buildWith(server)
+                .buildWith(client)
                 .enter();
 
-        handlerContext.send(new Connect("192.168.0.68", 9080));
+        handlerContext.send(new Connect("192.168.0.78", 9080));
     }
 
 }

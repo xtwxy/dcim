@@ -3,6 +3,7 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.Connected;
+import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;

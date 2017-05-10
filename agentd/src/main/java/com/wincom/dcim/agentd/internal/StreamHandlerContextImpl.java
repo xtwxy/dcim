@@ -3,7 +3,6 @@ package com.wincom.dcim.agentd.internal;
 import com.google.common.annotations.VisibleForTesting;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.Accept;
-import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.ExecuteRunnable;
@@ -13,6 +12,7 @@ import io.netty.channel.Channel;
 import java.util.HashMap;
 import java.util.Map;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 
@@ -58,17 +58,12 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
     }
 
     @Override
-    public void send(Message m) {
-        m.apply(this, this.handlers.get(m.getClass()));
-    }
-
-    @Override
     public void fire(Message m) {
         getStateMachine().on(this, m);
     }
 
     private void initHandlers() {
-        handlers.put(BytesReceived.class, new SendBytesHandler(channel, service));
+        handlers.put(SendBytes.class, new SendBytesHandler(channel, service));
         handlers.put(CloseConnection.class, new CloseConnectionHandler(channel, service));
         handlers.put(ExecuteRunnable.class, new ExecuteRunnableHandler(channel, service));
         handlers.put(Accept.class, new AcceptHandler(channel, service));
@@ -81,7 +76,8 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
         initHandlers();
     }
 
-    public Handler getHandlers(Class clazz) {
+    @Override
+    public Handler getHandler(Class clazz) {
         Handler h = handlers.get(clazz);
         if(h != null) {
             return h;
