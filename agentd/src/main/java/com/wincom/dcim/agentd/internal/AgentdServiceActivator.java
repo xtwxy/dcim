@@ -44,8 +44,10 @@ public final class AgentdServiceActivator implements BundleActivator {
         out.println(serviceRef);
         out.println(service);
 
-        createAcceptor(service);
-        //createConnection(service);
+        //createAcceptor(service);
+        for(int i = 0; i < 2000; ++i) {
+            createConnection(service);
+        }
     }
 
     private void createAcceptor(NetworkService service) {
@@ -87,7 +89,7 @@ public final class AgentdServiceActivator implements BundleActivator {
                 .buildWith(client)
                 .enter();
 
-        handlerContext.send(new Connect("192.168.0.78", 9080));
+        handlerContext.send(new Connect("192.168.0.68", 9080));
     }
 
 }

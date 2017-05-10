@@ -19,24 +19,26 @@ import org.slf4j.LoggerFactory;
 public class ReceiveState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
+    byte[] ba = new byte[4096];
+
+    public ReceiveState() {
+        for (int i = 0; i < ba.length; ++i) {
+            ba[i] = (byte) (0xff & (i % 10 + '0'));
+        }
+    }
 
     @Override
     public State on(HandlerContext ctx, Message m) {
         if (m instanceof BytesReceived) {
             // echo back the bytes.
-            ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
+            //ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
             return this;
         } else if (m instanceof Timeout) {
-            log.info("Timeout: " + m);
-            byte[] ba = new byte[4096];
-            for (int i = 0; i < ba.length; ++i) {
-                ba[i] = (byte) (0xff & (i % 10 + '0'));
-            }
-            ByteBuffer buffer = ByteBuffer.wrap(ba);
-            ctx.send(new SendBytes(buffer));
+            sendBytes(ctx);
 
             return this;
         } else if (m instanceof WriteComplete) {
+            //sendBytes(ctx);
             ctx.onSendComplete();
             return this;
         } else {
@@ -45,5 +47,10 @@ public class ReceiveState extends State.Adapter {
             ctx.onSendComplete();
             return fail();
         }
+    }
+
+    private void sendBytes(HandlerContext ctx) {
+        ByteBuffer buffer = ByteBuffer.wrap(ba);
+        ctx.send(new SendBytes(buffer));
     }
 }

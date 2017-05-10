@@ -29,10 +29,12 @@ public class ConnectState extends State.Adapter {
 
     @Override
     public State on(HandlerContext context, Message m) {
+        log.info(m.toString());
         if (m instanceof Connected) {
             Connected a = (Connected) m;
 
-            log.info("Connection established: " + a.getChannel().remoteAddress());
+            log.info(String.format("Connection established: local: %s, remote:%s", 
+                    a.getChannel().localAddress(), a.getChannel().remoteAddress()));
             
             final StreamHandlerContextImpl clientContext
                     = (StreamHandlerContextImpl) context;
