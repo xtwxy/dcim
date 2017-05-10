@@ -10,8 +10,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  *
@@ -35,7 +35,7 @@ public class ConnectHandler implements Handler {
             Bootstrap boot = new Bootstrap();
             boot
                     .group(service.getEventLoopGroup())
-                    .channel(EpollSocketChannel.class)
+                    .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {

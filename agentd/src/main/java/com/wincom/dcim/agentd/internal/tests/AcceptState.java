@@ -47,7 +47,7 @@ public class AcceptState extends State.Adapter {
             clientContext.setChannel(a.getChannel());
             // 5.initialize event generator for this channel.
             a.getChannel().pipeline()
-                    .addLast(new IdleStateHandler(0, 0, 6))
+                    //.addLast(new IdleStateHandler(0, 0, 6))
                     .addLast(new ChannelInboundHandler(clientContext));
             
             // continue accepting new connections in this state machine...

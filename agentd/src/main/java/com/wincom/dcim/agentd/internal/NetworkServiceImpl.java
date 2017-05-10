@@ -3,7 +3,7 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import java.util.concurrent.ThreadFactory;
 import org.osgi.framework.BundleContext;
@@ -25,7 +25,7 @@ public final class NetworkServiceImpl implements NetworkService {
                 throw new RuntimeException(initialThreads, ex);
             }
         }
-        this.eventLoopGroup = new EpollEventLoopGroup(threads, this.threadFactory);
+        this.eventLoopGroup = new NioEventLoopGroup(threads, this.threadFactory);
     }
 
     @Override

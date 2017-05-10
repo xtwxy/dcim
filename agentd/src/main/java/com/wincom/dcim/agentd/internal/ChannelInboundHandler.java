@@ -5,6 +5,7 @@ import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.Timeout;
 import com.wincom.dcim.agentd.primitives.Unknown;
+import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
