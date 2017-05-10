@@ -38,7 +38,7 @@ public class ReceiveState extends State.Adapter {
 
             return this;
         } else if (m instanceof WriteComplete) {
-            //sendBytes(ctx);
+            sendBytes(ctx);
             ctx.onSendComplete();
             return this;
         } else {
