@@ -13,12 +13,16 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author master
  */
 public class SendBytesHandler implements Handler {
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final Channel channel;
     private final NetworkService service;
@@ -32,10 +36,10 @@ public class SendBytesHandler implements Handler {
     public void handle(HandlerContext ctx, Message m) {
         if (m instanceof SendBytes) {
             ChannelPromise cp = channel.newPromise();
-            cp.addListener(new GenericFutureListener(){
+            cp.addListener(new GenericFutureListener() {
                 @Override
                 public void operationComplete(Future f) throws Exception {
-                    if(f.isSuccess()) {
+                    if (f.isSuccess()) {
                         ctx.fire(new WriteComplete());
                     } else {
                         ctx.fire(new Failed(f.cause()));
@@ -43,7 +47,7 @@ public class SendBytesHandler implements Handler {
                 }
             });
             ByteBuf buf = Unpooled.wrappedBuffer(((SendBytes) m).getByteBuffer());
-            
+
             channel.writeAndFlush(buf, cp);
         }
     }

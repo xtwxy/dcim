@@ -63,7 +63,7 @@ public class StateBuilder {
             return stopState();
         }
 
-        return traverse0(head);
+        return traverse(head);
     }
 
     /**

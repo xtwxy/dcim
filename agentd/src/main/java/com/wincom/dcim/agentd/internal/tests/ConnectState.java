@@ -19,8 +19,8 @@ public class ConnectState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final NetworkService service;
-    private final HandlerContext handlerContext;
+    protected final NetworkService service;
+    protected final HandlerContext handlerContext;
 
     public ConnectState(NetworkService service, HandlerContext handlerContext) {
         this.service = service;
@@ -29,7 +29,6 @@ public class ConnectState extends State.Adapter {
 
     @Override
     public State on(HandlerContext context, Message m) {
-        log.info(m.toString());
         if (m instanceof Connected) {
             Connected a = (Connected) m;
 
@@ -41,14 +40,14 @@ public class ConnectState extends State.Adapter {
             clientContext.setChannel(a.getChannel());
 
             a.getChannel().pipeline()
-                    .addLast(new IdleStateHandler(0, 0, 6))
+                    .addLast(new IdleStateHandler(0, 0, 2))
                     .addLast(new ChannelInboundHandler(context));
             
-            context.onSendComplete();
+            context.onSendComplete(m);
             
             return success();
         } else {
-            log.info("Connect failed.");
+            log.info("Connect failed." + m);
             return fail();
         }
     }

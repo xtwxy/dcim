@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class ReceiveState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
-    byte[] ba = new byte[4096];
+    byte[] ba = new byte[128];
 
     public ReceiveState() {
         for (int i = 0; i < ba.length; ++i) {
@@ -39,12 +39,12 @@ public class ReceiveState extends State.Adapter {
             return this;
         } else if (m instanceof WriteComplete) {
             //sendBytes(ctx);
-            ctx.onSendComplete();
+            ctx.onSendComplete(m);
             return this;
         } else {
             log.warn("unknown message: " + m);
             ctx.send(new CloseConnection());
-            ctx.onSendComplete();
+            ctx.onSendComplete(m);
             return fail();
         }
     }

@@ -23,8 +23,9 @@ public interface HandlerContext {
     /**
      * Called by the sender when a message is processed, the result maybe
      * success or not.
+     * @param m
      */
-    public void onSendComplete();
+    public void onSendComplete(Message m);
 
     /**
      * Get handler by class type of the message.
@@ -106,7 +107,7 @@ public interface HandlerContext {
         }
 
         @Override
-        public void onSendComplete() {
+        public void onSendComplete(Message ignore) {
             if (inprogress) {
                 Message m = null;
 //                synchronized (queue) 

@@ -27,6 +27,7 @@ public class UnknownHandler implements Handler {
     @Override
     public void handle(HandlerContext ctx, Message m) {
         log.warn("unknown message: " + m);
+        ctx.onSendComplete(m);
     }
 
 }

@@ -2,6 +2,8 @@ package com.wincom.dcim.agentd.statemachine;
 
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * State Machine.
@@ -16,9 +18,31 @@ public class StateMachine implements State {
     State stop;
 
     public StateMachine() {
-        
     }
-    
+
+    public StateMachine(
+            State initial
+    ) {
+        this();
+        this.initial = initial;
+        this.stop = new State.Adapter();
+
+        this.current = initial;
+        this.prev = null;
+    }
+
+    public StateMachine(
+            State initial,
+            State stop
+    ) {
+        this();
+        this.initial = initial;
+        this.stop = stop;
+
+        this.current = initial;
+        this.prev = null;
+    }
+
     public StateMachine(StateBuilder builder) {
         buildWith(builder);
     }
@@ -26,13 +50,23 @@ public class StateMachine implements State {
     public final StateMachine buildWith(StateBuilder builder) {
         this.initial = builder.build();
         this.stop = builder.stopState();
-        
+
         this.current = this.initial;
         this.prev = null;
 
         return this;
     }
-    
+
+    public final StateMachine buildWith(StateMachine m) {
+        this.initial = m.initial;
+        this.stop = m.stop;
+
+        this.current = m.current;
+        this.prev = m.prev;
+
+        return this;
+    }
+
     @Override
     public State enter() {
         if (prev != current) {
@@ -105,7 +139,7 @@ public class StateMachine implements State {
     public State initial() {
         return this.initial;
     }
-    
+
     public State stop() {
         return this.stop;
     }

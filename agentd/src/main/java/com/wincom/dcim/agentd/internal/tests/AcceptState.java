@@ -8,7 +8,6 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
-import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,7 @@ public class AcceptState extends State.Adapter {
                     .addLast(new ChannelInboundHandler(clientContext));
             
             // continue accepting new connections in this state machine...
-            context.onSendComplete();
+            context.onSendComplete(m);
             return this;
         } else {
             return fail();

@@ -2,6 +2,8 @@ package com.wincom.dcim.agentd.statemachine;
 
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * State of State Machine.
@@ -12,17 +14,19 @@ public interface State {
 
     /**
      * Life cycle event handler for enter this state.
-     * 
+     *
      * For each state, this may only be called once.
-     * @return 
+     *
+     * @return
      */
     public State enter();
 
     /**
      * Life cycle event handler for exit this state.
-     * 
+     *
      * For each state, this may only be called once.
-     * @return 
+     *
+     * @return
      */
     public State exit();
 
@@ -85,6 +89,8 @@ public interface State {
 
     public static class Adapter implements State {
 
+        Logger log = LoggerFactory.getLogger(this.getClass());
+
         protected State next;
         private State success;
         private State fail;
@@ -101,6 +107,7 @@ public interface State {
 
         @Override
         public State on(HandlerContext ctx, Message m) {
+            log.warn("stopped?");
             return this;
         }
 
