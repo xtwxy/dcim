@@ -1,6 +1,7 @@
 package com.wincom.dcim.agentd.internal.tests;
 
 import com.wincom.dcim.agentd.primitives.BytesReceived;
+import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
@@ -37,12 +38,14 @@ public class ReceiveState extends State.Adapter {
             // echo back the bytes.
             //ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
             return this;
-        } else if (m instanceof ChannelTimeout) {
-
-            return this;
-        } else if (m instanceof WriteComplete) {
-            sendBytes(ctx);
+       } else if (m instanceof WriteComplete) {
             ctx.onSendComplete(m);
+            return success();
+        } else if (m instanceof ChannelTimeout) {
+            sendBytes(ctx);
+            return this;
+        } else if (m instanceof ChannelActive) {
+            sendBytes(ctx);
             return this;
         } else if (m instanceof ConnectionClosed) {
             ctx.onSendComplete(m);
@@ -51,7 +54,7 @@ public class ReceiveState extends State.Adapter {
             log.warn("unknown message: " + m);
             ctx.send(new CloseConnection());
             ctx.onSendComplete(m);
-            return fail();
+            return success();
         }
     }
 
