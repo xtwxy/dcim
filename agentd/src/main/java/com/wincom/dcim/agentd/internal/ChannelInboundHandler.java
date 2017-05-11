@@ -6,6 +6,7 @@ import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.ReadTimeout;
+import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.primitives.Timeout;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.dcim.agentd.primitives.WriteTimeout;
@@ -36,6 +37,7 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        clientContext.fire(new WriteComplete());
         ctx.fireChannelActive();
     }
 

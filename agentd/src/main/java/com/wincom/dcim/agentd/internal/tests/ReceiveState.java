@@ -20,9 +20,12 @@ import org.slf4j.LoggerFactory;
 public class ReceiveState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
+    protected final HandlerContext handlerContext;
     byte[] ba = new byte[128];
 
-    public ReceiveState() {
+    public ReceiveState(HandlerContext handlerContext) {
+        this.handlerContext = handlerContext;
+
         for (int i = 0; i < ba.length; ++i) {
             ba[i] = (byte) (0xff & (i % 10 + '0'));
         }
@@ -35,11 +38,10 @@ public class ReceiveState extends State.Adapter {
             //ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
             return this;
         } else if (m instanceof ChannelTimeout) {
-            sendBytes(ctx);
 
             return this;
         } else if (m instanceof WriteComplete) {
-            //sendBytes(ctx);
+            sendBytes(ctx);
             ctx.onSendComplete(m);
             return this;
         } else if (m instanceof ConnectionClosed) {

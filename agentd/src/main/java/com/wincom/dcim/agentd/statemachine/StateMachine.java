@@ -100,10 +100,6 @@ public class StateMachine implements State {
 
     @Override
     public State on(HandlerContext ctx, Message m) {
-        log.info(String.format("(%s, %s, %s)", 
-                current, 
-                ctx, 
-                m));
         prev = current;
         current = current.on(ctx, m);
 

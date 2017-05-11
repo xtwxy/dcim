@@ -7,6 +7,8 @@ import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.primitives.Connected;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.WriteComplete;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,8 +65,10 @@ public class ConnectState extends State.Adapter {
             context.onSendComplete(m);
 
             return success();
+        } else if(m instanceof ChannelTimeout) {
+            return success();
         } else {
-            log.info("Connect failed." + m);
+            log.info("Connect failed: " + m);
             return fail();
         }
     }

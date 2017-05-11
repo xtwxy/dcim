@@ -44,7 +44,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         out.println(service);
 
         createAcceptor(service);
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 1; ++i) {
             createConnection(service);
         }
     }
@@ -73,7 +73,7 @@ public final class AgentdServiceActivator implements BundleActivator {
 
         StateMachine client = builder
             .add("connectState", new ConnectState(handlerContext, "192.168.0.68", 9080))
-            .add("receiveState", new ReceiveState())
+            .add("receiveState", new ReceiveState(handlerContext))
             .add("waitState", new WaitTimeoutState(handlerContext, 6000))
             .transision("connectState", "receiveState", "waitState")
             .transision("receiveState", "receiveState", "waitState")
