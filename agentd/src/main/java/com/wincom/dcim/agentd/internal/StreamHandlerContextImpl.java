@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.SendBytes;
+import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
+import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 
@@ -27,12 +29,12 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
     private final Map<Class, Handler> handlers;
 
     /**
-     * This Constructor is *ONLY* called by internal implementations, 
-     * call <code>NetworkService#createHandlerContext()</code> instead.
-     * 
+     * This Constructor is *ONLY* called by internal implementations, call
+     * <code>NetworkService#createHandlerContext()</code> instead.
+     *
      * @param machine
      * @param channel
-     * @param eventLoopGroup 
+     * @param eventLoopGroup
      */
     @VisibleForTesting
     StreamHandlerContextImpl(StateMachine machine,
@@ -44,11 +46,12 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
         this.handlers = new HashMap<>();
         setChannel(channel);
     }
+
     /**
-     * This Constructor is *ONLY* called by internal implementations, 
-     * call <code>NetworkService#createHandlerContext()</code> instead.
-     * 
-     * @param eventLoopGroup 
+     * This Constructor is *ONLY* called by internal implementations, call
+     * <code>NetworkService#createHandlerContext()</code> instead.
+     *
+     * @param eventLoopGroup
      */
     @VisibleForTesting
     StreamHandlerContextImpl(
@@ -68,6 +71,8 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
         handlers.put(ExecuteRunnable.class, new ExecuteRunnableHandler(channel, service));
         handlers.put(Accept.class, new AcceptHandler(channel, service));
         handlers.put(Connect.class, new ConnectHandler(channel, service));
+        handlers.put(SetMillsecFromNowTimer.class, new SetMillsecFromNowTimerHandler(channel, service));
+        handlers.put(SetDeadlineTimer.class, new SetDeadlineTimerHandler(channel, service));
         handlers.put(Unknown.class, new UnknownHandler(channel, service));
     }
 
@@ -79,9 +84,14 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
     @Override
     public Handler getHandler(Class clazz) {
         Handler h = handlers.get(clazz);
-        if(h != null) {
+        if (h != null) {
             return h;
         }
         return handlers.get(Unknown.class);
+    }
+
+    @Override
+    public String toString() {
+        return "StreamHandlerContextImpl@" + this.hashCode();
     }
 }

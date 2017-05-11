@@ -158,5 +158,10 @@ public interface State {
         public State exit() {
             return this;
         }
+        
+        @Override
+        public String toString() {
+            return "Adapter@" + this.hashCode();
+        }
     }
 }

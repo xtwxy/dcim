@@ -2,8 +2,8 @@ package com.wincom.dcim.agentd.statemachine;
 
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import java.util.HashMap;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * State Machine.
@@ -11,6 +11,8 @@ import java.util.Map;
  * Created by master on 5/4/17.
  */
 public class StateMachine implements State {
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     State current;
     State prev;
@@ -98,6 +100,10 @@ public class StateMachine implements State {
 
     @Override
     public State on(HandlerContext ctx, Message m) {
+        log.info(String.format("(%s, %s, %s)", 
+                current, 
+                ctx, 
+                m));
         prev = current;
         current = current.on(ctx, m);
 

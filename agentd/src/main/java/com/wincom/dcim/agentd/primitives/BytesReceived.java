@@ -22,4 +22,9 @@ public class BytesReceived implements Message {
     public ByteBuffer getByteBuffer() {
         return this.buffer;
     }
+
+    @Override
+    public String toString() {
+        return String.format("BytesReceived %s", buffer);
+    }
 }

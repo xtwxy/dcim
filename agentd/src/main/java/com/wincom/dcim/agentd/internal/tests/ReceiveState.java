@@ -1,11 +1,12 @@
 package com.wincom.dcim.agentd.internal.tests;
 
 import com.wincom.dcim.agentd.primitives.BytesReceived;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
+import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
-import com.wincom.dcim.agentd.primitives.Timeout;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.statemachine.State;
 import java.nio.ByteBuffer;
@@ -33,7 +34,7 @@ public class ReceiveState extends State.Adapter {
             // echo back the bytes.
             //ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
             return this;
-        } else if (m instanceof Timeout) {
+        } else if (m instanceof ChannelTimeout) {
             sendBytes(ctx);
 
             return this;
@@ -41,6 +42,9 @@ public class ReceiveState extends State.Adapter {
             //sendBytes(ctx);
             ctx.onSendComplete(m);
             return this;
+        } else if (m instanceof ConnectionClosed) {
+            ctx.onSendComplete(m);
+            return fail();
         } else {
             log.warn("unknown message: " + m);
             ctx.send(new CloseConnection());
@@ -52,5 +56,10 @@ public class ReceiveState extends State.Adapter {
     private void sendBytes(HandlerContext ctx) {
         ByteBuffer buffer = ByteBuffer.wrap(ba);
         ctx.send(new SendBytes(buffer));
+    }
+
+    @Override
+    public String toString() {
+        return "ReceiveState@" + this.hashCode();
     }
 }

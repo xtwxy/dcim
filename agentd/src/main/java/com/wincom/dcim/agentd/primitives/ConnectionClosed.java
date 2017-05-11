@@ -20,4 +20,9 @@ public class ConnectionClosed implements Message {
     public void apply(HandlerContext ctx, Handler handler) {
         handler.handle(ctx, this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("ConnectionClosed %s", getChannel());
+    }
 }

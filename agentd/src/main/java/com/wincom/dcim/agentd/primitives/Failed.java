@@ -20,4 +20,9 @@ public class Failed implements Message {
     public Throwable getCause() {
         return cause;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Failed %s", cause);
+    }
 }

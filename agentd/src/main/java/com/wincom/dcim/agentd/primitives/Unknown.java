@@ -17,4 +17,9 @@ public class Unknown implements Message {
     public Object getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return String.format("SendBytes %s", message);
+    }
 }

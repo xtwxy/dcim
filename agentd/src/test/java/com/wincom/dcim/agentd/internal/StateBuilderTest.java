@@ -167,4 +167,9 @@ public class StateBuilderTest {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "StateBuilderTest@" + this.hashCode();
+    }
 }

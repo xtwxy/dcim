@@ -18,22 +18,20 @@ import org.slf4j.LoggerFactory;
 public class AcceptState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
-    
-    private final NetworkService service;
-    private final HandlerContext handlerContext;
 
-    public AcceptState(NetworkService service, HandlerContext handlerContext) {
+    private final NetworkService service;
+
+    public AcceptState(NetworkService service) {
         this.service = service;
-        this.handlerContext = handlerContext;
     }
 
     @Override
     public State on(HandlerContext context, Message m) {
         if (m instanceof Accepted) {
             Accepted a = (Accepted) m;
-            
+
             log.info("Connection accepted: " + a.getChannel());
-            
+
             // fork a new state machine to handle connection.
             // 1.create receive state.
             StateBuilder connection = StateBuilder.initial().state(new ReceiveState());
@@ -48,7 +46,7 @@ public class AcceptState extends State.Adapter {
             a.getChannel().pipeline()
                     //.addLast(new IdleStateHandler(0, 0, 6))
                     .addLast(new ChannelInboundHandler(clientContext));
-            
+
             // continue accepting new connections in this state machine...
             context.onSendComplete(m);
             return this;
@@ -57,4 +55,8 @@ public class AcceptState extends State.Adapter {
         }
     }
 
+    @Override
+    public String toString() {
+        return "AcceptState@" + this.hashCode();
+    }
 }

@@ -21,4 +21,8 @@ public class ExecuteRunnable implements Message {
         return runnable;
     }
 
+    @Override
+    public String toString() {
+        return String.format("ExecuteRunnable %s", runnable);
+    }
 }

@@ -16,6 +16,9 @@ public final class NetworkServiceImpl implements NetworkService {
     private final EventLoopGroup eventLoopGroup;
     private HashedWheelTimer timer;
     
+    public NetworkServiceImpl() {
+        this(null);
+    }
     public NetworkServiceImpl(BundleContext context) {
         this.threadFactory = new DefaultThreadFactory("agentd-thread-factory");
 

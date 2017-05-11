@@ -90,7 +90,7 @@ public interface HandlerContext {
 
         @Override
         public void send(Message m) {
-//            synchronized (queue) 
+            synchronized (queue) 
             {
                 if (!inprogress) {
                     inprogress = true;
@@ -110,7 +110,7 @@ public interface HandlerContext {
         public void onSendComplete(Message ignore) {
             if (inprogress) {
                 Message m = null;
-//                synchronized (queue) 
+                synchronized (queue) 
                 {
                     if (queue.isEmpty()) {
                         inprogress = false;

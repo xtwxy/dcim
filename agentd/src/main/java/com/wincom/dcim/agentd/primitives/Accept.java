@@ -25,4 +25,8 @@ public class Accept implements Message {
         return port;
     }
     
+    @Override
+    public String toString() {
+        return String.format("Accept on %s:%d", host, port);
+    }
 }

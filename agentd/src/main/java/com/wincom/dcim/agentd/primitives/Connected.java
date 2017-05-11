@@ -20,4 +20,9 @@ public class Connected implements Message {
     public void apply(HandlerContext ctx, Handler handler) {
         handler.handle(ctx, this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Connected %s", getChannel());
+    }
 }
