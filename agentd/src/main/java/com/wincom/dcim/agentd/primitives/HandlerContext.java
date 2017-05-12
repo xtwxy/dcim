@@ -1,5 +1,7 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.statemachine.SendMessageState;
+import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +23,17 @@ public interface HandlerContext {
     public void send(Message m);
 
     /**
+     * Send message via the underlying service, and reply to reply context.
+     *
+     * @param m
+     * @param reply
+     */
+    public void send(Message m, HandlerContext reply);
+
+    /**
      * Called by the sender when a message is processed, the result maybe
      * success or not.
+     *
      * @param m
      */
     public void onSendComplete(Message m);
@@ -71,48 +82,60 @@ public interface HandlerContext {
 
         private StateMachine machine;
         private final Map<Object, Object> variables;
-        protected final ConcurrentLinkedQueue<Message> queue;
-        private boolean inprogress;
+        protected final ConcurrentLinkedQueue<State> queue;
+        private State current;
 
         public Adapter(StateMachine machine) {
             this.machine = machine;
             this.variables = new HashMap<>();
             this.queue = new ConcurrentLinkedQueue<>();
-            this.inprogress = false;
+            this.current = null;
         }
 
         @Override
         public void send(Message m) {
-            synchronized (queue) 
-            {
-                if (!inprogress) {
-                    inprogress = true;
-                } else {
-                    queue.add(m);
-                    return;
-                }
-            }
-            doSend(m);
-        }
-
-        protected void doSend(Message m) {
-            m.apply(this, getHandler(m.getClass()));
+            State s = new SendMessageState(m, getHandler(m.getClass()));
+            enqueueOrSend(s);
         }
 
         @Override
-        public void onSendComplete(Message ignore) {
-            if (inprogress) {
-                Message m = null;
-                synchronized (queue) 
-                {
-                    if (queue.isEmpty()) {
-                        inprogress = false;
-                        return;
-                    } else {
-                        m = queue.poll();
-                    }
+        public void send(Message m, HandlerContext reply) {
+            State s = new SendMessageState(m, getHandler(m.getClass()), reply);
+            enqueueOrSend(s);
+        }
+
+        private void enqueueOrSend(State s) {
+            //synchronized (queue) 
+            {
+                if (isInprogress()) {
+                    queue.add(s);
+                } else {
+                    current = s;
+                    current.enter(this);
                 }
-                doSend(m);
+            }
+        }
+
+        @Override
+        public void onSendComplete(Message response) {
+            if (isInprogress()) {
+                current.on(this, response);
+                current = null;
+            } else {
+                log.warn("response ignored: " + response);
+            }
+            sendNext();
+        }
+
+        private void sendNext() {
+            //synchronized (queue) 
+            {
+                if (queue.isEmpty()) {
+                    return;
+                } else {
+                    current = queue.poll();
+                    current.enter(this);
+                }
             }
         }
 
@@ -129,6 +152,32 @@ public interface HandlerContext {
         @Override
         public StateMachine getStateMachine() {
             return machine;
+        }
+
+        public boolean isInprogress() {
+            return this.current != null;
+        }
+    }
+
+    public static class NullContext extends Adapter {
+
+        public NullContext() {
+            super(null);
+        }
+
+        @Override
+        public void send(Message m, HandlerContext reply) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Handler getHandler(Class clazz) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void fire(Message m) {
+            log.debug("ignored: " + m);
         }
     }
 }
