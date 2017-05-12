@@ -12,7 +12,6 @@ import com.wincom.dcim.agentd.internal.tests.ConnectState;
 import com.wincom.dcim.agentd.internal.tests.FailedState;
 import com.wincom.dcim.agentd.internal.tests.ReceiveState;
 import com.wincom.dcim.agentd.internal.tests.WaitTimeoutState;
-import com.wincom.dcim.agentd.primitives.Accept;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
