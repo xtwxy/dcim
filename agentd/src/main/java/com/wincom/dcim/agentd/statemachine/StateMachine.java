@@ -70,10 +70,10 @@ public class StateMachine implements State {
     }
 
     @Override
-    public State enter() {
+    public State enter(HandlerContext ctx) {
         if (prev != current) {
             try {
-                return current.enter();
+                return current.enter(ctx);
             } catch (Throwable t) {
                 return current.fail();
             }
@@ -82,10 +82,10 @@ public class StateMachine implements State {
     }
 
     @Override
-    public State exit() {
+    public State exit(HandlerContext ctx) {
         if (prev != current && prev != null) {
             try {
-                return prev.exit();
+                return prev.exit(ctx);
             } catch (Throwable t) {
                 return current.fail();
             }
@@ -93,9 +93,9 @@ public class StateMachine implements State {
         return current.fail();
     }
 
-    private void transition() {
-        enter();
-        exit();
+    private void transition(HandlerContext ctx) {
+        enter(ctx);
+        exit(ctx);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class StateMachine implements State {
         prev = current;
         current = current.on(ctx, m);
 
-        transition();
+        transition(ctx);
 
         return current;
     }

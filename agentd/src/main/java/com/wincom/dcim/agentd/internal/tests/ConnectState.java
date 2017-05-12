@@ -8,7 +8,6 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ public class ConnectState extends State.Adapter {
     }
 
     @Override
-    public State enter() {
+    public State enter(HandlerContext ctx) {
         this.handlerContext.send(new Connect(host, port));
         return this;
     }

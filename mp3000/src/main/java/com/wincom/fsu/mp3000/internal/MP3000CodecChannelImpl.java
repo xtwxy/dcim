@@ -5,6 +5,7 @@ import com.wincom.dcim.agentd.CodecChannel;
 import com.wincom.dcim.agentd.Connector;
 import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.IoCompletionHandler;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
@@ -82,7 +83,7 @@ public class MP3000CodecChannelImpl
             StateBuilder builder = StateBuilder
                     .initial().state(new State.Adapter() {
                         @Override
-                        public State enter() {
+                        public State enter(HandlerContext ctx) {
                             agent.createClientChannel(new Connector.Adapter() {
                                 @Override
                                 public void onConnect(Channel ch) {
@@ -103,7 +104,7 @@ public class MP3000CodecChannelImpl
                         }
 
                         @Override
-                        public State exit() {
+                        public State exit(HandlerContext ctx) {
 
                         }
                     })

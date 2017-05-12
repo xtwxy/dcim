@@ -25,7 +25,7 @@ public class WaitTimeoutState extends State.Adapter {
     }
     
     @Override
-    public State enter() {
+    public State enter(HandlerContext ctx) {
         this.handlerContext.send(new SetMillsecFromNowTimer(millsec));
         return this;
     }

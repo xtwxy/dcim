@@ -8,6 +8,7 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
+import com.wincom.dcim.agentd.primitives.Connect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +21,26 @@ public class AcceptState extends State.Adapter {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final NetworkService service;
+    protected final HandlerContext handlerContext;
+    protected final String host;
+    protected final int port;
 
-    public AcceptState(NetworkService service) {
+    public AcceptState(NetworkService service,
+            HandlerContext handlerContext,
+            String host,
+            int port
+    ) {
         this.service = service;
+        this.handlerContext = handlerContext;
+        this.host = host;
+        this.port = port;
+
+    }
+
+    @Override
+    public State enter(HandlerContext ctx) {
+        this.handlerContext.send(new Connect(host, port));
+        return this;
     }
 
     @Override

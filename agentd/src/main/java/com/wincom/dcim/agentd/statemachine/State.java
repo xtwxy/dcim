@@ -17,18 +17,20 @@ public interface State {
      *
      * For each state, this may only be called once.
      *
+     * @param ctx
      * @return
      */
-    public State enter();
+    public State enter(HandlerContext ctx);
 
     /**
      * Life cycle event handler for exit this state.
      *
      * For each state, this may only be called once.
      *
+     * @param ctx
      * @return
      */
-    public State exit();
+    public State exit(HandlerContext ctx);
 
     /**
      * Accept incoming <code>Message</code>.
@@ -150,12 +152,12 @@ public interface State {
         }
 
         @Override
-        public State enter() {
+        public State enter(HandlerContext ctx) {
             return this;
         }
 
         @Override
-        public State exit() {
+        public State exit(HandlerContext ctx) {
             return this;
         }
         

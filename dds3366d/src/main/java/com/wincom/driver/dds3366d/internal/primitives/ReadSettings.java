@@ -52,7 +52,7 @@ public class ReadSettings {
         StateBuilder builder = StateBuilder
                 .initial().state(new State.Adapter() {
                     @Override
-                    public State enter() {
+                    public State enter(HandlerContext ctx) {
                         // install request completion handler.
                         // send request
                         Request r = new Request();
@@ -66,13 +66,13 @@ public class ReadSettings {
                     }
 
                     @Override
-                    public State exit() {
+                    public State exit(HandlerContext ctx) {
                         // un-install request completion handler.
                     }
                 })
                 .success().state(new State.Adapter() {
                     @Override
-                    public State enter() {
+                    public State enter(HandlerContext ctx) {
                         // install response handler
                     }
 
@@ -87,7 +87,7 @@ public class ReadSettings {
                     }
 
                     @Override
-                    public State exit() {
+                    public State exit(HandlerContext ctx) {
                         // remove response handler.
                     }
                 });

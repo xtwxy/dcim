@@ -54,7 +54,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine server = builder
-                .add("acceptState", new AcceptState(service))
+                .add("acceptState", new AcceptState(service, handlerContext, "0.0.0.0", 9080))
                 .add("failState", new FailedState())
                 .transision("acceptState", "acceptState", "failState")
                 .transision("failState", "failState", "failState")
@@ -62,9 +62,7 @@ public final class AgentdServiceActivator implements BundleActivator {
 
         handlerContext.getStateMachine()
                 .buildWith(server)
-                .enter();
-
-        handlerContext.send(new Accept("0.0.0.0", 9080));
+                .enter(handlerContext);
     }
 
     static void createConnection(NetworkService service) {
@@ -82,7 +80,7 @@ public final class AgentdServiceActivator implements BundleActivator {
 
         handlerContext.getStateMachine()
                 .buildWith(client)
-                .enter();
+                .enter(handlerContext);
     }
 
     public static void main(String[] args) {

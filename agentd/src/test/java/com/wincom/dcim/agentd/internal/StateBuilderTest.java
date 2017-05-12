@@ -143,7 +143,7 @@ public class StateBuilderTest {
 
     private void runStateMachine(StateMachine sm) {
         HandlerContext ctx = new StreamHandlerContextImpl(sm, null, null);
-        sm.enter();
+        sm.enter(ctx);
         while(!sm.stopped()) {
             sm.on(ctx, message);
         }
@@ -156,14 +156,14 @@ public class StateBuilderTest {
 
         while (!current.stopped()) {
             if (prev != current) {
-                current.enter();
+                current.enter(ctx);
             }
 
             prev = current;
             current = current.on(ctx, message);
             
             if (prev != current && prev != null) {
-                prev.exit();
+                prev.exit(ctx);
             }
         }
     }

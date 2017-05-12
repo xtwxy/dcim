@@ -65,13 +65,6 @@ public interface HandlerContext {
      */
     public StateMachine getStateMachine();
 
-    /**
-     * Set state machine.
-     *
-     * @param sm
-     */
-    public void setStateMachine(StateMachine sm);
-
     public static abstract class Adapter implements HandlerContext {
 
         Logger log = LoggerFactory.getLogger(this.getClass());
@@ -136,11 +129,6 @@ public interface HandlerContext {
         @Override
         public StateMachine getStateMachine() {
             return machine;
-        }
-
-        @Override
-        public void setStateMachine(StateMachine sm) {
-            machine = sm;
         }
     }
 }
