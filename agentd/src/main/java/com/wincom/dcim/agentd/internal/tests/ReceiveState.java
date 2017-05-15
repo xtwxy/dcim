@@ -36,13 +36,12 @@ public class ReceiveState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         if (m instanceof BytesReceived) {
             // echo back the bytes.
-            //ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
+            ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
             return this;
        } else if (m instanceof WriteComplete) {
             ctx.onSendComplete(m);
             return success();
         } else if (m instanceof ChannelTimeout) {
-            sendBytes(ctx);
             return this;
         } else if (m instanceof ChannelActive) {
             sendBytes(ctx);

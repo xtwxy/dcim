@@ -8,7 +8,7 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
-import com.wincom.dcim.agentd.primitives.Connect;
+import com.wincom.dcim.agentd.primitives.Accept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class AcceptState extends State.Adapter {
 
     @Override
     public State enter(HandlerContext ctx) {
-        this.handlerContext.send(new Connect(host, port));
+        this.handlerContext.send(new Accept(host, port));
         return this;
     }
 
