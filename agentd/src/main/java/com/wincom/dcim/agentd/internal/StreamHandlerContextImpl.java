@@ -7,7 +7,6 @@ import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.ExecuteRunnable;
 import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.Message;
 import io.netty.channel.Channel;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,11 +57,6 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
             NetworkService service
     ) {
         this(new StateMachine(), null, service);
-    }
-
-    @Override
-    public void fire(Message m) {
-        getStateMachine().on(this, m);
     }
 
     private void initHandlers() {

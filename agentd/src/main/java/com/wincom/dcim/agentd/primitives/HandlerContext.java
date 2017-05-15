@@ -3,6 +3,7 @@ package com.wincom.dcim.agentd.primitives;
 import com.wincom.dcim.agentd.statemachine.SendMessageState;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
+import static java.lang.System.out;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -85,6 +86,10 @@ public interface HandlerContext {
         protected final ConcurrentLinkedQueue<State> queue;
         private State current;
 
+        public Adapter() {
+            this(new StateMachine());
+        }
+
         public Adapter(StateMachine machine) {
             this.machine = machine;
             this.variables = new HashMap<>();
@@ -114,6 +119,12 @@ public interface HandlerContext {
                     current.enter(this);
                 }
             }
+        }
+
+        @Override
+        public void fire(Message m) {
+            out.println(m);
+            machine.on(this, m);
         }
 
         @Override

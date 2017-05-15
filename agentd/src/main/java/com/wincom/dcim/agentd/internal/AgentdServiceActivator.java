@@ -28,6 +28,7 @@ public final class AgentdServiceActivator implements BundleActivator {
 
         bc.registerService(AgentdService.class, new AgentdServiceImpl(bc), props);
         bc.registerService(NetworkService.class, new NetworkServiceImpl(bc), props);
+
         testServerChannelFactory(bc);
     }
 

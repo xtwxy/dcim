@@ -7,5 +7,17 @@ import java.util.Properties;
  * @author master
  */
 public interface CodecFactory {
-    public Codec create(Properties props);
+    /**
+     * The content of properties:
+     * props := {
+     *  inbound: {
+     *      codecId: 'codecId',
+     *      outboundId: 'codecId',
+     *  }
+     * }
+     * @param service
+     * @param props
+     * @return 
+     */
+    public Codec create(AgentdService service, Properties props);
 }
