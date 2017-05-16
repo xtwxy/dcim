@@ -7,7 +7,6 @@ import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
 import java.nio.ByteBuffer;
 import java.util.Properties;
 import org.slf4j.Logger;
