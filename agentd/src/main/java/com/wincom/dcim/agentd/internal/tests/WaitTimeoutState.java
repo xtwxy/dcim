@@ -16,17 +16,15 @@ public class WaitTimeoutState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    HandlerContext handlerContext;
     long millsec;
     
-    public WaitTimeoutState(HandlerContext handlerContext, long millsec) {
-        this.handlerContext = handlerContext;
+    public WaitTimeoutState(long millsec) {
         this.millsec = millsec;
     }
     
     @Override
     public State enter(HandlerContext ctx) {
-        this.handlerContext.send(new SetMillsecFromNowTimer(millsec));
+        ctx.send(new SetMillsecFromNowTimer(millsec));
         return this;
     }
 

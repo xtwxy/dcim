@@ -23,6 +23,11 @@ public class StateBuilderTest {
             handler.handle(null, this);
         }
 
+        @Override
+        public boolean isOob() {
+            return false;
+        }
+
     };
     private final Handler handler = new Handler() {
         @Override

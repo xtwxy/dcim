@@ -3,7 +3,6 @@ package com.wincom.dcim.agentd.primitives;
 import com.wincom.dcim.agentd.statemachine.SendMessageState;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
-import static java.lang.System.out;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -39,6 +38,13 @@ public interface HandlerContext {
      */
     public void onSendComplete(Message m);
 
+    /**
+     * Initialize handlers when outbound is activated.
+     * 
+     * @param outboundContext 
+     */
+    public void initHandlers(HandlerContext outboundContext);
+    
     /**
      * Get handler by class type of the message.
      *
@@ -77,6 +83,20 @@ public interface HandlerContext {
      */
     public StateMachine getStateMachine();
 
+    /**
+     * Test if channel is ready to send & receive.
+     *
+     * @return
+     */
+    public boolean isActive();
+
+    /**
+     * Called by the underlying service to update the ready state.
+     *
+     * @param active
+     */
+    public void setActive(boolean active);
+
     public static abstract class Adapter implements HandlerContext {
 
         Logger log = LoggerFactory.getLogger(this.getClass());
@@ -85,6 +105,7 @@ public interface HandlerContext {
         private final Map<Object, Object> variables;
         protected final ConcurrentLinkedQueue<State> queue;
         private State current;
+        private boolean active;
 
         public Adapter() {
             this(new StateMachine());
@@ -95,35 +116,49 @@ public interface HandlerContext {
             this.variables = new HashMap<>();
             this.queue = new ConcurrentLinkedQueue<>();
             this.current = null;
+            this.active = false;
         }
 
         @Override
         public void send(Message m) {
-            State s = new SendMessageState(m, getHandler(m.getClass()));
-            enqueueOrSend(s);
+            State s = new SendMessageState(m);
+            if (m.isOob()) {
+                sendImmediate(s);
+            } else {
+                enqueueForSendWhenActive(s);
+            }
         }
 
         @Override
         public void send(Message m, HandlerContext reply) {
-            State s = new SendMessageState(m, getHandler(m.getClass()), reply);
-            enqueueOrSend(s);
+            State s = new SendMessageState(m, reply);
+            if (m.isOob()) {
+                sendImmediate(s);
+            } else {
+                enqueueForSendWhenActive(s);
+            }
         }
 
-        private void enqueueOrSend(State s) {
-            //synchronized (queue) 
-            {
-                if (isInprogress()) {
-                    queue.add(s);
+        private void sendImmediate(State s) {
+            current = s;
+            current.enter(this);
+        }
+
+        private void enqueueForSendWhenActive(State s) {
+            queue.add(s);
+            if (isActive()) {
+                if (!isInprogress()) {
+                    sendNext();
                 } else {
-                    current = s;
-                    current.enter(this);
+                    // wait for complete
                 }
+            } else {
+                // wait for activation
             }
         }
 
         @Override
         public void fire(Message m) {
-            out.println(m);
             machine.on(this, m);
         }
 
@@ -133,14 +168,14 @@ public interface HandlerContext {
                 current.on(this, response);
                 current = null;
             } else {
-                log.warn("response ignored: " + response);
+                log.warn(String.format("onSendComplete(%s): response ignored. ", response));
             }
             sendNext();
         }
 
         private void sendNext() {
-            //synchronized (queue) 
-            {
+            //synchronized (queue)
+            if (isActive()) {
                 if (queue.isEmpty()) {
                     return;
                 } else {
@@ -168,6 +203,19 @@ public interface HandlerContext {
         public boolean isInprogress() {
             return this.current != null;
         }
+
+        @Override
+        public boolean isActive() {
+            return active;
+        }
+
+        @Override
+        public void setActive(boolean active) {
+            this.active = active;
+            if (isActive() && !isInprogress()) {
+                sendNext();
+            }
+        }
     }
 
     public static class NullContext extends Adapter {
@@ -188,7 +236,11 @@ public interface HandlerContext {
 
         @Override
         public void fire(Message m) {
-            log.debug("ignored: " + m);
+        }
+
+        @Override
+        public void initHandlers(HandlerContext outboundContext) {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 }

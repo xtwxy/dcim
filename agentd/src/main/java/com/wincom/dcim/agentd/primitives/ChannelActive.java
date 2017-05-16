@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
  *
  * @author master
  */
-public class ChannelActive implements Message {
+public class ChannelActive extends Message.Adapter {
 
     private final Channel channel;
 
@@ -19,8 +19,8 @@ public class ChannelActive implements Message {
     }
 
     @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        handler.handle(ctx, this);
+    public boolean isOob() {
+        return true;
     }
 
     @Override

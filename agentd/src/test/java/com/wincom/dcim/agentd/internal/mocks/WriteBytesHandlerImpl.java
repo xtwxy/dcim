@@ -3,7 +3,8 @@ package com.wincom.dcim.agentd.internal.mocks;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import static java.lang.System.out;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -11,16 +12,16 @@ import static java.lang.System.out;
  */
 public class WriteBytesHandlerImpl implements Handler {
 
-    private final HandlerContext inbound;
+    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final HandlerContext outbound;
 
-    WriteBytesHandlerImpl(HandlerContext inbound) {
-        this.inbound = inbound;
+    WriteBytesHandlerImpl(HandlerContext outbound) {
+        this.outbound = outbound;
     }
 
     @Override
     public void handle(HandlerContext ctx, Message m) {
-        out.println(String.format("handle(%s, %s)", ctx, m));
-        inbound.send(m, ctx);
+        outbound.send(m, ctx);
     }
 
 }

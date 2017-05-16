@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
+import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.Failed;
@@ -40,7 +41,14 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
         clientContext.fire(new ChannelActive(ctx.channel()));
         ctx.fireChannelActive();
     }
+    
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        clientContext.fire(new ChannelInactive(ctx.channel()));
+        ctx.fireChannelInactive();
+    }
 
+    @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         ChannelPromise cp = ctx.newPromise();
         cp.addListener(new GenericFutureListener() {

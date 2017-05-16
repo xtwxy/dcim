@@ -16,12 +16,16 @@ import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author master
  */
 public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     private Channel channel;
     private final NetworkService service;
@@ -87,5 +91,10 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
     @Override
     public String toString() {
         return "StreamHandlerContextImpl@" + this.hashCode();
+    }
+
+    @Override
+    public void initHandlers(HandlerContext outboundContext) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

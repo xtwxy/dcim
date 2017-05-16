@@ -6,19 +6,16 @@ import io.netty.channel.Channel;
  *
  * @author master
  */
-public class ConnectionClosed implements Message {
+public class ConnectionClosed extends Message.Adapter {
+
     private final Channel channel;
+
     public ConnectionClosed(Channel c) {
         this.channel = c;
     }
-    
+
     public Channel getChannel() {
         return this.channel;
-    }
-
-    @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        handler.handle(ctx, this);
     }
 
     @Override

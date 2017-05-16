@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class Connect implements Message {
+public class Connect extends Message.Adapter {
 
     private final String host;
     private final int port;
@@ -14,17 +14,17 @@ public class Connect implements Message {
         this.port = port;
     }
 
-    @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        handler.handle(ctx, this);
-    }
-
     public String getHost() {
         return host;
     }
 
     public int getPort() {
         return port;
+    }
+
+    @Override
+    public boolean isOob() {
+        return true;
     }
 
     @Override

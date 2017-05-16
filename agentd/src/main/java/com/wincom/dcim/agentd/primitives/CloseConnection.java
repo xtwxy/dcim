@@ -4,11 +4,11 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class CloseConnection implements Message {
+public class CloseConnection extends Message.Adapter {
 
     @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        handler.handle(ctx, this);
+    public boolean isOob() {
+        return true;
     }
 
     @Override

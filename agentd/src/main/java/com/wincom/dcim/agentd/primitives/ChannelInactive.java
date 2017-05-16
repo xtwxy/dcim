@@ -6,11 +6,11 @@ import io.netty.channel.Channel;
  *
  * @author master
  */
-public class Connected extends Message.Adapter {
+public class ChannelInactive extends Message.Adapter {
 
     private final Channel channel;
 
-    public Connected(Channel c) {
+    public ChannelInactive(Channel c) {
         this.channel = c;
     }
 
@@ -25,6 +25,6 @@ public class Connected extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("Connected %s", getChannel());
+        return String.format("ChannelInactive %s", getChannel());
     }
 }

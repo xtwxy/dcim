@@ -4,17 +4,12 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class Accept implements Message {
+public class Accept extends Message.Adapter {
     private final String host;
     private final int port;
     public Accept(String host, int port) {
         this.host = host;
         this.port = port;
-    }
-
-    @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        handler.handle(ctx, this);
     }
 
     public String getHost() {
@@ -25,6 +20,11 @@ public class Accept implements Message {
         return port;
     }
     
+    @Override
+    public boolean isOob() {
+        return true;
+    }
+
     @Override
     public String toString() {
         return String.format("Accept on %s:%d", host, port);

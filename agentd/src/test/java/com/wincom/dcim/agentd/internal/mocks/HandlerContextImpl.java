@@ -12,14 +12,11 @@ import java.util.Map;
  * @author master
  */
 public class HandlerContextImpl extends HandlerContext.Adapter {
-    private final HandlerContext inbound;
+
     private final Map<Class, Handler> handlers;
 
-    public HandlerContextImpl(HandlerContext inbound) {
-        this.inbound = inbound;
+    public HandlerContextImpl() {
         this.handlers = new HashMap<>();
-        this.handlers.put(SendBytes.class, new WriteBytesHandlerImpl(inbound));
-        this.handlers.put(Unknown.class, new DefaultHandlerImpl(inbound));
     }
 
     @Override
@@ -29,5 +26,11 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
             h = handlers.get(Unknown.class);
         }
         return h;
+    }
+
+    @Override
+    public void initHandlers(HandlerContext outboundContext) {
+        this.handlers.put(SendBytes.class, new WriteBytesHandlerImpl(outboundContext));
+        this.handlers.put(Unknown.class, new DefaultHandlerImpl(outboundContext));
     }
 }

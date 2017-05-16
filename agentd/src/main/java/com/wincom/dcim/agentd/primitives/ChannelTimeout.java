@@ -7,6 +7,11 @@ package com.wincom.dcim.agentd.primitives;
 public class ChannelTimeout extends Timeout {
 
     @Override
+    public boolean isOob() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName();
     }

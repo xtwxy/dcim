@@ -4,8 +4,9 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecFactory;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
-import static java.lang.System.out;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -13,16 +14,22 @@ import java.util.Properties;
  */
 public class CodecFactoryImpl implements CodecFactory {
 
+    Logger log = LoggerFactory.getLogger(this.getClass());
     public static final String CODEC_ID_KEY = "codecId";
     public static final String OUTBOUND_PROPS_KEY = "outboundProps";
 
     @Override
     public Codec create(AgentdService service, Properties props) {
-        out.println(props);
-        
+        log.info(props.toString());
+
         Codec inboundCodec = service.getCodec(props.getProperty(CODEC_ID_KEY));
-        HandlerContext inboundContext = inboundCodec.createOutbound(service, (Properties) props.get(OUTBOUND_PROPS_KEY));
-        Codec theCodec = new CodecImpl(inboundContext);
+
+        Codec theCodec = new CodecImpl();
+        HandlerContext outboundContext = inboundCodec.createInbound(
+                service, 
+                (Properties) props.get(OUTBOUND_PROPS_KEY),
+                theCodec);
+        
 
         return theCodec;
     }

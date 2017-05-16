@@ -4,17 +4,12 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class SetMillsecFromNowTimer implements Message {
+public class SetMillsecFromNowTimer extends Message.Adapter {
     
     private final long millsec;
     
     public SetMillsecFromNowTimer(long millsec) {
         this.millsec = millsec;
-    }
-
-    @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        handler.handle(ctx, this);
     }
 
     public long getMillsec() {
