@@ -40,11 +40,11 @@ public interface HandlerContext {
 
     /**
      * Initialize handlers when outbound is activated.
-     * 
-     * @param outboundContext 
+     *
+     * @param outboundContext
      */
     public void initHandlers(HandlerContext outboundContext);
-    
+
     /**
      * Get handler by class type of the message.
      *
@@ -97,6 +97,24 @@ public interface HandlerContext {
      */
     public void setActive(boolean active);
 
+    /**
+     * Set inbound handler to this context.
+     *
+     * @param handler
+     */
+    public void setInboundHandler(Handler handler);
+
+    /**
+     * Get inbound handler.
+     *
+     * @return
+     */
+    public Handler getInboundHandler();
+
+    public void fireClosed(Message m);
+
+    public void printState(Message m);
+
     public static abstract class Adapter implements HandlerContext {
 
         Logger log = LoggerFactory.getLogger(this.getClass());
@@ -106,6 +124,7 @@ public interface HandlerContext {
         protected final ConcurrentLinkedQueue<State> queue;
         private State current;
         private boolean active;
+        protected Handler inboundHandler;
 
         public Adapter() {
             this(new StateMachine());
@@ -117,6 +136,16 @@ public interface HandlerContext {
             this.queue = new ConcurrentLinkedQueue<>();
             this.current = null;
             this.active = false;
+        }
+
+        @Override
+        public Handler getInboundHandler() {
+            return this.inboundHandler;
+        }
+
+        @Override
+        public void setInboundHandler(Handler handler) {
+            this.inboundHandler = handler;
         }
 
         @Override
@@ -160,6 +189,20 @@ public interface HandlerContext {
         @Override
         public void fire(Message m) {
             machine.on(this, m);
+        }
+
+        @Override
+        public void fireClosed(Message m) {
+            setActive(false);
+            if (isInprogress()) {
+                current.on(this, m);
+                current = null;
+            }
+
+            while (!queue.isEmpty()) {
+                State s = queue.poll();
+                s.on(this, m);
+            }
         }
 
         @Override
@@ -214,6 +257,18 @@ public interface HandlerContext {
             this.active = active;
             if (isActive() && !isInprogress()) {
                 sendNext();
+            }
+        }
+
+        @Override
+        public void printState(Message m) {
+            if (current != null || !queue.isEmpty()) {
+                log.info(machine.toString());
+                log.info(variables.toString());
+                log.info(queue.toString());
+                log.info("inprogress: " + current);
+                log.info("" + active);
+                log.info("inboundHandler: " + inboundHandler);
             }
         }
     }

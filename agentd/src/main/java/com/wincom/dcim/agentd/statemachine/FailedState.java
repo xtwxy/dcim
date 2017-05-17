@@ -1,8 +1,7 @@
-package com.wincom.dcim.agentd.internal.tests;
+package com.wincom.dcim.agentd.statemachine;
 
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.statemachine.State;
 import static java.lang.System.out;
 
 /**

@@ -57,7 +57,7 @@ public class CodecImpl implements Codec {
         final StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine client = builder
-                .add("receiveState", new ReceiveState(inboundHandler))
+                .add("receiveState", new ReceiveState())
                 .transision("receiveState", "receiveState", "receiveState")
                 .buildWithInitialState("receiveState");
 

@@ -1,11 +1,10 @@
-package com.wincom.dcim.agentd.internal.tests;
+package com.wincom.dcim.agentd.statemachine;
 
 import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
 import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import io.netty.handler.timeout.IdleStateHandler;

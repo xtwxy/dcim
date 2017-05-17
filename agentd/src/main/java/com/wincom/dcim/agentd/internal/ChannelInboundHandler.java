@@ -4,7 +4,6 @@ import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.ReadTimeout;
@@ -14,10 +13,7 @@ import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,23 +45,6 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        ChannelPromise cp = ctx.newPromise();
-        cp.addListener(new GenericFutureListener() {
-            @Override
-            public void operationComplete(Future f) throws Exception {
-                if (f.isSuccess()) {
-                    clientContext.fire(new ConnectionClosed(ctx.channel()));
-                } else {
-                    clientContext.fire(new Failed(f.cause()));
-                }
-            }
-        });
-        ctx.close(cp);
-        ctx.fireChannelUnregistered();
-    }
-
-    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuffer buffer = null;
         if (msg instanceof ByteBuffer) {
@@ -81,7 +60,6 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
         } else {
             clientContext.fire(new Unknown(msg));
         }
-
     }
 
     @Override

@@ -3,9 +3,9 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.internal.tests.ConnectState;
-import com.wincom.dcim.agentd.internal.tests.ReceiveState;
-import com.wincom.dcim.agentd.internal.tests.WaitTimeoutState;
+import com.wincom.dcim.agentd.statemachine.ConnectState;
+import com.wincom.dcim.agentd.statemachine.ReceiveState;
+import com.wincom.dcim.agentd.statemachine.WaitTimeoutState;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
@@ -45,13 +45,14 @@ public class TcpClientCodecImpl implements Codec {
 
         StateMachine client = builder
                 .add("connectState", new ConnectState(handlerContext, host, Integer.valueOf(port)))
-                .add("receiveState", new ReceiveState(inboundHandler))
+                .add("receiveState", new ReceiveState())
                 .add("waitState", new WaitTimeoutState(Integer.valueOf(waiteTimeout)))
                 .transision("connectState", "receiveState", "waitState")
                 .transision("receiveState", "receiveState", "waitState")
                 .transision("waitState", "connectState", "connectState")
                 .buildWithInitialState("connectState");
 
+        handlerContext.setInboundHandler(inboundHandler);
         handlerContext.getStateMachine()
                 .buildWith(client)
                 .enter(handlerContext);

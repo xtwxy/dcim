@@ -62,7 +62,7 @@ public class CodecFactoryTest {
             final HandlerContext ctx = new HandlerContext.NullContext() {
                 @Override
                 public void fire(Message m) {
-                    log.info("ignored: " + m);
+                    log.info("ignored: fire " + m);
                 }
             };
             outboundContext.send(m, ctx);

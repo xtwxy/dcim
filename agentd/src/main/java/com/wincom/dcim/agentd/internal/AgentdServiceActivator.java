@@ -8,13 +8,8 @@ import org.osgi.framework.BundleContext;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.internal.tests.AcceptState;
-import com.wincom.dcim.agentd.internal.tests.ConnectState;
-import com.wincom.dcim.agentd.internal.tests.FailedState;
 import com.wincom.dcim.agentd.internal.tests.ReceiveState;
-import com.wincom.dcim.agentd.internal.tests.WaitTimeoutState;
-import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
 import java.util.Properties;
@@ -73,12 +68,7 @@ public final class AgentdServiceActivator implements BundleActivator {
 
         StateMachine client = builder
                 .add("connectState", new ConnectState(handlerContext, "192.168.0.68", 9080))
-                .add("receiveState", new ReceiveState(new Handler() {
-                    @Override
-                    public void handle(HandlerContext ctx, Message m) {
-                        ctx.send(m);
-                    }
-                }))
+                .add("receiveState", new ReceiveState())
                 .add("waitState", new WaitTimeoutState(6000))
                 .transision("connectState", "receiveState", "waitState")
                 .transision("receiveState", "receiveState", "waitState")
