@@ -113,8 +113,6 @@ public interface HandlerContext {
 
     public void fireClosed(Message m);
 
-    public void printState(Message m);
-
     public static abstract class Adapter implements HandlerContext {
 
         Logger log = LoggerFactory.getLogger(this.getClass());
@@ -260,15 +258,14 @@ public interface HandlerContext {
             }
         }
 
-        @Override
-        public void printState(Message m) {
+        private void printState(Message m) {
             if (current != null || !queue.isEmpty()) {
                 log.info(m.toString());
                 log.info(machine.toString());
                 log.info(variables.toString());
                 log.info(queue.toString());
                 log.info("inprogress: " + current);
-                log.info("" + active);
+                log.info("active: " + active);
                 log.info("inboundHandler: " + inboundHandler);
                 new Exception().printStackTrace();
             }

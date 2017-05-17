@@ -57,7 +57,7 @@ public class ConnectState extends State.Adapter {
             clientContext.setChannel(a.getChannel());
 
             a.getChannel().pipeline()
-                    .addLast(new IdleStateHandler(0, 0, 2))
+                    .addLast(new IdleStateHandler(20, 1, 0))
                     .addLast(new ChannelInboundHandler(context));
 
             context.onSendComplete(m);

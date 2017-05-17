@@ -3,13 +3,14 @@ package com.wincom.dcim.agentd.internal.tests;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
+import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import com.wincom.dcim.agentd.statemachine.State;
 import java.nio.ByteBuffer;
 import org.slf4j.Logger;
@@ -30,26 +31,26 @@ public class ReceiveState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         if (m instanceof BytesReceived) {
             // echo back the bytes.
-            ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
+            // ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
             return success();
         } else if (m instanceof WriteComplete) {
             // sendBytes(ctx);
-            //ctx.onSendComplete(m);
+            ctx.onSendComplete(m);
             return success();
-        } else if (m instanceof ChannelTimeout) {
-            ctx.printState(m);
+        } else if (m instanceof WriteTimeout) {
             sendBytes(ctx);
+            return success();
+        } else if (m instanceof ReadTimeout) {
+            ctx.onSendComplete(m);
             return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);
             sendBytes(ctx);
             return success();
         } else if (m instanceof ChannelInactive) {
-            ctx.printState(m);
             ctx.fireClosed(m);
             return fail();
         } else if (m instanceof ConnectionClosed) {
-            ctx.printState(m);
             ctx.fireClosed(m);
             return fail();
         } else {

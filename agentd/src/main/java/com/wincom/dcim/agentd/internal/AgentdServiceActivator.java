@@ -41,7 +41,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         out.println(service);
 
         createAcceptor(service);
-        for (int i = 0; i < 1; ++i) {
+        for (int i = 0; i < 10000; ++i) {
             createConnection(service);
         }
     }
@@ -82,7 +82,7 @@ public final class AgentdServiceActivator implements BundleActivator {
 
     public static void main(String[] args) {
         NetworkService service = new NetworkServiceImpl();
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 1; ++i) {
             createConnection(service);
         }
     }

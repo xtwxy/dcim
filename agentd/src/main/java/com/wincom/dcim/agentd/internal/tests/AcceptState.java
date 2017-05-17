@@ -52,22 +52,20 @@ public class AcceptState extends State.Adapter {
             log.info("Connection accepted: " + a.getChannel());
 
             // fork a new state machine to handle connection.
-            // 1.create new context for the newly forked state machine.
             final StreamHandlerContextImpl clientContext
                     = (StreamHandlerContextImpl) service.createHandlerContext();
-            // 2.create receive state.
+
             StateMachine connection = new StateMachineBuilder()
                     .add("receiveState", new ReceiveState())
                     .transision("receiveState", "receiveState", "receiveState")
                     .buildWithInitialState("receiveState");
-            // 3.bind context to the newly forked state machine.
-            clientContext.getStateMachine().buildWith(connection);
-            // 4.set channel for communication with underlying service...
+
             clientContext.setChannel(a.getChannel());
-            // 5.initialize event generator for this channel.
+
             a.getChannel().pipeline()
-                    //.addLast(new IdleStateHandler(0, 0, 6))
                     .addLast(new ChannelInboundHandler(clientContext));
+
+            clientContext.getStateMachine().buildWith(connection).enter(clientContext);
 
             // continue accepting new connections in this state machine...
             context.onSendComplete(m);
