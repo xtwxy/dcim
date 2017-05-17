@@ -57,7 +57,7 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.setActive(false);
-            return success();
+            return fail();
         } else if (m instanceof MillsecFromNowTimeout) {
             if(ctx.isActive()) {
                 return success();
