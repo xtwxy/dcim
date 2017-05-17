@@ -33,4 +33,9 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
         this.handlers.put(SendBytes.class, new WriteBytesHandlerImpl(outboundContext));
         this.handlers.put(Unknown.class, new DefaultHandlerImpl(outboundContext));
     }
+
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -16,6 +16,7 @@ import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,5 +97,10 @@ public final class StreamHandlerContextImpl extends HandlerContext.Adapter {
     @Override
     public void initHandlers(HandlerContext outboundContext) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void close() {
+        this.channel.close();
     }
 }

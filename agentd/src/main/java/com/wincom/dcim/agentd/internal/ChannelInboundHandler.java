@@ -37,11 +37,13 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
         clientContext.fire(new ChannelActive(ctx.channel()));
         ctx.fireChannelActive();
     }
-    
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         clientContext.fire(new ChannelInactive(ctx.channel()));
         ctx.fireChannelInactive();
+        ctx.pipeline().close();
+        ctx.channel().close();
     }
 
     @Override

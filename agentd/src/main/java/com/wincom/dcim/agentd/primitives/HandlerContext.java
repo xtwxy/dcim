@@ -112,6 +112,7 @@ public interface HandlerContext {
     public Handler getInboundHandler();
 
     public void fireClosed(Message m);
+    public void close();
 
     public static abstract class Adapter implements HandlerContext {
 
@@ -292,6 +293,11 @@ public interface HandlerContext {
         public void fire(Message m) {
         }
 
+        @Override
+        public void close() {
+            
+        }
+        
         @Override
         public void initHandlers(HandlerContext outboundContext) {
             throw new UnsupportedOperationException("Not supported yet.");
