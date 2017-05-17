@@ -3,10 +3,12 @@ package com.wincom.dcim.agentd.internal.tests;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
@@ -23,8 +25,12 @@ import org.slf4j.LoggerFactory;
 public class ReceiveState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
+    byte[] ba = new byte[256];
 
     public ReceiveState() {
+        for (int i = 0; i < ba.length; ++i) {
+            ba[i] = (byte) (0xff & (i % 10 + '0'));
+        }
     }
 
     @Override
@@ -43,28 +49,32 @@ public class ReceiveState extends State.Adapter {
         } else if (m instanceof ReadTimeout) {
             ctx.onSendComplete(m);
             return success();
+        } else if (m instanceof ChannelTimeout) {
+            ctx.onSendComplete(m);
+            return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);
-            sendBytes(ctx);
             return success();
         } else if (m instanceof ChannelInactive) {
-            ctx.fireClosed(m);
-            return fail();
+            ctx.setActive(false);
+            return success();
+        } else if (m instanceof MillsecFromNowTimeout) {
+            if(ctx.isActive()) {
+                return success();
+            } else {
+                return fail();
+            }
         } else if (m instanceof ConnectionClosed) {
             ctx.fireClosed(m);
             return fail();
         } else {
             log.warn(String.format("unknown message: %s , send CloseConnection", m));
             ctx.send(new CloseConnection());
-            return success();
+            return fail();
         }
     }
 
     public void sendBytes(HandlerContext ctx) {
-        byte[] ba = new byte[256];
-        for (int i = 0; i < ba.length; ++i) {
-            ba[i] = (byte) (0xff & (i % 10 + '0'));
-        }
         ctx.send(new SendBytes(ByteBuffer.wrap(ba)));
     }
 

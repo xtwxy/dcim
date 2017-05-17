@@ -7,6 +7,7 @@ import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +41,6 @@ public class ConnectState extends State.Adapter {
     }
 
     @Override
-    public State fail() {
-        return this;
-    }
-
-    @Override
     public State on(HandlerContext context, Message m) {
         if (m instanceof Connected) {
             Connected a = (Connected) m;
@@ -57,10 +53,12 @@ public class ConnectState extends State.Adapter {
             clientContext.setChannel(a.getChannel());
 
             a.getChannel().pipeline()
-                    .addLast(new IdleStateHandler(20, 1, 0))
+                    .addLast(new IdleStateHandler(20, 1, 20))
                     .addLast(new ChannelInboundHandler(context));
 
             context.onSendComplete(m);
+            
+            context.send(new SetMillsecFromNowTimer(6000));
 
             return success();
         } else if(m instanceof ChannelTimeout) {

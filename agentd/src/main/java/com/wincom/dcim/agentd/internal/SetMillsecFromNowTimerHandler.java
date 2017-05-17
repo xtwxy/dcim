@@ -37,6 +37,7 @@ public class SetMillsecFromNowTimerHandler implements Handler {
                 @Override
                 public void run(Timeout tmt) throws Exception {
                     log.info("timout.");
+                    tmt.cancel();
                     ctx.fire(new MillsecFromNowTimeout());
                 }
 

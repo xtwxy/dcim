@@ -1,11 +1,9 @@
 package com.wincom.dcim.agentd.statemachine;
 
-import com.wincom.dcim.agentd.internal.tests.*;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
-import com.wincom.dcim.agentd.statemachine.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +24,7 @@ public class WaitTimeoutState extends State.Adapter {
     @Override
     public State enter(HandlerContext ctx) {
         ctx.send(new SetMillsecFromNowTimer(millsec));
+        ctx.set("timeout.millsec", millsec);
         return this;
     }
 
