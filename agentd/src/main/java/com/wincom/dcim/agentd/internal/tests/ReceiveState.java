@@ -34,7 +34,7 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof WriteComplete) {
             // sendBytes(ctx);
-            ctx.onSendComplete(m);
+            //ctx.onSendComplete(m);
             return success();
         } else if (m instanceof ChannelTimeout) {
             ctx.printState(m);
@@ -42,7 +42,7 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);
-            //sendBytes(ctx);
+            sendBytes(ctx);
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.printState(m);

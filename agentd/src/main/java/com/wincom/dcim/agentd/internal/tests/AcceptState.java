@@ -6,9 +6,10 @@ import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
-import com.wincom.dcim.agentd.statemachine.StateBuilder;
 import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
 import com.wincom.dcim.agentd.primitives.Accept;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
+import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,10 @@ public class AcceptState extends State.Adapter {
             final StreamHandlerContextImpl clientContext
                     = (StreamHandlerContextImpl) service.createHandlerContext();
             // 2.create receive state.
-            StateBuilder connection = StateBuilder.initial().state(new ReceiveState());
+            StateMachine connection = new StateMachineBuilder()
+                    .add("receiveState", new ReceiveState())
+                    .transision("receiveState", "receiveState", "receiveState")
+                    .buildWithInitialState("receiveState");
             // 3.bind context to the newly forked state machine.
             clientContext.getStateMachine().buildWith(connection);
             // 4.set channel for communication with underlying service...

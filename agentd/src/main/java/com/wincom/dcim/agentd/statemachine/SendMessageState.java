@@ -24,11 +24,7 @@ public class SendMessageState extends State.Adapter {
 
     @Override
     public State enter(HandlerContext ctx) {
-        try {
-            ctx.getHandler(message.getClass()).handle(ctx, message);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        ctx.getHandler(message.getClass()).handle(ctx, message);
         return this;
     }
 
@@ -38,4 +34,8 @@ public class SendMessageState extends State.Adapter {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "SendMessageState@" + this.hashCode();
+    }
 }

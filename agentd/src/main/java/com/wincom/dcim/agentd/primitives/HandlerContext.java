@@ -168,12 +168,12 @@ public interface HandlerContext {
             }
         }
 
-        private void sendImmediate(State s) {
+        private synchronized void sendImmediate(State s) {
             current = s;
             current.enter(this);
         }
 
-        private void enqueueForSendWhenActive(State s) {
+        private synchronized void enqueueForSendWhenActive(State s) {
             queue.add(s);
             if (isActive()) {
                 if (!isInprogress()) {
@@ -206,7 +206,7 @@ public interface HandlerContext {
         }
 
         @Override
-        public void onSendComplete(Message response) {
+        public synchronized void onSendComplete(Message response) {
             if (isInprogress()) {
                 current.on(this, response);
                 current = null;
@@ -263,12 +263,14 @@ public interface HandlerContext {
         @Override
         public void printState(Message m) {
             if (current != null || !queue.isEmpty()) {
+                log.info(m.toString());
                 log.info(machine.toString());
                 log.info(variables.toString());
                 log.info(queue.toString());
                 log.info("inprogress: " + current);
                 log.info("" + active);
                 log.info("inboundHandler: " + inboundHandler);
+                new Exception().printStackTrace();
             }
         }
     }
