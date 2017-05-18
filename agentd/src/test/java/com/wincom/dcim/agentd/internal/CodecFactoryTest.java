@@ -40,14 +40,14 @@ public class CodecFactoryTest {
 
         Properties props = new Properties();
 
-        props.put(CodecFactoryImpl.CODEC_ID_KEY, TCP_CODEC_ID);
+        props.put(CodecFactoryImpl.OUTBOUND_CODEC_ID_KEY, TCP_CODEC_ID);
 
         Properties outbound = new Properties();
         outbound.put(TcpClientCodecImpl.HOST_KEY, HOST);
         outbound.put(TcpClientCodecImpl.PORT_KEY, PORT);
         outbound.put(TcpClientCodecImpl.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
-        props.put(CodecFactoryImpl.OUTBOUND_PROPS_KEY, outbound);
+        props.put(CodecFactoryImpl.OUTBOUND_CTX_PROPS_KEY, outbound);
 
         try {
             Codec c = agent.createCodec(FACTORY_ID, CODEC_ID, props);

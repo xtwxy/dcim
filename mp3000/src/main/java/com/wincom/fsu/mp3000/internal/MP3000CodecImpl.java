@@ -2,15 +2,20 @@ package com.wincom.fsu.mp3000.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Composition of TCP connections to a MP3000.
- *
+ * this CODEC does not handle inbound messages. just pass request to underlying
+ * TCP stream.
  * @author master
  */
-public class MP3000CodecImpl extends Codec.Adapter {
+public class MP3000CodecImpl implements Codec {
 
     private String HOST;
     private final int BASE_PORT;
@@ -46,18 +51,18 @@ public class MP3000CodecImpl extends Codec.Adapter {
         }
     }
 
-    /**
-     * Connect <code>Codec</code> to <code>Codecchannel</code> with identifier
-     * <code>channelId</code>.
-     *
-     * @param channelId the identifier of the <code>CodecChannel</code>.
-     * @param cc the <code>Codec</codec> to be connected.
-     */
     @Override
-    public void setOutboundCodec(String channelId, Codec cc) {
-        int port = Integer.parseInt(channelId);
-        if (port >= 0 && port < this.PORT_COUNT) {
-            outbound.get(port).setOutboundCodec(cc);
-        }
+    public void codecActive(HandlerContext outboundContext) {
+        // this codec does not handle inbound messages - ignore.
+    }
+
+    @Override
+    public HandlerContext createInbound(AgentdService service, Properties outbound, Handler inboundHandler) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handle(HandlerContext ctx, Message m) {
+        // this codec does not handle inbound messages - ignore.
     }
 }

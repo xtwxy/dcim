@@ -15,19 +15,18 @@ import org.slf4j.LoggerFactory;
 public class CodecFactoryImpl implements CodecFactory {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
-    public static final String CODEC_ID_KEY = "codecId";
-    public static final String OUTBOUND_PROPS_KEY = "outboundProps";
+    public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
+    public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
     @Override
     public Codec create(AgentdService service, Properties props) {
         log.info(props.toString());
 
-        Codec inboundCodec = service.getCodec(props.getProperty(CODEC_ID_KEY));
+        Codec inboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
         Codec theCodec = new CodecImpl();
-        HandlerContext outboundContext = inboundCodec.createInbound(
-                service, 
-                (Properties) props.get(OUTBOUND_PROPS_KEY),
+        HandlerContext outboundContext = inboundCodec.createInbound(service, 
+                (Properties) props.get(OUTBOUND_CTX_PROPS_KEY),
                 theCodec);
         
 
