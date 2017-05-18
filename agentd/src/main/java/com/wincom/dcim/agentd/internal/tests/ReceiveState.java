@@ -4,6 +4,7 @@ import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.ConnectFailed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
@@ -67,6 +68,8 @@ public class ReceiveState extends State.Adapter {
             ctx.setActive(false);
             ctx.close();
             ctx.fireClosed(m);
+            return fail();
+        } else if (m instanceof ConnectFailed) {
             return fail();
         } else if (m instanceof MillsecFromNowTimeout) {
             ctx.remove("timeout");

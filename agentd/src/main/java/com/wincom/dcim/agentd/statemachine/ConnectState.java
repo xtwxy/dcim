@@ -58,7 +58,7 @@ public class ConnectState extends State.Adapter {
 
             ctx.onSendComplete(m);
             
-            ctx.send(new SetMillsecFromNowTimer(60000));
+            //ctx.send(new SetMillsecFromNowTimer(60000));
 
             return success();
         } else if(m instanceof ChannelTimeout) {

@@ -49,7 +49,7 @@ public class AcceptState extends State.Adapter {
         if (m instanceof Accepted) {
             Accepted a = (Accepted) m;
 
-            log.info("Connection accepted: " + a.getChannel());
+            log.info("Connection accepted: " + a);
 
             // fork a new state machine to handle connection.
             final StreamHandlerContextImpl clientContext

@@ -217,7 +217,7 @@ public interface HandlerContext {
                 current.on(this, response);
                 current = null;
             } else {
-                log.warn(String.format("onSendComplete(%s): response ignored. ", response));
+                log.debug(String.format("onSendComplete(%s): response ignored. ", response));
             }
             sendNext();
         }
@@ -244,6 +244,7 @@ public interface HandlerContext {
             return variables.get(key);
         }
 
+        @Override
         public Object remove(Object key) {
             return variables.remove(key);
         }
