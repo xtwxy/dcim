@@ -36,6 +36,5 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

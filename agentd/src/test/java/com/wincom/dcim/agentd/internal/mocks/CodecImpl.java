@@ -2,11 +2,11 @@ package com.wincom.dcim.agentd.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.internal.tests.ReceiveState;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import java.util.HashMap;
@@ -54,6 +54,8 @@ public class CodecImpl implements Codec {
         log.info(outboundProps.toString());
 
         final HandlerContext handlerContext = new HandlerContextImpl();
+        handlerContext.setInboundHandler(inboundHandler);
+        
         final StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine client = builder

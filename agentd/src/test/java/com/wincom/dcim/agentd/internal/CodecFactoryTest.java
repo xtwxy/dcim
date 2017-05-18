@@ -3,10 +3,13 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.internal.mocks.CodecFactoryImpl;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
+import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
+import com.wincom.dcim.agentd.primitives.WriteComplete;
+import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import java.nio.ByteBuffer;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -53,6 +56,13 @@ public class CodecFactoryTest {
                 public void handle(HandlerContext ctx, Message m) {
                     if (m instanceof BytesReceived) {
                         ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
+                    } else if (m instanceof WriteComplete) {
+                    } else if (m instanceof WriteTimeout) {
+                        sendBytes(ctx);
+                    } else if (m instanceof ChannelActive) {
+                        sendBytes(ctx);
+                    } else {
+                        log.info(String.format("Unprocessed: %s", m));
                     }
                 }
             });
