@@ -24,7 +24,6 @@ public class WaitTimeoutState extends State.Adapter {
     @Override
     public State enter(HandlerContext ctx) {
         ctx.send(new SetMillsecFromNowTimer(millsec));
-        ctx.set("timeout.millsec", millsec);
         return this;
     }
 
@@ -32,10 +31,11 @@ public class WaitTimeoutState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         log.info(m.toString());
         if (m instanceof MillsecFromNowTimeout) {
+            ctx.remove("timeout");
             ctx.onSendComplete(m);
             return success();
         } else {
-            log.warn("unknown message: " + m);
+            log.warn(String.format("Unknown state: (%s, %s, %s)", this, ctx, m));
             return this;
         }
     }

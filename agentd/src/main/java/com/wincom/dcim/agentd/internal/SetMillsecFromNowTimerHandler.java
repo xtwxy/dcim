@@ -42,7 +42,8 @@ public class SetMillsecFromNowTimerHandler implements Handler {
                 }
 
             };
-            service.getTimer().newTimeout(tt, setTimer.getMillsec(), TimeUnit.MILLISECONDS);
+            Timeout timeout = service.getTimer().newTimeout(tt, setTimer.getMillsec(), TimeUnit.MILLISECONDS);
+            ctx.set("timeout", timeout);
         } else {
             log.warn("unknown message: " + m);
         }

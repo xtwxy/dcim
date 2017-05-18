@@ -75,6 +75,13 @@ public interface HandlerContext {
      * @return
      */
     public Object get(Object key);
+    
+    /**
+     * Remove context variables.
+     * @param key
+     * @return 
+     */
+    public Object remove(Object key);
 
     /**
      * Get state machine.
@@ -235,6 +242,10 @@ public interface HandlerContext {
         @Override
         public Object get(Object key) {
             return variables.get(key);
+        }
+
+        public Object remove(Object key) {
+            return variables.remove(key);
         }
 
         @Override

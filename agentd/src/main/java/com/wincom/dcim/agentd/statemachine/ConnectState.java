@@ -41,7 +41,7 @@ public class ConnectState extends State.Adapter {
     }
 
     @Override
-    public State on(HandlerContext context, Message m) {
+    public State on(HandlerContext ctx, Message m) {
         if (m instanceof Connected) {
             Connected a = (Connected) m;
 
@@ -49,23 +49,23 @@ public class ConnectState extends State.Adapter {
                     a.getChannel().localAddress(), a.getChannel().remoteAddress()));
 
             final StreamHandlerContextImpl clientContext
-                    = (StreamHandlerContextImpl) context;
+                    = (StreamHandlerContextImpl) ctx;
             clientContext.setChannel(a.getChannel());
 
             a.getChannel().pipeline()
                     .addLast(new IdleStateHandler(20, 1, 20))
-                    .addLast(new ChannelInboundHandler(context));
+                    .addLast(new ChannelInboundHandler(ctx));
 
-            context.onSendComplete(m);
+            ctx.onSendComplete(m);
             
-            context.send(new SetMillsecFromNowTimer(6000));
+            ctx.send(new SetMillsecFromNowTimer(60000));
 
             return success();
         } else if(m instanceof ChannelTimeout) {
             return success();
         } else {
-            log.info("Connect failed: " + m);
-            return fail();
+            log.warn(String.format("Unknown state: (%s, %s, %s)", this, ctx, m));
+            return this;
         }
     }
 
