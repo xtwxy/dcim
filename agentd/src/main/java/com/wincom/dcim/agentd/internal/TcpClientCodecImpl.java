@@ -34,7 +34,7 @@ public class TcpClientCodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext createInbound(AgentdService service, Properties outbound, Handler inboundHandler) {
+    public HandlerContext openInbound(AgentdService service, Properties outbound, Handler inboundHandler) {
         log.info(outbound.toString());
 
         final HandlerContext handlerContext = network.createHandlerContext();

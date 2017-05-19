@@ -2,6 +2,7 @@ package com.wincom.fsu.mp3000.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
@@ -10,9 +11,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Composition of TCP connections to a MP3000.
- * this CODEC does not handle inbound messages. just pass request to underlying
- * TCP stream.
+ * Composition of TCP connections to a MP3000. this CODEC does not handle
+ * inbound messages. just pass request to underlying TCP stream.
+ *
  * @author master
  */
 public class MP3000CodecImpl implements Codec {
@@ -20,35 +21,21 @@ public class MP3000CodecImpl implements Codec {
     private String HOST;
     private final int BASE_PORT;
     private final int PORT_COUNT;
-    private final Map<Integer, MP3000CodecChannelImpl> outbound;
+    private final String WAITE_TIMEOUT;
+    private final String CODEC_ID;
+    public static final String COM_PORT_KEY = "port";
+    public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
+    public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
-    /**
-     * 
-     * @param host host or IP address of MP3000.
-     * @param basePort the start TCP port number. 
-     * @param portCount number of ports.
-     * @param agent reference to agent service.
-     */
-    public MP3000CodecImpl(
-            String host,
-            int basePort,
-            int portCount,
-            AgentdService agent
-    ) {
-        this.outbound = new HashMap<>();
-        this.HOST = host;
-        this.BASE_PORT = basePort;
-        this.PORT_COUNT = portCount;
+    private final Map<Integer, HandlerContext> inbound;
 
-        for (int i = 0; i < this.PORT_COUNT; ++i) {
-            outbound.put(i,
-                    new MP3000CodecChannelImpl(
-                            this.HOST,
-                            this.BASE_PORT + i,
-                            agent
-                    )
-            );
-        }
+    public MP3000CodecImpl(AgentdService service, Properties props) {
+        this.inbound = new HashMap<>();
+        this.HOST = props.getProperty("host");
+        this.BASE_PORT = Integer.parseInt(props.getProperty("basePort"));
+        this.PORT_COUNT = Integer.parseInt(props.getProperty("portCount"));
+        this.WAITE_TIMEOUT = props.getProperty(TcpClientCodecImpl.WAITE_TIMEOUT_KEY);
+        this.CODEC_ID = props.getProperty(OUTBOUND_CODEC_ID_KEY);
     }
 
     @Override
@@ -57,8 +44,27 @@ public class MP3000CodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext createInbound(AgentdService service, Properties outbound, Handler inboundHandler) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public HandlerContext openInbound(
+            AgentdService service,
+            Properties props,
+            Handler inboundHandler) {
+        Integer comport = Integer.valueOf(props.getProperty(COM_PORT_KEY));
+        HandlerContext ctx = inbound.get(comport);
+        if (comport <= PORT_COUNT) {
+            if (ctx == null) {
+                Codec inboundCodec = service.getCodec(CODEC_ID);
+                Properties p = new Properties();
+                p.put(TcpClientCodecImpl.HOST_KEY, HOST);
+                p.put(TcpClientCodecImpl.PORT_KEY, BASE_PORT + comport);
+                p.put(TcpClientCodecImpl.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
+
+                ctx = inboundCodec.openInbound(service, p, this);
+                inbound.put(comport, ctx);
+            } else {
+                // already opened.
+            }
+        }
+        return ctx;
     }
 
     @Override

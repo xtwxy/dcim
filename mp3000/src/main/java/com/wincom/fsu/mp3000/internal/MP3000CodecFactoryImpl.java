@@ -3,6 +3,7 @@ package com.wincom.fsu.mp3000.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecFactory;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,24 +16,24 @@ import org.slf4j.LoggerFactory;
 public class MP3000CodecFactoryImpl implements CodecFactory {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
-    public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
     /**
      * Create <code>MP3000CodecImpl</code> instance.
-     * 
+     *
      * @param service
      * @param props
-     * @return 
+     * @return
      */
     @Override
     public Codec create(AgentdService service, Properties props) {
+        log.info(props.toString());
 
-        return new MP3000CodecImpl(
-                props.getProperty("host"),
-                Integer.parseInt(props.getProperty("basePort")),
-                Integer.parseInt(props.getProperty("portCount")),
-                service
-        );
+        Codec theCodec
+                = new MP3000CodecImpl(
+                        service,
+                        props
+                );
+
+        return theCodec;
     }
 }

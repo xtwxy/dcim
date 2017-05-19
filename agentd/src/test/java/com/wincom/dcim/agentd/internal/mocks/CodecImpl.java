@@ -31,17 +31,17 @@ public class CodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext createInbound(
+    public HandlerContext openInbound(
             AgentdService service,
-            Properties outboundProps,
+            Properties props,
             Handler inboundHandler) {
-        log.info(String.format("%s", outboundProps));
+        log.info(String.format("%s", props));
 
-        HandlerContext inboundContext = inbounds.get(outboundProps);
+        HandlerContext inboundContext = inbounds.get(props);
         if (inboundContext == null) {
-            inboundContext = createInbound0(service, outboundProps, inboundHandler);
+            inboundContext = createInbound0(service, props, inboundHandler);
 
-            inbounds.put(outboundProps, inboundContext);
+            inbounds.put(props, inboundContext);
         }
 
         return inboundContext;
@@ -49,9 +49,9 @@ public class CodecImpl implements Codec {
 
     private HandlerContext createInbound0(
             AgentdService service,
-            Properties outboundProps,
+            Properties props,
             Handler inboundHandler) {
-        log.info(outboundProps.toString());
+        log.info(props.toString());
 
         final HandlerContext handlerContext = new HandlerContextImpl();
         handlerContext.setInboundHandler(inboundHandler);

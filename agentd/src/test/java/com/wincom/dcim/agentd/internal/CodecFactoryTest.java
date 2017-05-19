@@ -27,7 +27,7 @@ public class CodecFactoryTest {
     private static final String CODEC_ID = "1001";
     private static final String HOST = "192.168.0.68";
     private static final String PORT = "9080";
-    private static final String WAITE_TIMEOUT = "9080";
+    private static final String WAITE_TIMEOUT = "60000";
 
     public void test() {
         AgentdServiceImpl agent = new AgentdServiceImpl();
@@ -51,7 +51,7 @@ public class CodecFactoryTest {
 
         try {
             Codec c = agent.createCodec(FACTORY_ID, CODEC_ID, props);
-            HandlerContext outboundContext = c.createInbound(agent, outbound, new Handler() {
+            HandlerContext outboundContext = c.openInbound(agent, outbound, new Handler() {
                 @Override
                 public void handle(HandlerContext ctx, Message m) {
                     if (m instanceof BytesReceived) {
