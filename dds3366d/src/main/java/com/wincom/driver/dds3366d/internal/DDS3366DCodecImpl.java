@@ -23,7 +23,7 @@ import com.wincom.dcim.agentd.statemachine.StateMachine;
  *
  * @author master
  */
-public class DDS3366DCodecImpl extends Codec.Adapter implements Target {
+public class DDS3366DCodecImpl implements Codec {
 
     private CodecChannel inbound;
     private DDS3366DCodecChannelImpl outbound;

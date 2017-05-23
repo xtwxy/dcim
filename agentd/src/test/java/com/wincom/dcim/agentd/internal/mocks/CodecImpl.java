@@ -72,6 +72,7 @@ public class CodecImpl implements Codec {
 
     @Override
     public void handle(HandlerContext ctx, Message m) {
+        log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
         if (m.isOob()) {
             if(m instanceof ChannelActive) {
                 codecActive(ctx);

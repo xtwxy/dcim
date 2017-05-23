@@ -14,6 +14,7 @@ import java.util.Set;
  * @author master
  */
 public class ReadStatus {
+
     private final Set<String> keys;
 
     public ReadStatus() {
@@ -32,12 +33,16 @@ public class ReadStatus {
 
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
-            handler.handle(null, this);
+            handler.handle(ctx, this);
         }
-   }
 
-    public static class Response extends AbstractWireable implements Message
-    {
+        @Override
+        public boolean isOob() {
+            return false;
+        }
+    }
+
+    public static class Response extends AbstractWireable implements Message {
 
         private int activePowerCombo;
         private int positiveActivePower;
@@ -50,7 +55,7 @@ public class ReadStatus {
 
         @Override
         public int getWireLength() {
-            return 4    // private int activePowerCombo;
+            return 4 // private int activePowerCombo;
                     + 4 // private int positiveActivePower;
                     + 4 // private int reverseActivePower;
                     + 2 // private short voltage;
@@ -89,7 +94,7 @@ public class ReadStatus {
 
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
-            handler.handle(null, this);
+            handler.handle(ctx, this);
         }
 
         public double getActivePowerCombo() {
@@ -155,6 +160,11 @@ public class ReadStatus {
 
         public void setFrequency(double frequency) {
             this.frequency = (short) Math.round(frequency / 0.01);
+        }
+
+        @Override
+        public boolean isOob() {
+            return false;
         }
 
     }

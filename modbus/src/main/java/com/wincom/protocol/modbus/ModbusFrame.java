@@ -1,6 +1,9 @@
 package com.wincom.protocol.modbus;
 
 import com.google.common.primitives.UnsignedBytes;
+import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
 import static com.wincom.protocol.modbus.AbstractWireable.appendHeader;
 import com.wincom.protocol.modbus.internal.CRC;
 import java.nio.ByteBuffer;
@@ -12,7 +15,7 @@ import java.nio.ByteOrder;
  */
 public class ModbusFrame
         extends AbstractWireable
-        implements Wireable {
+        implements Wireable, Message {
 
     private byte slaveAddress;
     private ModbusFunction function;
@@ -114,6 +117,16 @@ public class ModbusFrame
 
     public void setSlave(boolean slave) {
         this.slave = slave;
+    }
+
+    @Override
+    public void apply(HandlerContext ctx, Handler handler) {
+        handler.handle(ctx, this);
+    }
+
+    @Override
+    public boolean isOob() {
+        return false;
     }
 
 }

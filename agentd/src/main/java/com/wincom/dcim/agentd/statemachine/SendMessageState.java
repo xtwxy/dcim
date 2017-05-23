@@ -34,6 +34,10 @@ public class SendMessageState extends State.Adapter {
         return this;
     }
 
+    public Message getMessage() {
+        return message;
+    }
+
     @Override
     public String toString() {
         return String.format("SendMessageState@%d, %s, %s",this.hashCode(), message, reply);

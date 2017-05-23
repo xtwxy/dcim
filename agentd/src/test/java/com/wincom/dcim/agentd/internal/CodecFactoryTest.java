@@ -54,6 +54,7 @@ public class CodecFactoryTest {
             HandlerContext outboundContext = c.openInbound(agent, outbound, new Handler() {
                 @Override
                 public void handle(HandlerContext ctx, Message m) {
+                    log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
                     if (m instanceof BytesReceived) {
                         ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
                     } else if (m instanceof WriteComplete) {

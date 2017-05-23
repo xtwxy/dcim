@@ -1,81 +1,58 @@
 package com.wincom.protocol.modbus.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
-import com.wincom.dcim.agentd.ChainedDependency;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.Dependency;
-import com.wincom.dcim.agentd.IoCompletionHandler;
-import com.wincom.dcim.agentd.statemachine.StateMachine;
+import com.wincom.dcim.agentd.primitives.BytesReceived;
+import com.wincom.dcim.agentd.primitives.Failed;
+import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.protocol.modbus.ModbusFrame;
-import io.netty.buffer.ByteBuf;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Composition of TCP connections to a MP3000.
  *
  * @author master
  */
-public class ModbusCodecImpl extends Codec.Adapter {
+public class ModbusCodecImpl implements Codec {
 
-    private final Map<Byte, ModbusCodecChannelImpl> outbound;
-    private final AgentdService agent;
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final ConcurrentLinkedDeque<Runnable> queue;
+    private final Map<Byte, HandlerContext> inbound;
+
     private final ByteBuffer readBuffer;
-    private ModbusFrame request;
 
-    /**
-     *
-     * @param agent reference to agent service.
-     */
-    public ModbusCodecImpl(
-            AgentdService agent
-    ) {
-        this.agent = agent;
-        this.outbound = new HashMap<>();
-        this.queue = new ConcurrentLinkedDeque<>();
+    public ModbusCodecImpl() {
+        this.inbound = new HashMap<>();
         this.readBuffer = ByteBuffer.allocate(2048);
     }
 
-    @Override
-    public void encode(Object msg, IoCompletionHandler handler) {
-
+    public void encode(HandlerContext ctx, Object msg, HandlerContext reply, ModbusFrame request) {
         final ModbusFrame frame = (ModbusFrame) msg;
         ByteBuffer buffer = ByteBuffer.allocate(frame.getWireLength());
         frame.toWire(buffer);
 
-        synchronized (queue) {
-            boolean isFirst = false;
-            /* to avoid of using if(queue.size() == 1) test. */
-            if (queue.isEmpty()) {
-                isFirst = true;
-            }
-
-            queue.add(new Runnable() {
-                @Override
-                public void run() {
-                    request = frame;
-                    getInbound().write(buffer, handler);
-                }
-            });
-
-            if (isFirst) {
-                Runnable r = queue.peek();
-                getInbound().execute(r);
-            }
-        }
+        ctx.send(new SendBytes(buffer), reply);
     }
 
-    @Override
-    public void decode(Object msg) {
+    public void decode(HandlerContext ctx, Object msg) {
         receive(msg);
-        if (!locateModbusAddress()) {
+        ModbusFrame request = getRequest(ctx);
+        if (request == null) {
+            readBuffer.clear();
             return;
         }
-        
+        if (!locateModbusAddress(request)) {
+            return;
+        }
+
         byte[] src = null;
         byte[] dst = null;
         switch (request.getFunction()) {
@@ -84,14 +61,18 @@ public class ModbusCodecImpl extends Codec.Adapter {
             case READ_DISCRETE_INPUTS:
                 break;
             case READ_MULTIPLE_HOLDING_REGISTERS:
-                if(readBuffer.remaining() < 3) break;
+                if (readBuffer.remaining() < 3) {
+                    break;
+                }
 
                 src = readBuffer.array();
                 final int LENGTH = 5 + src[2];
-                if(readBuffer.remaining() < LENGTH) break;
+                if (readBuffer.remaining() < LENGTH) {
+                    break;
+                }
                 dst = new byte[LENGTH];
-                decode(src, dst);
-                
+                decode(ctx, src, dst, request);
+
                 break;
             case READ_INPUT_REGISTERS:
                 break;
@@ -101,35 +82,35 @@ public class ModbusCodecImpl extends Codec.Adapter {
                 break;
             case WRITE_SINGLE_HOLDING_REGISTER:
             case WRITE_MULTIPLE_HOLDING_REGISTERS:
-                if(readBuffer.remaining() < 8) break;
+                if (readBuffer.remaining() < 8) {
+                    break;
+                }
 
                 dst = new byte[8];
                 src = readBuffer.array();
-                decode(src, dst);
+                decode(ctx, src, dst, request);
                 break;
         }
     }
 
-    private void decode(byte[] src, byte[] dst) {
+    private void decode(HandlerContext ctx, byte[] src, byte[] dst, ModbusFrame request) {
         System.arraycopy(src, 0, dst, 0, dst.length);
         ByteBuffer buf = ByteBuffer.wrap(dst);
         ModbusFrame frame = new ModbusFrame();
         try {
             frame.fromWire(buf);
         } catch (Exception e) {
-            outbound.get(request.getSlaveAddress()).fireError(e);
+            inbound.get(request.getSlaveAddress()).onSendComplete(new Failed(e));
             readBuffer.position(dst.length);
             readBuffer.compact();
-            dequeue();
             return;
         }
-        outbound.get(request.getSlaveAddress()).fireComplete();
+        inbound.get(request.getSlaveAddress()).onSendComplete(frame);
         readBuffer.position(dst.length);
         readBuffer.compact();
-        dequeue();
     }
 
-    private boolean locateModbusAddress() {
+    private boolean locateModbusAddress(ModbusFrame request) {
         boolean addressLocated = false;
         do {
             byte[] bytes = readBuffer.array();
@@ -147,11 +128,7 @@ public class ModbusCodecImpl extends Codec.Adapter {
     }
 
     private void receive(Object msg) throws IllegalArgumentException {
-        if (msg instanceof ByteBuf) {
-            ByteBuf buf = (ByteBuf) msg;
-            readBuffer.put(buf.nioBuffer());
-            buf.release();
-        } else if (msg instanceof ByteBuffer) {
+        if (msg instanceof ByteBuffer) {
             ByteBuffer buf = (ByteBuffer) msg;
             readBuffer.put(buf);
         } else {
@@ -159,34 +136,33 @@ public class ModbusCodecImpl extends Codec.Adapter {
         }
     }
 
-    /**
-     * Connect <code>Codec</code> to <code>Codecchannel</code> with identifier
-     * <code>channelId</code>.
-     *
-     * @param channelId the identifier of the <code>CodecChannel</code>.
-     * @param cc the <code>Codec</code> to be connected.
-     */
     @Override
-    synchronized public void setOutboundCodec(String channelId, Codec cc) {
-        int address = Integer.parseInt(channelId);
-        ModbusCodecChannelImpl codecChannel = new ModbusCodecChannelImpl(address, agent);
-        codecChannel.setInboundCodec(this);
-        codecChannel.setOutboundCodec(cc);
-        outbound.put((byte)(0xff & address), codecChannel);
+    public void codecActive(HandlerContext outboundContext) {
+
     }
 
     @Override
-    public StateMachine withDependencies(com.wincom.dcim.agentd.statemachine.StateMachine sm) {
-        return getInbound().withDependencies(sm);
+    public HandlerContext openInbound(AgentdService service, Properties props, Handler inboundHandler) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    private void dequeue() {
-        synchronized (queue) {
-            queue.poll();
-            Runnable r = queue.peek();
-            if(r != null) {
-                getInbound().execute(r);
-            }
+
+    /**
+     * Handle inbound events.
+     *
+     * @param ctx the outbound handler context.
+     * @param m
+     */
+    @Override
+    public void handle(HandlerContext ctx, Message m) {
+        log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
+        if (m instanceof BytesReceived) {
+            BytesReceived bm = (BytesReceived) m;
+            decode(ctx, bm.getByteBuffer());
         }
     }
+
+    private ModbusFrame getRequest(HandlerContext ctx) {
+        return (ModbusFrame) ctx.getCurrentSendingMessage();
+    }
+
 }

@@ -30,7 +30,7 @@ public class ReadSettings {
         keys.add("slaveAddress");
         keys.add("pt");
         keys.add("ct");
-        
+
         this.handlers = handlers;
     }
 
@@ -56,11 +56,12 @@ public class ReadSettings {
                         // install request completion handler.
                         // send request
                         Request r = new Request();
-                        r.apply(null, handlers.get(Request.class));
+                        r.apply(ctx, handlers.get(Request.class));
+                        return this;
                     }
 
                     @Override
-                    public State on(Message m) {
+                    public State on(HandlerContext ctx, Message m) {
                         // wait for send request to complete.
                         return success();
                     }
@@ -68,18 +69,20 @@ public class ReadSettings {
                     @Override
                     public State exit(HandlerContext ctx) {
                         // un-install request completion handler.
+                        return this;
                     }
                 })
                 .success().state(new State.Adapter() {
                     @Override
                     public State enter(HandlerContext ctx) {
                         // install response handler
+                        return this;
                     }
 
                     @Override
-                    public State on(Message m) {
+                    public State on(HandlerContext ctx, Message m) {
                         // wait for response
-                        if(m instanceof Response) {
+                        if (m instanceof Response) {
                             Response r = (Response) m;
                             r.apply(null, handlers.get(Response.class));
                         }
@@ -89,6 +92,7 @@ public class ReadSettings {
                     @Override
                     public State exit(HandlerContext ctx) {
                         // remove response handler.
+                        return this;
                     }
                 });
         return builder.build();
@@ -102,7 +106,12 @@ public class ReadSettings {
 
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
-            handler.handle(null, this);
+            handler.handle(ctx, this);
+        }
+
+        @Override
+        public boolean isOob() {
+            return false;
         }
     }
 
@@ -209,6 +218,11 @@ public class ReadSettings {
 
         public void setCt(short ct) {
             this.ct = ct;
+        }
+
+        @Override
+        public boolean isOob() {
+            return false;
         }
     }
 

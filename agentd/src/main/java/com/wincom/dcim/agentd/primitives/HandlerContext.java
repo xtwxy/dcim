@@ -75,11 +75,12 @@ public interface HandlerContext {
      * @return
      */
     public Object get(Object key);
-    
+
     /**
      * Remove context variables.
+     *
      * @param key
-     * @return 
+     * @return
      */
     public Object remove(Object key);
 
@@ -118,7 +119,15 @@ public interface HandlerContext {
      */
     public Handler getInboundHandler();
 
+    /**
+     * Get currently sending message.
+     *
+     * @return
+     */
+    public Message getCurrentSendingMessage();
+
     public void fireClosed(Message m);
+
     public void close();
 
     public static abstract class Adapter implements HandlerContext {
@@ -127,8 +136,8 @@ public interface HandlerContext {
 
         private StateMachine machine;
         private final Map<Object, Object> variables;
-        protected final ConcurrentLinkedQueue<State> queue;
-        private State current;
+        protected final ConcurrentLinkedQueue<SendMessageState> queue;
+        private SendMessageState current;
         private boolean active;
         protected Handler inboundHandler;
 
@@ -156,7 +165,7 @@ public interface HandlerContext {
 
         @Override
         public void send(Message m) {
-            State s = new SendMessageState(m);
+            SendMessageState s = new SendMessageState(m);
             if (m.isOob()) {
                 sendImmediate(s);
             } else {
@@ -166,7 +175,7 @@ public interface HandlerContext {
 
         @Override
         public void send(Message m, HandlerContext reply) {
-            State s = new SendMessageState(m, reply);
+            SendMessageState s = new SendMessageState(m, reply);
             if (m.isOob()) {
                 sendImmediate(s);
             } else {
@@ -174,12 +183,12 @@ public interface HandlerContext {
             }
         }
 
-        private synchronized void sendImmediate(State s) {
+        private synchronized void sendImmediate(SendMessageState s) {
             current = s;
             current.enter(this);
         }
 
-        private synchronized void enqueueForSendWhenActive(State s) {
+        private synchronized void enqueueForSendWhenActive(SendMessageState s) {
             queue.add(s);
             if (isActive()) {
                 if (!isInprogress()) {
@@ -271,6 +280,14 @@ public interface HandlerContext {
             }
         }
 
+        @Override
+        public Message getCurrentSendingMessage() {
+            if (isInprogress()) {
+                return current.getMessage();
+            }
+            return null;
+        }
+
         private void printState(Message m) {
             if (current != null || !queue.isEmpty()) {
                 log.info(m.toString());
@@ -307,9 +324,9 @@ public interface HandlerContext {
 
         @Override
         public void close() {
-            
+
         }
-        
+
         @Override
         public void initHandlers(HandlerContext outboundContext) {
             throw new UnsupportedOperationException("Not supported yet.");
