@@ -8,6 +8,9 @@ import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
+import com.wincom.dcim.agentd.statemachine.ReceiveState;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
+import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import com.wincom.protocol.modbus.ModbusFrame;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -25,12 +28,13 @@ public class ModbusCodecImpl implements Codec {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final Map<Byte, HandlerContext> inbound;
+    private HandlerContext outboundContext;
+    private final Map<Byte, HandlerContext> inbounds;
 
     private final ByteBuffer readBuffer;
 
     public ModbusCodecImpl() {
-        this.inbound = new HashMap<>();
+        this.inbounds = new HashMap<>();
         this.readBuffer = ByteBuffer.allocate(2048);
     }
 
@@ -100,12 +104,12 @@ public class ModbusCodecImpl implements Codec {
         try {
             frame.fromWire(buf);
         } catch (Exception e) {
-            inbound.get(request.getSlaveAddress()).onSendComplete(new Failed(e));
+            inbounds.get(request.getSlaveAddress()).onSendComplete(new Failed(e));
             readBuffer.position(dst.length);
             readBuffer.compact();
             return;
         }
-        inbound.get(request.getSlaveAddress()).onSendComplete(frame);
+        inbounds.get(request.getSlaveAddress()).onSendComplete(frame.getPayload());
         readBuffer.position(dst.length);
         readBuffer.compact();
     }
@@ -138,12 +142,54 @@ public class ModbusCodecImpl implements Codec {
 
     @Override
     public void codecActive(HandlerContext outboundContext) {
-
+        this.outboundContext = outboundContext;
+        for (Map.Entry<Byte, HandlerContext> e : inbounds.entrySet()) {
+            e.getValue().initHandlers(outboundContext);
+        }
     }
 
     @Override
-    public HandlerContext openInbound(AgentdService service, Properties props, Handler inboundHandler) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public HandlerContext openInbound(
+            AgentdService service,
+            Properties props,
+            Handler inboundHandler) {
+        log.info(String.format("%s", props));
+
+        Byte address = Byte.valueOf(props.getProperty("address"));
+        // FIXME: add address validation.
+        HandlerContext inboundContext = inbounds.get(address);
+        if (inboundContext == null) {
+            inboundContext = createInbound0(service, props, inboundHandler);
+
+            inbounds.put(address, inboundContext);
+        }
+
+        return inboundContext;
+    }
+
+    private HandlerContext createInbound0(
+            AgentdService service,
+            Properties props,
+            Handler inboundHandler) {
+        log.info(props.toString());
+
+        final HandlerContext handlerContext = new ModbusHandlerContextImpl();
+        handlerContext.setInboundHandler(inboundHandler);
+        
+        final StateMachineBuilder builder = new StateMachineBuilder();
+
+        StateMachine client = builder
+                .add("receiveState", new ReceiveState())
+                .transision("receiveState", "receiveState", "receiveState")
+                .buildWithInitialState("receiveState");
+
+        handlerContext.getStateMachine()
+                .buildWith(client)
+                .enter(handlerContext);
+        
+        handlerContext.initHandlers(this.outboundContext);
+        
+        return handlerContext;
     }
 
     /**
@@ -164,5 +210,4 @@ public class ModbusCodecImpl implements Codec {
     private ModbusFrame getRequest(HandlerContext ctx) {
         return (ModbusFrame) ctx.getCurrentSendingMessage();
     }
-
 }

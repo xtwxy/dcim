@@ -3,7 +3,6 @@ package com.wincom.fsu.mp3000.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecFactory;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

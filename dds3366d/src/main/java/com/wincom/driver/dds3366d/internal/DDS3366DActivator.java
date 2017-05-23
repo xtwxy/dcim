@@ -1,7 +1,10 @@
 package com.wincom.driver.dds3366d.internal;
 
+import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.CodecFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 public final class DDS3366DActivator
         implements BundleActivator {
@@ -9,6 +12,10 @@ public final class DDS3366DActivator
     @Override
     public void start(BundleContext bc)
             throws Exception {
+        ServiceReference<AgentdService> serviceRef = bc.getServiceReference(AgentdService.class);
+        AgentdService service = bc.getService(serviceRef);
+        CodecFactory factory = new DDS3366DCodecFactoryImpl();
+        service.registerCodecFactory("dds3366d", factory);
     }
 
     @Override

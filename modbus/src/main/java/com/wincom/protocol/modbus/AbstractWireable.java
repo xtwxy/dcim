@@ -1,6 +1,9 @@
 package com.wincom.protocol.modbus;
 
 import com.google.common.primitives.UnsignedBytes;
+import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -8,7 +11,17 @@ import javax.annotation.Nonnull;
  *
  * @author shevek
  */
-public abstract class AbstractWireable implements Wireable {
+public abstract class AbstractWireable implements Wireable, Message {
+
+    @Override
+    public void apply(HandlerContext ctx, Handler handler) {
+        handler.handle(ctx, this);
+    }
+
+    @Override
+    public boolean isOob() {
+        return false;
+    }
 
     @Nonnull
     protected static StringBuilder indent(@Nonnull StringBuilder buf, int depth) {
