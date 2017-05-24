@@ -91,7 +91,7 @@ public interface State {
 
     public static class Adapter implements State {
 
-        Logger log = LoggerFactory.getLogger(this.getClass());
+        protected Logger log = LoggerFactory.getLogger(this.getClass());
 
         protected State next;
         private State success;

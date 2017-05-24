@@ -2,13 +2,11 @@ package com.wincom.driver.dds3366d.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.protocol.modbus.ModbusFrame;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -53,28 +51,6 @@ public class DDS3366DCodecImpl implements Codec {
     @Override
     public void handle(HandlerContext ctx, Message m) {
         ModbusFrame request = getRequest(ctx);
-        switch (request.getFunction()) {
-            case READ_COILS:
-                break;
-            case READ_DISCRETE_INPUTS:
-                break;
-            case READ_MULTIPLE_HOLDING_REGISTERS:
-
-                break;
-            case READ_INPUT_REGISTERS:
-                break;
-            case WRITE_SINGLE_COIL:
-                break;
-            case WRITE_MULTIPLE_HOLDING_COILS:
-                break;
-            case WRITE_SINGLE_HOLDING_REGISTER:
-            case WRITE_MULTIPLE_HOLDING_REGISTERS:
-
-                break;
-            default:
-                // TODO: handle default case.
-                break;
-        }
     }
 
     private ModbusFrame getRequest(HandlerContext ctx) {

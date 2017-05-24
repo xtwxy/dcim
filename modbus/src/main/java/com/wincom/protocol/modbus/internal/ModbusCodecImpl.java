@@ -103,16 +103,26 @@ public class ModbusCodecImpl implements Codec {
     private void decode(HandlerContext ctx, byte[] src, byte[] dst, ModbusFrame request) {
         System.arraycopy(src, 0, dst, 0, dst.length);
         ByteBuffer buf = ByteBuffer.wrap(dst);
-        ModbusFrame frame = new ModbusFrame();
+        ModbusFrame response = new ModbusFrame();
         try {
-            frame.fromWire(buf);
+            response.fromWire(buf);
         } catch (Exception e) {
             inboundContexts.get(request.getSlaveAddress()).onSendComplete(new Failed(e));
             readBuffer.position(dst.length);
             readBuffer.compact();
             return;
         }
-        inboundContexts.get(request.getSlaveAddress()).onSendComplete(frame.getPayload());
+        if(request.getSlaveAddress() == response.getSlaveAddress()
+                && request.getFunction() == response.getFunction()) {
+            inboundContexts.get(request.getSlaveAddress()).onSendComplete(response.getPayload());
+        } else {
+            final String error = String.format("request(address = %s, function = %s) != response(address = %s, function = %s)", 
+                    request.getSlaveAddress(), request.getFunction(),
+                    response.getSlaveAddress(), response.getFunction());
+            
+            inboundContexts.get(request.getSlaveAddress())
+                    .onSendComplete(new Failed(new Exception(error)));
+        }
         readBuffer.position(dst.length);
         readBuffer.compact();
     }

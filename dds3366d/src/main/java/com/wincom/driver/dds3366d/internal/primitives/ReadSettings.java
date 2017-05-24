@@ -5,7 +5,7 @@ import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.statemachine.StateBuilder;
+import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import com.wincom.protocol.modbus.AbstractWireable;
 
 import java.nio.ByteBuffer;
@@ -49,8 +49,9 @@ public class ReadSettings {
     }
 
     private State sendRequestState() {
-        StateBuilder builder = StateBuilder
-                .initial().state(new State.Adapter() {
+        StateMachineBuilder builder = new StateMachineBuilder();
+        return builder
+                .add("send", new State.Adapter() {
                     @Override
                     public State enter(HandlerContext ctx) {
                         // install request completion handler.
@@ -72,7 +73,7 @@ public class ReadSettings {
                         return this;
                     }
                 })
-                .success().state(new State.Adapter() {
+                .add("receive", new State.Adapter() {
                     @Override
                     public State enter(HandlerContext ctx) {
                         // install response handler
@@ -94,8 +95,12 @@ public class ReadSettings {
                         // remove response handler.
                         return this;
                     }
-                });
-        return builder.build();
+                })
+                .add("stop", stopState())
+                .transision("send", "receive", "stop")
+                .transision("receive", "stop", "stop")
+                .transision("stop", "stop", "stop")
+                .buildWithInitialAndStop("send", "stop");
     }
 
     private State stopState() {
