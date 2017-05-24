@@ -1,8 +1,7 @@
-package com.wincom.protocol.modbus.internal;
+package com.wincom.driver.dds3366d.internal;
 
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
-import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +10,19 @@ import java.util.Map;
  *
  * @author master
  */
-public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
+public abstract class DDS3366DHandlerContextImpl extends HandlerContext.Adapter {
 
     private final Map<Class, Handler> handlers;
+    HandlerContext outboundContext;
 
-    public ModbusHandlerContextImpl() {
+    public DDS3366DHandlerContextImpl(HandlerContext outboundContext) {
         this.handlers = new HashMap<>();
+        this.outboundContext = outboundContext;
+        initHandlers(outboundContext);
     }
 
     @Override
+
     public Handler getHandler(Class clazz) {
         Handler h = handlers.get(clazz);
         if (h == null) {
@@ -29,8 +32,7 @@ public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
     }
 
     @Override
-    public void initHandlers(HandlerContext outboundContext) {
-        this.handlers.put(SendBytes.class, new SendRequestHandlerImpl(outboundContext));
+    final public void initHandlers(HandlerContext outboundContext) {
         this.handlers.put(Unknown.class, new DefaultHandlerImpl(outboundContext));
     }
 }

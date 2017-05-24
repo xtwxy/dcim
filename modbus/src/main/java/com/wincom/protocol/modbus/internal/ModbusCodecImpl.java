@@ -29,12 +29,12 @@ public class ModbusCodecImpl implements Codec {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     private HandlerContext outboundContext;
-    private final Map<Byte, HandlerContext> inbounds;
+    private final Map<Byte, HandlerContext> inboundContexts;
 
     private final ByteBuffer readBuffer;
 
     public ModbusCodecImpl() {
-        this.inbounds = new HashMap<>();
+        this.inboundContexts = new HashMap<>();
         this.readBuffer = ByteBuffer.allocate(2048);
     }
 
@@ -94,6 +94,9 @@ public class ModbusCodecImpl implements Codec {
                 src = readBuffer.array();
                 decode(ctx, src, dst, request);
                 break;
+            default:
+                // TODO: handle default case.
+                break;
         }
     }
 
@@ -104,12 +107,12 @@ public class ModbusCodecImpl implements Codec {
         try {
             frame.fromWire(buf);
         } catch (Exception e) {
-            inbounds.get(request.getSlaveAddress()).onSendComplete(new Failed(e));
+            inboundContexts.get(request.getSlaveAddress()).onSendComplete(new Failed(e));
             readBuffer.position(dst.length);
             readBuffer.compact();
             return;
         }
-        inbounds.get(request.getSlaveAddress()).onSendComplete(frame.getPayload());
+        inboundContexts.get(request.getSlaveAddress()).onSendComplete(frame.getPayload());
         readBuffer.position(dst.length);
         readBuffer.compact();
     }
@@ -143,7 +146,7 @@ public class ModbusCodecImpl implements Codec {
     @Override
     public void codecActive(HandlerContext outboundContext) {
         this.outboundContext = outboundContext;
-        for (Map.Entry<Byte, HandlerContext> e : inbounds.entrySet()) {
+        for (Map.Entry<Byte, HandlerContext> e : inboundContexts.entrySet()) {
             e.getValue().initHandlers(outboundContext);
         }
     }
@@ -157,23 +160,27 @@ public class ModbusCodecImpl implements Codec {
 
         Byte address = Byte.valueOf(props.getProperty("address"));
         // FIXME: add address validation.
-        HandlerContext inboundContext = inbounds.get(address);
+        HandlerContext inboundContext = inboundContexts.get(address);
         if (inboundContext == null) {
-            inboundContext = createInbound0(service, props, inboundHandler);
+            inboundContext = createInbound0(address, inboundHandler);
 
-            inbounds.put(address, inboundContext);
+            inboundContexts.put(address, inboundContext);
         }
 
         return inboundContext;
     }
 
     private HandlerContext createInbound0(
-            AgentdService service,
-            Properties props,
-            Handler inboundHandler) {
-        log.info(props.toString());
+            final Byte address,
+            final Handler inboundHandler) {
 
-        final HandlerContext handlerContext = new ModbusHandlerContextImpl();
+        final HandlerContext handlerContext = new ModbusHandlerContextImpl() {
+            @Override
+            public void close() {
+                inboundContexts.remove(address);
+            }
+        };
+        
         handlerContext.setInboundHandler(inboundHandler);
         
         final StateMachineBuilder builder = new StateMachineBuilder();
