@@ -20,12 +20,15 @@ public class StateMachine implements State {
     State stop;
 
     public StateMachine() {
+        current = new State.Adapter();
+        prev = current;
+        initial = current;
+        stop = current;
     }
 
     public StateMachine(
             State initial
     ) {
-        this();
         this.initial = initial;
         this.stop = new State.Adapter();
 

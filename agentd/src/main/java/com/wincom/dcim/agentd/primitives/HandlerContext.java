@@ -119,13 +119,6 @@ public interface HandlerContext {
      */
     public Handler getInboundHandler();
 
-    /**
-     * Get currently sending message.
-     *
-     * @return
-     */
-    public Message getCurrentSendingMessage();
-
     public void fireClosed(Message m);
 
     public void close();
@@ -136,8 +129,8 @@ public interface HandlerContext {
 
         private StateMachine machine;
         private final Map<Object, Object> variables;
-        protected final ConcurrentLinkedQueue<SendMessageState> queue;
-        private SendMessageState current;
+        protected final ConcurrentLinkedQueue<State> queue;
+        protected State current;
         private boolean active;
         protected Handler inboundHandler;
 
@@ -183,12 +176,12 @@ public interface HandlerContext {
             }
         }
 
-        private synchronized void sendImmediate(SendMessageState s) {
+        protected synchronized void sendImmediate(State s) {
             current = s;
             current.enter(this);
         }
 
-        private synchronized void enqueueForSendWhenActive(SendMessageState s) {
+        protected synchronized void enqueueForSendWhenActive(State s) {
             queue.add(s);
             if (isActive()) {
                 if (!isInprogress()) {
@@ -278,14 +271,6 @@ public interface HandlerContext {
             if (isActive() && !isInprogress()) {
                 sendNext();
             }
-        }
-
-        @Override
-        public Message getCurrentSendingMessage() {
-            if (isInprogress()) {
-                return current.getMessage();
-            }
-            return null;
         }
 
         private void printState(Message m) {

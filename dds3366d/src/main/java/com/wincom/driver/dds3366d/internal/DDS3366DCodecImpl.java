@@ -5,6 +5,8 @@ import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
+import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import com.wincom.protocol.modbus.ModbusFrame;
 import java.util.HashSet;
 import java.util.Properties;
@@ -42,18 +44,27 @@ public class DDS3366DCodecImpl implements Codec {
                 inboundContexts.remove(this);
             }
         };
-        ctx.setInboundHandler(inboundHandler);
         inboundContexts.add(ctx);
 
+        ctx.setInboundHandler(inboundHandler);
+        ctx.initHandlers(this.outboundContext);
+        
+        final StateMachineBuilder builder = new StateMachineBuilder();
+
+        StateMachine client = builder
+                .add("receiveState", new DecodeState())
+                .transision("receiveState", "receiveState", "receiveState")
+                .buildWithInitialState("receiveState");
+
+        ctx.getStateMachine()
+                .buildWith(client)
+                .enter(ctx);
+        
         return ctx;
     }
 
     @Override
     public void handle(HandlerContext ctx, Message m) {
-        ModbusFrame request = getRequest(ctx);
-    }
-
-    private ModbusFrame getRequest(HandlerContext ctx) {
-        return (ModbusFrame) ctx.getCurrentSendingMessage();
+        log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
     }
 }
