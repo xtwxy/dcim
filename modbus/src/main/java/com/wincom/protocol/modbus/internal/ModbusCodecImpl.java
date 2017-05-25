@@ -5,6 +5,7 @@ import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import java.util.HashMap;
@@ -68,6 +69,17 @@ public class ModbusCodecImpl implements Codec {
         };
         
         handlerContext.setInboundHandler(inboundHandler);
+        
+        final StateMachineBuilder builder = new StateMachineBuilder();
+
+        StateMachine client = builder
+                .add("receiveState", new DefaultReceiveState())
+                .transision("receiveState", "receiveState", "receiveState")
+                .buildWithInitialState("receiveState");
+
+        handlerContext.getStateMachine()
+                .buildWith(client)
+                .enter(handlerContext);
         
         handlerContext.initHandlers(this.outboundContext);
 

@@ -51,28 +51,7 @@ public class ReadSettings {
     private State sendRequestState() {
         StateMachineBuilder builder = new StateMachineBuilder();
         return builder
-                .add("send", new State.Adapter() {
-                    @Override
-                    public State enter(HandlerContext ctx) {
-                        // install request completion handler.
-                        // send request
-                        Request r = new Request();
-                        r.apply(ctx, handlers.get(Request.class));
-                        return this;
-                    }
-
-                    @Override
-                    public State on(HandlerContext ctx, Message m) {
-                        // wait for send request to complete.
-                        return success();
-                    }
-
-                    @Override
-                    public State exit(HandlerContext ctx) {
-                        // un-install request completion handler.
-                        return this;
-                    }
-                })
+                .add("send", new )
                 .add("receive", new State.Adapter() {
                     @Override
                     public State enter(HandlerContext ctx) {
@@ -85,7 +64,7 @@ public class ReadSettings {
                         // wait for response
                         if (m instanceof Response) {
                             Response r = (Response) m;
-                            r.apply(null, handlers.get(Response.class));
+                            r.apply(ctx, handlers.get(Response.class));
                         }
                         return success();
                     }
