@@ -14,8 +14,6 @@ public class ReadMultipleHoldingRegistersResponse
 
     private byte numberOfBytes;
     private byte[] bytes;
-    short crc16;
-
 
     public ReadMultipleHoldingRegistersResponse() {
     }

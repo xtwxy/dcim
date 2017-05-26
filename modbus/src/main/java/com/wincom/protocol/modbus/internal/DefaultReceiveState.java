@@ -1,15 +1,11 @@
 package com.wincom.protocol.modbus.internal;
 
-import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
-import com.wincom.protocol.modbus.ModbusFrame;
-import java.nio.ByteBuffer;
 
 /**
  *
@@ -25,7 +21,7 @@ public class DefaultReceiveState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         
         if (m instanceof ChannelTimeout) {
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);
@@ -46,6 +42,6 @@ public class DefaultReceiveState extends State.Adapter {
 
     @Override
     public String toString() {
-        return "DecodeState@" + this.hashCode();
+        return "DefaultReceiveState@" + this.hashCode();
     }
 }

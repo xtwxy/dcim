@@ -52,7 +52,7 @@ public class DDS3366DCodecImpl implements Codec {
         final StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine client = builder
-                .add("receiveState", new DecodeState())
+                .add("receiveState", new DefaultReceiveState())
                 .transision("receiveState", "receiveState", "receiveState")
                 .buildWithInitialState("receiveState");
 

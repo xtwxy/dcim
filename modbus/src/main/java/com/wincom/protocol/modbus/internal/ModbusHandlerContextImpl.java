@@ -62,6 +62,10 @@ public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
 
     @Override
     public void fire(Message m) {
-        current.on(this, m);
+        if (isInprogress()) {
+            current.on(this, m);
+        } else {
+            machine.on(this, m);
+        }
     }
 }

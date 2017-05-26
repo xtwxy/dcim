@@ -29,15 +29,15 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof WriteComplete) {
             // TODO: notify the inbound handlers.
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof WriteTimeout) {
             return success();
         } else if (m instanceof ReadTimeout) {
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelTimeout) {
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);

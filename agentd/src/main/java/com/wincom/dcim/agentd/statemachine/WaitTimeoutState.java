@@ -32,7 +32,7 @@ public class WaitTimeoutState extends State.Adapter {
         log.info(m.toString());
         if (m instanceof MillsecFromNowTimeout) {
             ctx.remove("timeout");
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else {
             log.warn(String.format("Unknown state: (%s, %s, %s)", this, ctx, m));

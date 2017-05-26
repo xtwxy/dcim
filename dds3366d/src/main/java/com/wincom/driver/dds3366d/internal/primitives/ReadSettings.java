@@ -6,6 +6,8 @@ import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
+import com.wincom.driver.dds3366d.internal.ReadSettingsResponseState;
+import com.wincom.driver.dds3366d.internal.ReadSettingsRequestState;
 import com.wincom.protocol.modbus.AbstractWireable;
 
 import java.nio.ByteBuffer;
@@ -34,47 +36,25 @@ public class ReadSettings {
         this.handlers = handlers;
     }
 
-    public State initial(Message m) {
-        if (m instanceof GetSignalValues.Request) {
-            GetSignalValues.Request r = (GetSignalValues.Request) m;
+    public State initial(Message request, HandlerContext replyTo) {
+        if (request instanceof GetSignalValues.Request) {
+            GetSignalValues.Request r = (GetSignalValues.Request) request;
             HashSet<String> theKeys = new HashSet<>(r.getKeys());
             theKeys.retainAll(keys);
             if (theKeys.isEmpty()) {
                 return stopState();
             } else {
-                return sendRequestState();
+                return sendRequestState(replyTo);
             }
         }
         return stopState();
     }
 
-    private State sendRequestState() {
+    private State sendRequestState(HandlerContext replyTo) {
         StateMachineBuilder builder = new StateMachineBuilder();
         return builder
-                .add("send", new )
-                .add("receive", new State.Adapter() {
-                    @Override
-                    public State enter(HandlerContext ctx) {
-                        // install response handler
-                        return this;
-                    }
-
-                    @Override
-                    public State on(HandlerContext ctx, Message m) {
-                        // wait for response
-                        if (m instanceof Response) {
-                            Response r = (Response) m;
-                            r.apply(ctx, handlers.get(Response.class));
-                        }
-                        return success();
-                    }
-
-                    @Override
-                    public State exit(HandlerContext ctx) {
-                        // remove response handler.
-                        return this;
-                    }
-                })
+                .add("send", new ReadSettingsRequestState())
+                .add("receive", new ReadSettingsResponseState(replyTo))
                 .add("stop", stopState())
                 .transision("send", "receive", "stop")
                 .transision("receive", "stop", "stop")

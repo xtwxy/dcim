@@ -36,7 +36,7 @@ public interface HandlerContext {
      *
      * @param m
      */
-    public void onSendComplete(Message m);
+    public void onRequestCompleted(Message m);
 
     /**
      * Initialize handlers when outbound is activated.
@@ -127,7 +127,7 @@ public interface HandlerContext {
 
         Logger log = LoggerFactory.getLogger(this.getClass());
 
-        private StateMachine machine;
+        protected StateMachine machine;
         private final Map<Object, Object> variables;
         protected final ConcurrentLinkedQueue<State> queue;
         protected State current;
@@ -214,7 +214,7 @@ public interface HandlerContext {
         }
 
         @Override
-        public synchronized void onSendComplete(Message response) {
+        public synchronized void onRequestCompleted(Message response) {
             if (isInprogress()) {
                 current.on(this, response);
                 current = null;

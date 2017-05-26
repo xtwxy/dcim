@@ -56,7 +56,7 @@ public class ConnectState extends State.Adapter {
                     .addLast(new IdleStateHandler(20, 1, 20))
                     .addLast(new ChannelInboundHandler(ctx));
 
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             
             //ctx.send(new SetMillsecFromNowTimer(60000));
 

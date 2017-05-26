@@ -21,6 +21,6 @@ public class DefaultHandlerImpl implements Handler {
     @Override
     public void handle(HandlerContext ctx, Message m) {
         log.info(String.format("handle(%s, %s)", ctx, m));
-        ctx.onSendComplete(new Unknown(m));
+        ctx.onRequestCompleted(new Unknown(m));
     }
 }

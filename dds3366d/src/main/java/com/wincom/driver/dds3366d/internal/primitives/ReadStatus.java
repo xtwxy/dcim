@@ -1,8 +1,13 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
+import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.State;
+import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
+import com.wincom.driver.dds3366d.internal.ReadStatusRequestState;
+import com.wincom.driver.dds3366d.internal.ReadStatusResponseState;
 import com.wincom.protocol.modbus.*;
 
 import java.nio.ByteBuffer;
@@ -27,6 +32,35 @@ public class ReadStatus {
         keys.add("power");
         keys.add("powerFactor");
         keys.add("frequency");
+    }
+    public State initial(Message request, HandlerContext replyTo) {
+        if (request instanceof GetSignalValues.Request) {
+            GetSignalValues.Request r = (GetSignalValues.Request) request;
+            HashSet<String> theKeys = new HashSet<>(r.getKeys());
+            theKeys.retainAll(keys);
+            if (theKeys.isEmpty()) {
+                return stopState();
+            } else {
+                return sendRequestState(replyTo);
+            }
+        }
+        return stopState();
+    }
+
+    private State sendRequestState(HandlerContext replyTo) {
+        StateMachineBuilder builder = new StateMachineBuilder();
+        return builder
+                .add("send", new ReadStatusRequestState())
+                .add("receive", new ReadStatusResponseState(replyTo))
+                .add("stop", stopState())
+                .transision("send", "receive", "stop")
+                .transision("receive", "stop", "stop")
+                .transision("stop", "stop", "stop")
+                .buildWithInitialAndStop("send", "stop");
+    }
+
+    private State stopState() {
+        return new State.Adapter();
     }
 
     public static class Request implements Message {

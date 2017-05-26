@@ -19,12 +19,12 @@ public class ModbusRequestState extends State.Adapter {
 
     private final ByteBuffer readBuffer;
     final private ModbusFrame request;
-    final private HandlerContext reply;
+    final private HandlerContext replyTo;
 
-    ModbusRequestState(ModbusFrame m, HandlerContext reply) {
+    ModbusRequestState(ModbusFrame m, HandlerContext replyTo) {
         this.readBuffer = ByteBuffer.allocate(2048);
         this.request = m;
-        this.reply = reply;
+        this.replyTo = replyTo;
     }
     
     @Override
@@ -43,7 +43,7 @@ public class ModbusRequestState extends State.Adapter {
             decode(ctx, bm.getByteBuffer());
             return success();
         } else if (m instanceof ChannelTimeout) {
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);
@@ -122,20 +122,20 @@ public class ModbusRequestState extends State.Adapter {
         try {
             response.fromWire(buf);
         } catch (Exception e) {
-            ctx.onSendComplete(new Failed(e));
+            ctx.onRequestCompleted(new Failed(e));
             readBuffer.position(dst.length);
             readBuffer.compact();
             return;
         }
         if(request.getSlaveAddress() == response.getSlaveAddress()
                 && request.getFunction() == response.getFunction()) {
-            ctx.onSendComplete(response.getPayload());
+            ctx.onRequestCompleted(response.getPayload());
         } else {
             final String error = String.format("request(address = %s, function = %s) != response(address = %s, function = %s)", 
                     request.getSlaveAddress(), request.getFunction(),
                     response.getSlaveAddress(), response.getFunction());
             
-            ctx.onSendComplete(new Failed(new Exception(error)));
+            ctx.onRequestCompleted(new Failed(new Exception(error)));
         }
         readBuffer.position(dst.length);
         readBuffer.compact();

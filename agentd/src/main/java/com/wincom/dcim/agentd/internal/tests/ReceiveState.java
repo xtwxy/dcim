@@ -41,16 +41,16 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof WriteComplete) {
             // sendBytes(ctx);
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof WriteTimeout) {
             // sendBytes(ctx);
             return success();
         } else if (m instanceof ReadTimeout) {
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelTimeout) {
-            ctx.onSendComplete(m);
+            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelActive) {
             Object o = ctx.get("timeout");

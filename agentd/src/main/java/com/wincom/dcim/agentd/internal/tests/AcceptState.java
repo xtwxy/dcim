@@ -68,7 +68,7 @@ public class AcceptState extends State.Adapter {
             clientContext.getStateMachine().buildWith(connection).enter(clientContext);
 
             // continue accepting new connections in this state machine...
-            context.onSendComplete(m);
+            context.onRequestCompleted(m);
             return this;
         } else {
             return fail();

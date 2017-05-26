@@ -47,7 +47,7 @@ public class SetMillsecFromNowTimerHandler implements Handler {
         } else {
             log.warn("unknown message: " + m);
         }
-        ctx.onSendComplete(m);
+        ctx.onRequestCompleted(m);
     }
 
 }

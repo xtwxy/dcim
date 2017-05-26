@@ -9,7 +9,6 @@ import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
 import io.netty.channel.Channel;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class SetDeadlineTimerHandler implements Handler {
         } else {
             log.warn("unknown message: " + m);
         }
-        ctx.onSendComplete(m);
+        ctx.onRequestCompleted(m);
     }
 
 }
