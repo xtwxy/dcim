@@ -1,4 +1,4 @@
-package com.wincom.protocol.modbus.internal;
+package com.wincom.protocol.modbus.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
@@ -6,6 +6,7 @@ import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import java.util.HashMap;
@@ -15,28 +16,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Composition of TCP connections to a MP3000.
  *
  * @author master
  */
-public class ModbusCodecImpl implements Codec {
+public class CodecImpl implements Codec {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public static final String ADDRESS = "address";
     private HandlerContext outboundContext;
-    private final Map<Byte, HandlerContext> inboundContexts;
+    private final Map<Properties, HandlerContext> inbounds;
 
-    public ModbusCodecImpl() {
-        this.inboundContexts = new HashMap<>();
-    }
-
-    @Override
-    public void codecActive(HandlerContext outboundContext) {
-        this.outboundContext = outboundContext;
-        for (Map.Entry<Byte, HandlerContext> e : inboundContexts.entrySet()) {
-            e.getValue().initHandlers(outboundContext);
-        }
+    CodecImpl() {
+        this.inbounds = new HashMap<>();
     }
 
     @Override
@@ -46,62 +37,57 @@ public class ModbusCodecImpl implements Codec {
             Handler inboundHandler) {
         log.info(String.format("%s", props));
 
-        Byte address = Byte.valueOf(props.getProperty(ADDRESS));
-        // FIXME: add address validation.
-        HandlerContext inboundContext = inboundContexts.get(address);
+        HandlerContext inboundContext = inbounds.get(props);
         if (inboundContext == null) {
-            inboundContext = createInbound0(address, inboundHandler);
+            inboundContext = createInbound0(service, props, inboundHandler);
 
-            inboundContexts.put(address, inboundContext);
+            inbounds.put(props, inboundContext);
         }
 
         return inboundContext;
     }
 
     private HandlerContext createInbound0(
-            final Byte address,
-            final Handler inboundHandler) {
+            AgentdService service,
+            Properties props,
+            Handler inboundHandler) {
+        log.info(props.toString());
 
-        final HandlerContext handlerContext = new ModbusHandlerContextImpl(address) {
-            @Override
-            public void close() {
-                inboundContexts.remove(address);
-            }
-        };
-        
+        final HandlerContext handlerContext = new HandlerContextImpl();
         handlerContext.setInboundHandler(inboundHandler);
         
         final StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine client = builder
-                .add("receiveState", new DefaultReceiveState())
+                .add("receiveState", new ReceiveState())
                 .transision("receiveState", "receiveState", "receiveState")
                 .buildWithInitialState("receiveState");
 
         handlerContext.getStateMachine()
                 .buildWith(client)
                 .enter(handlerContext);
-        
-        handlerContext.initHandlers(this.outboundContext);
 
         return handlerContext;
     }
 
-    /**
-     * Handle inbound events.
-     *
-     * @param ctx the outbound handler context.
-     * @param m
-     */
     @Override
     public void handle(HandlerContext ctx, Message m) {
         log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
         if (m.isOob()) {
             if(m instanceof ChannelActive) {
                 codecActive(ctx);
-            } else {
-                
             }
+        }
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            e.getValue().fire(m);
+        }
+    }
+
+    @Override
+    public void codecActive(HandlerContext outboundContext) {
+        this.outboundContext = outboundContext;
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            e.getValue().initHandlers(outboundContext);
         }
     }
 }

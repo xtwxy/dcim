@@ -7,7 +7,8 @@ import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ public class ConnectState extends State.Adapter {
             clientContext.setChannel(a.getChannel());
 
             a.getChannel().pipeline()
+                    .addLast(new LoggingHandler(LogLevel.INFO))
                     .addLast(new IdleStateHandler(20, 1, 20))
                     .addLast(new ChannelInboundHandler(ctx));
 

@@ -169,6 +169,6 @@ public class ModbusRequestState extends State.Adapter {
 
     @Override
     public String toString() {
-        return "DecodeState@" + this.hashCode();
+        return "ModbusRequestState@" + this.hashCode();
     }
 }

@@ -219,12 +219,12 @@ public interface HandlerContext {
                 current.on(this, response);
                 current = null;
             } else {
-                log.debug(String.format("onSendComplete(%s): response ignored. ", response));
+                inboundHandler.handle(this, response);
             }
             sendNext();
         }
 
-        private void sendNext() {
+        protected void sendNext() {
             //synchronized (queue)
             if (isActive()) {
                 if (queue.isEmpty()) {
@@ -314,7 +314,7 @@ public interface HandlerContext {
 
         @Override
         public void initHandlers(HandlerContext outboundContext) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            log.info(String.format("inboundHandler: (%s, %s) ", this, inboundHandler));
         }
     }
 }

@@ -6,9 +6,7 @@ import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
-import com.wincom.dcim.agentd.primitives.WriteTimeout;
 
 /**
  *
@@ -29,11 +27,6 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof WriteComplete) {
             // TODO: notify the inbound handlers.
-            ctx.onRequestCompleted(m);
-            return success();
-        } else if (m instanceof WriteTimeout) {
-            return success();
-        } else if (m instanceof ReadTimeout) {
             ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelTimeout) {

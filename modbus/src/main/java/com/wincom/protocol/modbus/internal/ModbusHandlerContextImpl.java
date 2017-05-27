@@ -3,7 +3,6 @@ package com.wincom.protocol.modbus.internal;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.protocol.modbus.ModbusFrame;
 import java.util.HashMap;
@@ -34,8 +33,11 @@ public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
 
     @Override
     public void initHandlers(HandlerContext outboundContext) {
-        this.handlers.put(SendBytes.class, new SendRequestHandlerImpl(outboundContext));
-        this.handlers.put(Unknown.class, new DefaultHandlerImpl(outboundContext));
+        if (outboundContext != null) {
+            this.handlers.put(ModbusFrame.class, new SendRequestHandlerImpl(outboundContext));
+            this.handlers.put(Unknown.class, new DefaultHandlerImpl(outboundContext));
+            setActive(true);
+        }
     }
 
     @Override
