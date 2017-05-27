@@ -1,25 +1,18 @@
 package com.wincom.dcim.agentd.domain;
 
-import com.wincom.dcim.agentd.domain.Signal;
-
 /**
  *
  * @author master
  */
 public class DigitalSignal extends Signal {
-    private Boolean value;
+    private final Boolean value;
 
-    public DigitalSignal() {
+    public DigitalSignal(Boolean value) {
         super(Type.DIGITAL);
+        this.value = value;
     }
 
     public Boolean value() {
         return value;
     }
-
-    public void value(Boolean v) {
-        value = v;
-    }
-    
-    
 }

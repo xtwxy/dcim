@@ -5,20 +5,14 @@ package com.wincom.dcim.agentd.domain;
  * @author master
  */
 public class AnalogSignal extends Signal {
-    private Double value;
+    private final Double value;
 
-    public AnalogSignal() {
+    public AnalogSignal(Double value) {
         super(Type.ANALOG);
-        value = 0.0d;
+        this.value = value;
     }
 
     public Double value() {
         return value;
     }
-
-    public void value(Double v) {
-        value = v;
-    }
-    
-    
 }

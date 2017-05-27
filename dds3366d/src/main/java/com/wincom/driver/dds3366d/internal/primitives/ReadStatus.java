@@ -1,5 +1,7 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
+import com.wincom.dcim.agentd.domain.AnalogSignal;
+import com.wincom.dcim.agentd.domain.Signal;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
@@ -13,6 +15,7 @@ import com.wincom.protocol.modbus.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,24 +23,25 @@ import java.util.Set;
  */
 public class ReadStatus {
 
-    private final Set<String> keys;
+    private static final Set<String> KEYS;
 
-    public ReadStatus() {
-        keys = new HashSet();
-        keys.add("activePowerCombo");
-        keys.add("positiveActivePower");
-        keys.add("reverseActivePower");
-        keys.add("voltage");
-        keys.add("current");
-        keys.add("power");
-        keys.add("powerFactor");
-        keys.add("frequency");
+    static {
+        KEYS = new HashSet();
+        KEYS.add("activePowerCombo");
+        KEYS.add("positiveActivePower");
+        KEYS.add("reverseActivePower");
+        KEYS.add("voltage");
+        KEYS.add("current");
+        KEYS.add("power");
+        KEYS.add("powerFactor");
+        KEYS.add("frequency");
     }
-    public State initial(Message request, HandlerContext replyTo) {
+
+    public static State initial(Message request, HandlerContext replyTo) {
         if (request instanceof GetSignalValues.Request) {
             GetSignalValues.Request r = (GetSignalValues.Request) request;
             HashSet<String> theKeys = new HashSet<>(r.getKeys());
-            theKeys.retainAll(keys);
+            theKeys.retainAll(KEYS);
             if (theKeys.isEmpty()) {
                 return stopState();
             } else {
@@ -47,7 +51,7 @@ public class ReadStatus {
         return stopState();
     }
 
-    private State sendRequestState(HandlerContext replyTo) {
+    private static State sendRequestState(HandlerContext replyTo) {
         StateMachineBuilder builder = new StateMachineBuilder();
         return builder
                 .add("send", new ReadStatusRequestState())
@@ -59,21 +63,13 @@ public class ReadStatus {
                 .buildWithInitialAndStop("send", "stop");
     }
 
-    private State stopState() {
-        return new State.Adapter();
-    }
-
-    public static class Request implements Message {
-
-        @Override
-        public void apply(HandlerContext ctx, Handler handler) {
-            handler.handle(ctx, this);
-        }
-
-        @Override
-        public boolean isOob() {
-            return false;
-        }
+    private static State stopState() {
+        return new State.Adapter() {
+            @Override
+            public boolean stopped() {
+                return true;
+            }
+        };
     }
 
     public static class Response extends AbstractWireable implements Message {
@@ -128,7 +124,19 @@ public class ReadStatus {
 
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
-            handler.handle(ctx, this);
+            final GetSignalValues.Response response = new GetSignalValues.Response();
+            final Map<String, Signal> values = response.getValues();
+
+            values.put("activePowerCombo", new AnalogSignal(getActivePowerCombo()));
+            values.put("positiveActivePower", new AnalogSignal(getPositiveActivePower()));
+            values.put("reverseActivePower", new AnalogSignal(getReverseActivePower()));
+            values.put("voltage", new AnalogSignal(getVoltage()));
+            values.put("current", new AnalogSignal(getCurrent()));
+            values.put("power", new AnalogSignal(getPower()));
+            values.put("powerFactor", new AnalogSignal(getPowerFactor()));
+            values.put("frequency", new AnalogSignal(getFrequency()));
+
+            handler.handle(ctx, response);
         }
 
         public double getActivePowerCombo() {

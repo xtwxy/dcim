@@ -4,7 +4,8 @@ import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.statemachine.State;
-import com.wincom.driver.dds3366d.internal.primitives.ReadSettings.Request;
+import com.wincom.protocol.modbus.ModbusFrame;
+import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
 
 /**
  *
@@ -14,9 +15,16 @@ public class ReadSettingsRequestState extends State.Adapter {
 
     @Override
     public State enter(HandlerContext ctx) {
-
-        ctx.getHandler(Request.class).handle(ctx, new Request());
-
+        DDS3366DHandlerContextImpl ctxImpl = (DDS3366DHandlerContextImpl) ctx;
+        
+        ModbusFrame frame = new ModbusFrame();
+        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
+        request.setStartAddress((short)0);
+        request.setNumberOfRegisters((short)13);
+        frame.setPayload(request);
+        
+        ctxImpl.getOutboundContext().send(frame, ctx);
+        
         return this;
     }
 

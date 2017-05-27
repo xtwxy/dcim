@@ -105,9 +105,6 @@ public enum ModbusFunction {
         return code;
     }
 
-    public void setCode(byte code) {
-        this.code = code;
-    }
     public static ModbusFunction from(byte b) {
         for(ModbusFunction c : ModbusFunction.class.getEnumConstants()) {
             if(c.getCode() == b) {

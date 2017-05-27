@@ -1,5 +1,8 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
+import com.wincom.dcim.agentd.domain.IntegerSignal;
+import com.wincom.dcim.agentd.domain.Signal;
+import com.wincom.dcim.agentd.domain.TimstampSignal;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.primitives.Handler;
@@ -23,24 +26,21 @@ import java.util.Set;
  */
 public class ReadSettings {
 
-    private final Set<String> keys;
-    private final Map<Class, Handler> handlers;
+    private static final Set<String> KEYS;
 
-    public ReadSettings(Map<Class, Handler> handlers) {
-        keys = new HashSet();
-        keys.add("clock");
-        keys.add("slaveAddress");
-        keys.add("pt");
-        keys.add("ct");
-
-        this.handlers = handlers;
+    static {
+        KEYS = new HashSet();
+        KEYS.add("clock");
+        KEYS.add("slaveAddress");
+        KEYS.add("pt");
+        KEYS.add("ct");
     }
 
-    public State initial(Message request, HandlerContext replyTo) {
+    public static State initial(Message request, HandlerContext replyTo) {
         if (request instanceof GetSignalValues.Request) {
             GetSignalValues.Request r = (GetSignalValues.Request) request;
             HashSet<String> theKeys = new HashSet<>(r.getKeys());
-            theKeys.retainAll(keys);
+            theKeys.retainAll(KEYS);
             if (theKeys.isEmpty()) {
                 return stopState();
             } else {
@@ -50,7 +50,7 @@ public class ReadSettings {
         return stopState();
     }
 
-    private State sendRequestState(HandlerContext replyTo) {
+    private static State sendRequestState(HandlerContext replyTo) {
         StateMachineBuilder builder = new StateMachineBuilder();
         return builder
                 .add("send", new ReadSettingsRequestState())
@@ -62,21 +62,13 @@ public class ReadSettings {
                 .buildWithInitialAndStop("send", "stop");
     }
 
-    private State stopState() {
-        return new State.Adapter();
-    }
-
-    public static class Request implements Message {
-
-        @Override
-        public void apply(HandlerContext ctx, Handler handler) {
-            handler.handle(ctx, this);
-        }
-
-        @Override
-        public boolean isOob() {
-            return false;
-        }
+    private static State stopState() {
+        return new State.Adapter() {
+            @Override
+            public boolean stopped() {
+                return true;
+            }
+        };
     }
 
     public static class Response extends AbstractWireable implements Message {
@@ -129,7 +121,15 @@ public class ReadSettings {
 
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
-            handler.handle(null, this);
+            final GetSignalValues.Response response = new GetSignalValues.Response();
+            final Map<String, Signal> values = response.getValues();
+
+            values.put("clock", new TimstampSignal(getDate()));
+            values.put("slaveAddress", new IntegerSignal(Integer.valueOf(getSlaveAddress())));
+            values.put("pt", new IntegerSignal(Integer.valueOf(getPt())));
+            values.put("ct", new IntegerSignal(Integer.valueOf(getCt())));
+
+            handler.handle(ctx, response);
         }
 
         public Date getDate() {
