@@ -34,13 +34,13 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        clientContext.fire(new ChannelActive(ctx.channel()));
+        clientContext.fire(new ChannelActive(clientContext));
         ctx.fireChannelActive();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        clientContext.fire(new ChannelInactive(ctx.channel()));
+        clientContext.fire(new ChannelInactive(clientContext));
         ctx.fireChannelInactive();
         ctx.pipeline().close();
         ctx.channel().close();
@@ -51,12 +51,12 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
         ByteBuffer buffer = null;
         if (msg instanceof ByteBuffer) {
             buffer = (ByteBuffer) buffer;
-            clientContext.fire(new BytesReceived(buffer));
+            clientContext.fire(new BytesReceived(clientContext, buffer));
         } else if (msg instanceof ByteBuf) {
             ByteBuf buf = (ByteBuf) msg;
             buffer = buf.nioBuffer();
 
-            clientContext.fire(new BytesReceived(buffer));
+            clientContext.fire(new BytesReceived(clientContext, buffer));
 
             buf.release();
         } else {
@@ -73,16 +73,16 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
             } else {
                 switch (e.state()) {
                     case READER_IDLE:
-                        clientContext.fire(new ReadTimeout());
+                        clientContext.fire(new ReadTimeout(clientContext));
                         break;
                     case WRITER_IDLE:
-                        clientContext.fire(new WriteTimeout());
+                        clientContext.fire(new WriteTimeout(clientContext));
                         break;
                     case ALL_IDLE:
-                        clientContext.fire(new ChannelTimeout());
+                        clientContext.fire(new ChannelTimeout(clientContext));
                         break;
                     default:
-                        clientContext.fire(new ChannelTimeout());
+                        clientContext.fire(new ChannelTimeout(clientContext));
                         break;
                 }
             }

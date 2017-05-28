@@ -3,12 +3,11 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.NetworkService;
+import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.statemachine.ConnectState;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.WaitTimeoutState;
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import java.util.Properties;
@@ -34,10 +33,10 @@ public class TcpClientCodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openInbound(AgentdService service, Properties outbound, Handler inboundHandler) {
+    public ChannelOutboundHandler openOutbound(AgentdService service, Properties outbound, ChannelInboundHandler inboundHandler) {
         log.info(outbound.toString());
 
-        final HandlerContext handlerContext = network.createHandlerContext();
+        final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl)network.createHandlerContext();
         final StateMachineBuilder builder = new StateMachineBuilder();
         final String host = outbound.getProperty(HOST_KEY);
         final String port = outbound.getProperty(PORT_KEY);
@@ -51,22 +50,12 @@ public class TcpClientCodecImpl implements Codec {
                 .transision("receiveState", "receiveState", "waitState")
                 .transision("waitState", "connectState", "connectState")
                 .buildWithInitialState("connectState");
-
+        
         handlerContext.setInboundHandler(inboundHandler);
         handlerContext.getStateMachine()
                 .buildWith(client)
                 .enter(handlerContext);
 
-        return handlerContext;
-    }
-
-    @Override
-    public void handle(HandlerContext ctx, Message m) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void codecActive(HandlerContext outbound) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return handlerContext.getOutboundHandler();
     }
 }

@@ -1,5 +1,6 @@
 package com.wincom.dcim.agentd.statemachine;
 
+import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 
@@ -10,27 +11,24 @@ import com.wincom.dcim.agentd.primitives.Message;
 public class SendMessageState extends State.Adapter {
 
     final private Message message;
-    final private HandlerContext reply;
+    final private Handler request;
+    final private Handler reply;
 
-    public SendMessageState(Message m) {
+    public SendMessageState(Message m, Handler request, Handler reply) {
         this.message = m;
-        this.reply = new HandlerContext.NullContext();
-    }
-
-    public SendMessageState(Message m, HandlerContext reply) {
-        this.message = m;
-        this.reply = reply;
+        this.reply = request;
+        this.request = reply;
     }
 
     @Override
     public State enter(HandlerContext ctx) {
-        ctx.getHandler(message.getClass()).handle(ctx, message);
+        message.apply(ctx, request);
         return this;
     }
 
     @Override
     public State on(HandlerContext ctx, Message m) {
-        reply.fire(m);
+        m.apply(ctx, reply);
         return this;
     }
 

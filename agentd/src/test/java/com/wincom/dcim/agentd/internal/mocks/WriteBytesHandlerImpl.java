@@ -21,7 +21,7 @@ public class WriteBytesHandlerImpl implements Handler {
 
     @Override
     public void handle(HandlerContext ctx, Message m) {
-        outbound.send(m, ctx);
+        outbound.send(m, (Handler)ctx);
     }
 
 }

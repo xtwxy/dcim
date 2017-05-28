@@ -5,8 +5,10 @@ package com.wincom.dcim.agentd.primitives;
  * @author master
  */
 public class Accept extends Message.Adapter {
+
     private final String host;
     private final int port;
+
     public Accept(String host, int port) {
         this.host = host;
         this.port = port;
@@ -19,10 +21,19 @@ public class Accept extends Message.Adapter {
     public int getPort() {
         return port;
     }
-    
+
     @Override
     public boolean isOob() {
         return true;
+    }
+
+    @Override
+    public void apply(HandlerContext ctx, Handler handler) {
+        if (handler instanceof ChannelOutboundHandler) {
+            ((ChannelOutboundHandler) handler).handleAccept(ctx, this);
+        } else {
+            handler.handle(ctx, this);
+        }
     }
 
     @Override

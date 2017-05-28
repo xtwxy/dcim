@@ -17,6 +17,15 @@ public class SetDeadlineTimer extends Message.Adapter {
     public Date getTime() {
         return time;
     }
+    
+    @Override
+    public void apply(HandlerContext ctx, Handler handler) {
+        if (handler instanceof TimerHandler) {
+            ((TimerHandler) handler).handleSetDeadlineTimer(ctx, this);
+        } else {
+            handler.handle(ctx, this);
+        }
+    }
 
     @Override
     public String toString() {

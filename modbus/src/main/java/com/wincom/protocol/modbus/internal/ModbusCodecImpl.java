@@ -2,6 +2,7 @@ package com.wincom.protocol.modbus.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
@@ -24,26 +25,25 @@ public class ModbusCodecImpl implements Codec {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     public static final String ADDRESS = "address";
-    private HandlerContext outboundContext;
+    private final ModbusDecodeContextImpl delegate;
     private final Map<Byte, HandlerContext> inboundContexts;
 
     public ModbusCodecImpl() {
         this.inboundContexts = new HashMap<>();
+        this.delegate =new ModbusDecodeContextImpl();
     }
 
     @Override
     public void codecActive(HandlerContext outboundContext) {
-        this.outboundContext = outboundContext;
+        this.delegate.activate(outboundContext);
         for (Map.Entry<Byte, HandlerContext> e : inboundContexts.entrySet()) {
-            e.getValue().initHandlers(outboundContext);
+            e.getValue().activate(delegate);
         }
     }
 
     @Override
-    public HandlerContext openInbound(
-            AgentdService service,
-            Properties props,
-            Handler inboundHandler) {
+    public ChannelInboundHandler openOutbound(
+            AgentdService service, Properties props, ChannelOutboundHandler inboundHandler) {
         log.info(String.format("%s", props));
 
         Byte address = Byte.valueOf(props.getProperty(ADDRESS));
@@ -62,7 +62,7 @@ public class ModbusCodecImpl implements Codec {
             final Byte address,
             final Handler inboundHandler) {
 
-        final HandlerContext handlerContext = new ModbusHandlerContextImpl(address) {
+        final HandlerContext handlerContext = new ModbusHandlerContextImpl(address, delegate) {
             @Override
             public void close() {
                 inboundContexts.remove(address);
@@ -82,7 +82,7 @@ public class ModbusCodecImpl implements Codec {
                 .buildWith(client)
                 .enter(handlerContext);
         
-        handlerContext.initHandlers(this.outboundContext);
+        handlerContext.activate(this.delegate);
 
         return handlerContext;
     }

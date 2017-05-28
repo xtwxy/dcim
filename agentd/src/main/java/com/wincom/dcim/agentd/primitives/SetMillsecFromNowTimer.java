@@ -20,6 +20,15 @@ public class SetMillsecFromNowTimer extends Message.Adapter {
     public boolean isOob() {
         return true;
     }
+    
+    @Override
+    public void apply(HandlerContext ctx, Handler handler) {
+        if (handler instanceof TimerHandler) {
+            ((TimerHandler) handler).handleSetMillsecFromNowTimer(ctx, this);
+        } else {
+            handler.handle(ctx, this);
+        }
+    }
 
     @Override
     public String toString() {

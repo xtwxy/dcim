@@ -25,7 +25,7 @@ public abstract class DDS3366DHandlerContextImpl extends HandlerContext.Adapter 
     public DDS3366DHandlerContextImpl(HandlerContext outboundContext) {
         this.handlers = new HashMap<>();
         this.outboundContext = outboundContext;
-        initHandlers(outboundContext);
+        activate(outboundContext);
     }
 
     @Override
@@ -77,7 +77,7 @@ public abstract class DDS3366DHandlerContextImpl extends HandlerContext.Adapter 
     }
 
     @Override
-    final public void initHandlers(HandlerContext outboundContext) {
+    final public void activate(HandlerContext outboundContext) {
         this.handlers.put(Unknown.class, new DefaultHandlerImpl(outboundContext));
     }
 

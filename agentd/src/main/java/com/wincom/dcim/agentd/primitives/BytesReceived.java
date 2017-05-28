@@ -6,11 +6,12 @@ import java.nio.ByteBuffer;
  *
  * @author master
  */
-public class BytesReceived extends Message.Adapter {
+public class BytesReceived extends ChannelInbound {
 
     private final ByteBuffer buffer;
 
-    public BytesReceived(ByteBuffer o) {
+    public BytesReceived(HandlerContext c, ByteBuffer o) {
+        super(c);
         this.buffer = o;
     }
 
@@ -19,7 +20,17 @@ public class BytesReceived extends Message.Adapter {
     }
 
     @Override
+    public void applyChannelInbound(HandlerContext ctx, ChannelInboundHandler handler) {
+        handler.handlePayloadReceived(ctx, this);
+    }
+
+    @Override
     public String toString() {
-        return String.format("BytesReceived %s", buffer);
+        return String.format("BytesReceived %s, %s", getContext(), buffer);
+    }
+
+    @Override
+    public boolean isOob() {
+        return false;
     }
 }

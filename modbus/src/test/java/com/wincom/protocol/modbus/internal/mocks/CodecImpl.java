@@ -2,6 +2,7 @@ package com.wincom.protocol.modbus.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
@@ -31,10 +32,8 @@ public class CodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openInbound(
-            AgentdService service,
-            Properties props,
-            Handler inboundHandler) {
+    public ChannelInboundHandler openOutbound(
+            AgentdService service, Properties props, ChannelOutboundHandler inboundHandler) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
@@ -87,7 +86,7 @@ public class CodecImpl implements Codec {
     public void codecActive(HandlerContext outboundContext) {
         this.outboundContext = outboundContext;
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            e.getValue().initHandlers(outboundContext);
+            e.getValue().activate(outboundContext);
         }
     }
 }

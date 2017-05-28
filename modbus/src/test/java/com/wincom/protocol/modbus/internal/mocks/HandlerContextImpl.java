@@ -29,7 +29,7 @@ public class HandlerContextImpl extends HandlerContext.Adapter {
     }
 
     @Override
-    public void initHandlers(HandlerContext outboundContext) {
+    public void activate(HandlerContext outboundContext) {
         this.handlers.put(SendBytes.class, new WriteBytesHandlerImpl(outboundContext));
         this.handlers.put(Unknown.class, new DefaultHandlerImpl(outboundContext));
     }

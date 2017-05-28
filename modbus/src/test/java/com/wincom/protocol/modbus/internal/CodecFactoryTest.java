@@ -31,7 +31,7 @@ public class CodecFactoryTest {
     private static final String MODBUS_CODEC_ID = "1001";
     private static final String MODBUS_ADDRESS_1 = "1";
     private static final String MODBUS_ADDRESS_2 = "2";
-    private static final String HOST = "192.168.0.68";
+    private static final String HOST = "localhost";
     private static final String PORT = "9080";
     private static final String WAITE_TIMEOUT = "60000";
 
@@ -65,7 +65,7 @@ public class CodecFactoryTest {
             Properties modbusOutbound = new Properties();
             modbusOutbound.put(ModbusCodecImpl.ADDRESS, MODBUS_ADDRESS_1);
 
-            outboundContext = c.openInbound(agent, modbusOutbound, new Handler() {
+            outboundContext = c.openOutbound(agent, modbusOutbound, new Handler() {
                 @Override
                 public void handle(HandlerContext ctx, Message m) {
                     log.info(String.format("handle(%s, %s, %s)", this, ctx, m));

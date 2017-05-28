@@ -3,6 +3,7 @@ package com.wincom.dcim.agentd.statemachine;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
+import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
@@ -19,13 +20,9 @@ public class ReceiveState extends State.Adapter {
 
     @Override
     public State on(HandlerContext ctx, Message m) {
+        m.apply(ctx, ctx.getInboundHandler());
         
-        ctx.getInboundHandler().handle(ctx, m);
-        
-        if (m instanceof BytesReceived) {
-            // TODO: notify the inbound handlers.
-            return success();
-        } else if (m instanceof WriteComplete) {
+        if (m instanceof WriteComplete) {
             // TODO: notify the inbound handlers.
             ctx.onRequestCompleted(m);
             return success();
@@ -37,8 +34,6 @@ public class ReceiveState extends State.Adapter {
             // TODO: notify the inbound handlers.
             return success();
         } else if (m instanceof ChannelInactive) {
-            ctx.setActive(false);
-            ctx.close();
             ctx.fireClosed(m);
             return fail();
         } else {

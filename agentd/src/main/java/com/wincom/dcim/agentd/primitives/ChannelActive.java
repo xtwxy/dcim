@@ -1,21 +1,13 @@
 package com.wincom.dcim.agentd.primitives;
 
-import io.netty.channel.Channel;
-
 /**
  *
  * @author master
  */
-public class ChannelActive extends Message.Adapter {
+public class ChannelActive extends ChannelInbound {
 
-    private final Channel channel;
-
-    public ChannelActive(Channel c) {
-        this.channel = c;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
+    public ChannelActive(HandlerContext c) {
+        super(c);
     }
 
     @Override
@@ -24,7 +16,12 @@ public class ChannelActive extends Message.Adapter {
     }
 
     @Override
+    public void applyChannelInbound(HandlerContext ctx, ChannelInboundHandler handler) {
+        handler.handleChannelActive(ctx, this);
+    }
+
+    @Override
     public String toString() {
-        return String.format("ChannelActive %s", getChannel());
+        return String.format("ChannelActive %s", getContext());
     }
 }

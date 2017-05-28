@@ -1,15 +1,10 @@
 package com.wincom.dcim.agentd;
 
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
 import java.util.Properties;
 
-public interface Codec extends Handler {
-    /**
-     * Callback when <code>Codec</code> is activated.
-     * @param outboundContext 
-     */
-    public void codecActive(HandlerContext outboundContext);
+public interface Codec {
     
     /**
      * Create a port 
@@ -18,5 +13,5 @@ public interface Codec extends Handler {
      * @param inboundHandler
      * @return 
      */
-    public HandlerContext openInbound(AgentdService service, Properties props, Handler inboundHandler);
+    public ChannelOutboundHandler openOutbound(AgentdService service, Properties props, ChannelInboundHandler inboundHandler);
 }

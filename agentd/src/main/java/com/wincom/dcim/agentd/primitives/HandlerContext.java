@@ -1,7 +1,5 @@
 package com.wincom.dcim.agentd.primitives;
 
-import com.wincom.dcim.agentd.statemachine.SendMessageState;
-import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +26,7 @@ public interface HandlerContext {
      * @param m
      * @param reply
      */
-    public void send(Message m, HandlerContext reply);
+    public void send(Message m, Handler reply);
 
     /**
      * Called by the sender when a message is processed, the result maybe
@@ -37,21 +35,6 @@ public interface HandlerContext {
      * @param m
      */
     public void onRequestCompleted(Message m);
-
-    /**
-     * Initialize handlers when outbound is activated.
-     *
-     * @param outboundContext
-     */
-    public void initHandlers(HandlerContext outboundContext);
-
-    /**
-     * Get handler by class type of the message.
-     *
-     * @param clazz
-     * @return
-     */
-    public Handler getHandler(Class clazz);
 
     /**
      * Fire message from the underlying service to the state machine.
@@ -97,42 +80,29 @@ public interface HandlerContext {
      * @return
      */
     public boolean isActive();
+    public void setActive(boolean b);
 
-    /**
-     * Called by the underlying service to update the ready state.
-     *
-     * @param active
-     */
-    public void setActive(boolean active);
+    public void setInboundHandler(ChannelInboundHandler handler);
 
-    /**
-     * Set inbound handler to this context.
-     *
-     * @param handler
-     */
-    public void setInboundHandler(Handler handler);
+    public ChannelInboundHandler getInboundHandler();
 
-    /**
-     * Get inbound handler.
-     *
-     * @return
-     */
-    public Handler getInboundHandler();
+    public void setOutboundHandler(ChannelOutboundHandler handler);
+
+    public ChannelOutboundHandler getOutboundHandler();
 
     public void fireClosed(Message m);
 
-    public void close();
+    public static class Adapter implements HandlerContext {
 
-    public static abstract class Adapter implements HandlerContext {
-
-        Logger log = LoggerFactory.getLogger(this.getClass());
+        protected Logger log = LoggerFactory.getLogger(this.getClass());
 
         protected StateMachine machine;
         private final Map<Object, Object> variables;
-        protected final ConcurrentLinkedQueue<State> queue;
-        protected State current;
+        protected final ConcurrentLinkedQueue<Request> queue;
+        protected Request current;
         private boolean active;
-        protected Handler inboundHandler;
+        protected ChannelOutboundHandler outboundHandler;
+        protected ChannelInboundHandler inboundHandler;
 
         public Adapter() {
             this(new StateMachine());
@@ -147,28 +117,39 @@ public interface HandlerContext {
         }
 
         @Override
-        public Handler getInboundHandler() {
+        public ChannelInboundHandler getInboundHandler() {
             return this.inboundHandler;
         }
 
         @Override
-        public void setInboundHandler(Handler handler) {
+        public void setInboundHandler(ChannelInboundHandler handler) {
+            if(isActive()) {
+                this.inboundHandler.handleChannelInactive(this, new ChannelInactive(this));
+            }
             this.inboundHandler = handler;
+            if(isActive()) {
+                this.inboundHandler.handleChannelActive(this, new ChannelActive(this));
+            }
+        }
+
+        @Override
+        public void setOutboundHandler(ChannelOutboundHandler handler) {
+            this.outboundHandler = handler;
+        }
+
+        @Override
+        public ChannelOutboundHandler getOutboundHandler() {
+            return this.outboundHandler;
         }
 
         @Override
         public void send(Message m) {
-            SendMessageState s = new SendMessageState(m);
-            if (m.isOob()) {
-                sendImmediate(s);
-            } else {
-                enqueueForSendWhenActive(s);
-            }
+            send(m, new Handler.Default());
         }
 
         @Override
-        public void send(Message m, HandlerContext reply) {
-            SendMessageState s = new SendMessageState(m, reply);
+        public void send(Message m, Handler reply) {
+            Request s = new Request(m, reply);
             if (m.isOob()) {
                 sendImmediate(s);
             } else {
@@ -176,12 +157,12 @@ public interface HandlerContext {
             }
         }
 
-        protected synchronized void sendImmediate(State s) {
+        protected synchronized void sendImmediate(Request s) {
             current = s;
-            current.enter(this);
+            current.message.apply(this, this.outboundHandler);
         }
 
-        protected synchronized void enqueueForSendWhenActive(State s) {
+        public synchronized void enqueueForSendWhenActive(Request s) {
             queue.add(s);
             if (isActive()) {
                 if (!isInprogress()) {
@@ -201,22 +182,22 @@ public interface HandlerContext {
 
         @Override
         public void fireClosed(Message m) {
-            setActive(false);
+            active = false;
             if (isInprogress()) {
-                current.on(this, m);
+                current.handler.handle(this, m);
                 current = null;
             }
 
             while (!queue.isEmpty()) {
-                State s = queue.poll();
-                s.on(this, m);
+                Request s = queue.poll();
+                s.handler.handle(this, m);
             }
         }
 
         @Override
         public synchronized void onRequestCompleted(Message response) {
             if (isInprogress()) {
-                current.on(this, response);
+                current.handler.handle(this, response);
                 current = null;
             } else {
                 inboundHandler.handle(this, response);
@@ -227,11 +208,9 @@ public interface HandlerContext {
         protected void sendNext() {
             //synchronized (queue)
             if (isActive()) {
-                if (queue.isEmpty()) {
-                    return;
-                } else {
+                if (!queue.isEmpty()) {
                     current = queue.poll();
-                    current.enter(this);
+                    current.message.apply(this, this.outboundHandler);
                 }
             }
         }
@@ -266,8 +245,8 @@ public interface HandlerContext {
         }
 
         @Override
-        public void setActive(boolean active) {
-            this.active = active;
+        public void setActive(boolean b) {
+            this.active = b;
             if (isActive() && !isInprogress()) {
                 sendNext();
             }
@@ -294,27 +273,13 @@ public interface HandlerContext {
         }
 
         @Override
-        public void send(Message m, HandlerContext reply) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Handler getHandler(Class clazz) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public void send(Message m, Handler reply) {
+            log.info(String.format("send(%s, %s)", m, reply));
         }
 
         @Override
         public void fire(Message m) {
-        }
-
-        @Override
-        public void close() {
-
-        }
-
-        @Override
-        public void initHandlers(HandlerContext outboundContext) {
-            log.info(String.format("inboundHandler: (%s, %s) ", this, inboundHandler));
+            log.info(String.format("fire(%s)", m));
         }
     }
 }

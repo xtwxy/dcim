@@ -1,19 +1,27 @@
 package com.wincom.dcim.agentd.primitives;
 
-import io.netty.channel.Channel;
-
 /**
  *
  * @author master
  */
-public class Accepted extends Connected implements Message {
+public class Accepted extends ChannelInbound {
 
-    public Accepted(Channel c) {
+    public Accepted(HandlerContext c) {
         super(c);
     }
 
     @Override
+    public boolean isOob() {
+        return true;
+    }
+
+    @Override
+    public void applyChannelInbound(HandlerContext ctx, ChannelInboundHandler handler) {
+        handler.handleAccepted(ctx, this);
+    }
+
+    @Override
     public String toString() {
-        return String.format("Accepted %s", getChannel());
+        return String.format("Accepted %s", getContext());
     }
 }

@@ -2,6 +2,7 @@ package com.wincom.driver.dds3366d.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
@@ -32,12 +33,12 @@ public class DDS3366DCodecImpl implements Codec {
     public void codecActive(HandlerContext outboundContext) {
         this.outboundContext = outboundContext;
         for (HandlerContext e : inboundContexts) {
-            e.initHandlers(outboundContext);
+            e.activate(outboundContext);
         }
     }
 
     @Override
-    public HandlerContext openInbound(AgentdService service, Properties props, Handler inboundHandler) {
+    public ChannelInboundHandler openOutbound(AgentdService service, Properties props, ChannelOutboundHandler inboundHandler) {
         HandlerContext ctx = new DDS3366DHandlerContextImpl(outboundContext) {
             @Override
             public void close() {
@@ -47,7 +48,7 @@ public class DDS3366DCodecImpl implements Codec {
         inboundContexts.add(ctx);
 
         ctx.setInboundHandler(inboundHandler);
-        ctx.initHandlers(this.outboundContext);
+        ctx.activate(this.outboundContext);
         
         final StateMachineBuilder builder = new StateMachineBuilder();
 

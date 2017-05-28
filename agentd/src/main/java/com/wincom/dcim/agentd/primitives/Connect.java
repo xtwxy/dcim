@@ -14,6 +14,15 @@ public class Connect extends Message.Adapter {
         this.port = port;
     }
 
+    @Override
+    public void apply(HandlerContext ctx, Handler handler) {
+        if (handler instanceof ChannelOutboundHandler) {
+            ((ChannelOutboundHandler) handler).handleConnect(ctx, this);
+        } else {
+            handler.handle(ctx, this);
+        }
+    }
+
     public String getHost() {
         return host;
     }

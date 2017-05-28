@@ -2,6 +2,7 @@ package com.wincom.fsu.mp3000.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
@@ -44,10 +45,8 @@ public class MP3000CodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openInbound(
-            AgentdService service,
-            Properties props,
-            Handler inboundHandler) {
+    public ChannelInboundHandler openOutbound(
+            AgentdService service, Properties props, ChannelOutboundHandler inboundHandler) {
         Integer comport = Integer.valueOf(props.getProperty(COM_PORT_KEY));
         HandlerContext ctx = inbound.get(comport);
         if (comport <= PORT_COUNT) {
@@ -58,7 +57,7 @@ public class MP3000CodecImpl implements Codec {
                 p.put(TcpClientCodecImpl.PORT_KEY, BASE_PORT + comport);
                 p.put(TcpClientCodecImpl.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
-                ctx = inboundCodec.openInbound(service, p, this);
+                ctx = inboundCodec.openOutbound(service, p, this);
                 inbound.put(comport, ctx);
             } else {
                 // already opened.

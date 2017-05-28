@@ -2,13 +2,21 @@ package com.wincom.dcim.agentd.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.ChannelInactive;
+import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.Connected;
+import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author master
  */
-public class CodecImpl implements Codec {
+public class CodecImpl implements Codec, ChannelInboundHandler {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -31,10 +39,8 @@ public class CodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openInbound(
-            AgentdService service,
-            Properties props,
-            Handler inboundHandler) {
+    public ChannelOutboundHandler openOutbound(
+            AgentdService service, Properties props, ChannelInboundHandler inboundHandler) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
@@ -44,18 +50,18 @@ public class CodecImpl implements Codec {
             inbounds.put(props, inboundContext);
         }
 
-        return inboundContext;
+        return inboundContext.getOutboundHandler();
     }
 
     private HandlerContext createInbound0(
             AgentdService service,
             Properties props,
-            Handler inboundHandler) {
+            ChannelInboundHandler inboundHandler) {
         log.info(props.toString());
 
-        final HandlerContext handlerContext = new HandlerContextImpl();
+        final HandlerContextImpl handlerContext = new HandlerContextImpl();
         handlerContext.setInboundHandler(inboundHandler);
-        
+
         final StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine client = builder
@@ -71,23 +77,68 @@ public class CodecImpl implements Codec {
     }
 
     @Override
-    public void handle(HandlerContext ctx, Message m) {
-        log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
-        if (m.isOob()) {
-            if(m instanceof ChannelActive) {
-                codecActive(ctx);
-            }
-        }
+    public void handleAccepted(HandlerContext ctx, Accepted m) {
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            e.getValue().fire(m);
+            m.apply(ctx, e.getValue().getInboundHandler());
         }
     }
 
     @Override
-    public void codecActive(HandlerContext outboundContext) {
-        this.outboundContext = outboundContext;
+    public void handleConnected(HandlerContext ctx, Connected m) {
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            e.getValue().initHandlers(outboundContext);
+            m.apply(ctx, e.getValue().getInboundHandler());
+        }
+    }
+
+    @Override
+    public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+        this.outboundContext = m.getContext();
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            OutboundHandlerImpl impl = (OutboundHandlerImpl) e.getValue().getOutboundHandler();
+            impl.setDelegate(ctx.getOutboundHandler());
+            m.apply(ctx, e.getValue().getInboundHandler());
+        }
+    }
+
+    @Override
+    public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            m.apply(ctx, e.getValue().getInboundHandler());
+        }
+    }
+
+    @Override
+    public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            m.apply(ctx, e.getValue().getInboundHandler());
+        }
+    }
+
+    @Override
+    public void handleConnectionClosed(HandlerContext ctx, ConnectionClosed m) {
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            m.apply(ctx, e.getValue().getInboundHandler());
+        }
+    }
+
+    @Override
+    public void handlePayloadReceived(HandlerContext ctx, Message m) {
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            m.apply(ctx, e.getValue().getInboundHandler());
+        }
+    }
+
+    @Override
+    public void handlePayloadSent(HandlerContext ctx, Message m) {
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            m.apply(ctx, e.getValue().getInboundHandler());
+        }
+    }
+
+    @Override
+    public void handle(HandlerContext ctx, Message m) {
+        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
+            m.apply(ctx, e.getValue().getInboundHandler());
         }
     }
 }

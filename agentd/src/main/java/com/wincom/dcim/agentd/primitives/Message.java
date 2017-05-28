@@ -21,6 +21,5 @@ public interface Message {
         public boolean isOob() {
             return false;
         }
-
     }
 }
