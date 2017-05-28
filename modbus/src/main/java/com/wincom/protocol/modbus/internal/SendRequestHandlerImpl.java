@@ -27,7 +27,8 @@ public class SendRequestHandlerImpl implements Handler {
         final ModbusFrame frame = (ModbusFrame) m;
         ByteBuffer buffer = ByteBuffer.allocate(frame.getWireLength());
         frame.toWire(buffer);
-
+        buffer.flip();
+        
         outbound.send(new SendBytes(buffer), ctx);
     }
 }

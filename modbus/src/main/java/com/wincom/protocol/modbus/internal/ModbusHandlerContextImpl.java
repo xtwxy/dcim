@@ -55,7 +55,9 @@ public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
     @Override
     public void send(Message m, HandlerContext reply) {
         if (m instanceof ModbusFrame) {
-            ModbusRequestState s = new ModbusRequestState((ModbusFrame) m, reply);
+            ModbusFrame request = (ModbusFrame) m;
+            request.setSlaveAddress(slaveAddress);
+            ModbusRequestState s = new ModbusRequestState(request, reply);
             enqueueForSendWhenActive(s);
         } else {
             super.send(m, reply);
