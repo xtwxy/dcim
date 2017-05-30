@@ -11,7 +11,7 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import com.wincom.driver.dds3366d.internal.ReadSettingsResponseState;
 import com.wincom.driver.dds3366d.internal.ReadSettingsRequestState;
-import com.wincom.protocol.modbus.AbstractWireable;
+import com.wincom.dcim.agentd.primitives.AbstractWireable;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

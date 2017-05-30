@@ -4,10 +4,10 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class ConnectFailed extends Message.Adapter {
+public final class ConnectFailed extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("ConnectFailed@%d", hashCode());
+        return String.format("%s@%d", getClass().getSimpleName(), hashCode());
     }
 }

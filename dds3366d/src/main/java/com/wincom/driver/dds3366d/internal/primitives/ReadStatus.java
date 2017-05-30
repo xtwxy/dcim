@@ -1,5 +1,6 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
+import com.wincom.dcim.agentd.primitives.AbstractWireable;
 import com.wincom.dcim.agentd.domain.AnalogSignal;
 import com.wincom.dcim.agentd.domain.Signal;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;

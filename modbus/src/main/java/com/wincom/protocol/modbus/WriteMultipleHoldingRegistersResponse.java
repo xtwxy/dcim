@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus;
 
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -8,7 +9,7 @@ import java.nio.ByteOrder;
  * @author master
  */
 public class WriteMultipleHoldingRegistersResponse
-        extends AbstractWireable
+        extends AbstractModbusResponse
         implements ModbusPayload {
 
     private short startAddress;
@@ -67,4 +68,8 @@ public class WriteMultipleHoldingRegistersResponse
         this.numberOfRegisters = numberOfRegisters;
     }
 
+    @Override
+    public void applyModbusResponse(HandlerContext ctx, ModbusPayloadInboundHandler handler) {
+        handler.handleWriteMultipleHoldingRegistersResponse(ctx, this);
+    }
 }

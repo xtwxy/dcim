@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus;
 
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -8,7 +9,7 @@ import java.nio.ByteOrder;
  * @author master
  */
 public class ReadMultipleHoldingRegistersRequest
-        extends AbstractWireable
+        extends AbstractModbusRequest
         implements ModbusPayload {
 
     private short startAddress;
@@ -16,12 +17,12 @@ public class ReadMultipleHoldingRegistersRequest
 
     public ReadMultipleHoldingRegistersRequest() {
     }
-    
+
     @Override
     public ModbusFunction getFunctionCode() {
         return ModbusFunction.READ_MULTIPLE_HOLDING_REGISTERS;
     }
-    
+
     @Override
     public int getWireLength() {
         return 2 // start address of registers
@@ -67,4 +68,8 @@ public class ReadMultipleHoldingRegistersRequest
         this.numberOfRegisters = numberOfRegisters;
     }
 
+    @Override
+    public void applyModbusRequest(HandlerContext ctx, ModbusPayloadOutboundHandler handler) {
+        handler.handleReadMultipleHoldingRegistersRequest(ctx, this);
+    }
 }

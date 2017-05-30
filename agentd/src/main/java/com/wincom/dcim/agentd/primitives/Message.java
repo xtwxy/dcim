@@ -8,18 +8,11 @@ public interface Message {
 
     public void apply(HandlerContext ctx, Handler handler);
 
-    public boolean isOob();
-
     public static class Adapter implements Message {
 
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
             handler.handle(ctx, this);
-        }
-
-        @Override
-        public boolean isOob() {
-            return false;
         }
     }
 }

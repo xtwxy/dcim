@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus;
 
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -8,7 +9,7 @@ import java.nio.ByteOrder;
  * @author master
  */
 public class WriteSingleHoldingRegisterRequest
-        extends AbstractWireable
+        extends AbstractModbusRequest
         implements ModbusPayload {
 
     private short startAddress;
@@ -65,5 +66,10 @@ public class WriteSingleHoldingRegisterRequest
 
     public void setValueToWrite(short valueToWrite) {
         this.valueToWrite = valueToWrite;
+    }
+
+    @Override
+    public void applyModbusRequest(HandlerContext ctx, ModbusPayloadOutboundHandler handler) {
+        handler.handleWriteSingleHoldingRegisterRequest(ctx, this);
     }
 }

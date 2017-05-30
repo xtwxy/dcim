@@ -21,14 +21,6 @@ public interface HandlerContext {
     public void send(Message m);
 
     /**
-     * Send message via the underlying service, and reply to reply context.
-     *
-     * @param m
-     * @param reply
-     */
-    public void send(Message m, Handler reply);
-
-    /**
      * Called by the sender when a message is processed, the result maybe
      * success or not.
      *
@@ -80,15 +72,16 @@ public interface HandlerContext {
      * @return
      */
     public boolean isActive();
+
     public void setActive(boolean b);
 
-    public void setInboundHandler(ChannelInboundHandler handler);
+    public void setInboundHandler(Handler handler);
 
-    public ChannelInboundHandler getInboundHandler();
+    public Handler getInboundHandler();
 
-    public void setOutboundHandler(ChannelOutboundHandler handler);
+    public void setOutboundHandler(Handler handler);
 
-    public ChannelOutboundHandler getOutboundHandler();
+    public Handler getOutboundHandler();
 
     public void fireClosed(Message m);
 
@@ -98,11 +91,11 @@ public interface HandlerContext {
 
         protected StateMachine machine;
         private final Map<Object, Object> variables;
-        protected final ConcurrentLinkedQueue<Request> queue;
-        protected Request current;
+        protected final ConcurrentLinkedQueue<Message> queue;
+        protected Message current;
         private boolean active;
-        protected ChannelOutboundHandler outboundHandler;
-        protected ChannelInboundHandler inboundHandler;
+        protected Handler outboundHandler;
+        protected Handler inboundHandler;
 
         public Adapter() {
             this(new StateMachine());
@@ -117,66 +110,49 @@ public interface HandlerContext {
         }
 
         @Override
-        public ChannelInboundHandler getInboundHandler() {
+        public Handler getInboundHandler() {
             return this.inboundHandler;
         }
 
         @Override
-        public void setInboundHandler(ChannelInboundHandler handler) {
-            if(isActive()) {
-                this.inboundHandler.handleChannelInactive(this, new ChannelInactive(this));
-            }
+        public void setInboundHandler(Handler handler) {
+            Handler old = this.inboundHandler;
             this.inboundHandler = handler;
-            if(isActive()) {
-                this.inboundHandler.handleChannelActive(this, new ChannelActive(this));
+            if (isActive()) {
+                if (old != handler) {
+                    if (old != null) {
+                        Message m = new ChannelInactive(this);
+                        m.apply(this, old);
+                    }
+                }
+                Message m = new ChannelActive(this);
+                m.apply(this, this.inboundHandler);
             }
         }
 
         @Override
-        public void setOutboundHandler(ChannelOutboundHandler handler) {
+        public void setOutboundHandler(Handler handler) {
             this.outboundHandler = handler;
         }
 
         @Override
-        public ChannelOutboundHandler getOutboundHandler() {
+        public Handler getOutboundHandler() {
             return this.outboundHandler;
         }
 
         @Override
-        public void send(Message m) {
-            send(m, new Handler.Default());
-        }
-
-        @Override
-        public void send(Message m, Handler reply) {
-            Request s = new Request(m, reply);
-            if (m.isOob()) {
-                sendImmediate(s);
+        public synchronized void send(Message m) {
+            queue.add(m);
+            if (!isInprogress()) {
+                sendNext();
             } else {
-                enqueueForSendWhenActive(s);
-            }
-        }
-
-        protected synchronized void sendImmediate(Request s) {
-            current = s;
-            current.message.apply(this, this.outboundHandler);
-        }
-
-        public synchronized void enqueueForSendWhenActive(Request s) {
-            queue.add(s);
-            if (isActive()) {
-                if (!isInprogress()) {
-                    sendNext();
-                } else {
-                    // wait for complete
-                }
-            } else {
-                // wait for activation
+                // wait for complete
             }
         }
 
         @Override
         public void fire(Message m) {
+            m.apply(this, getInboundHandler());
             machine.on(this, m);
         }
 
@@ -184,34 +160,29 @@ public interface HandlerContext {
         public void fireClosed(Message m) {
             active = false;
             if (isInprogress()) {
-                current.handler.handle(this, m);
                 current = null;
             }
 
             while (!queue.isEmpty()) {
-                Request s = queue.poll();
-                s.handler.handle(this, m);
+                Message s = queue.poll();
             }
         }
 
         @Override
         public synchronized void onRequestCompleted(Message response) {
             if (isInprogress()) {
-                current.handler.handle(this, response);
                 current = null;
             } else {
-                inboundHandler.handle(this, response);
+                // not possible! should be discarded!
             }
             sendNext();
         }
 
         protected void sendNext() {
             //synchronized (queue)
-            if (isActive()) {
-                if (!queue.isEmpty()) {
-                    current = queue.poll();
-                    current.message.apply(this, this.outboundHandler);
-                }
+            if (!queue.isEmpty()) {
+                current = queue.poll();
+                current.apply(this, this.outboundHandler);
             }
         }
 
@@ -247,7 +218,7 @@ public interface HandlerContext {
         @Override
         public void setActive(boolean b) {
             this.active = b;
-            if (isActive() && !isInprogress()) {
+            if (!isInprogress()) {
                 sendNext();
             }
         }
@@ -270,11 +241,6 @@ public interface HandlerContext {
 
         public NullContext() {
             super(null);
-        }
-
-        @Override
-        public void send(Message m, Handler reply) {
-            log.info(String.format("send(%s, %s)", m, reply));
         }
 
         @Override

@@ -1,4 +1,4 @@
-package com.wincom.protocol.modbus;
+package com.wincom.dcim.agentd.primitives;
 
 import java.nio.ByteBuffer;
 import javax.annotation.Nonnegative;

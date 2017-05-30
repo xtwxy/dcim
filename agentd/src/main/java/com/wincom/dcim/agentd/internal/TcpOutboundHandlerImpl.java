@@ -107,6 +107,10 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
 
     @Override
     public void handleClose(HandlerContext ctx, CloseConnection m) {
+        if (!ctx.isActive()) {
+            ctx.fire(new Failed(new Exception("Not connected.")));
+            return;
+        }
         ChannelPromise cp = channel.newPromise();
         cp.addListener(new GenericFutureListener() {
             @Override
@@ -123,6 +127,10 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
 
     @Override
     public void handleSendPayload(HandlerContext ctx, Message m) {
+        if (!ctx.isActive()) {
+            ctx.fire(new Failed(new Exception("Not connected.")));
+            return;
+        }
         ChannelPromise cp = channel.newPromise();
         cp.addListener(new GenericFutureListener() {
             @Override

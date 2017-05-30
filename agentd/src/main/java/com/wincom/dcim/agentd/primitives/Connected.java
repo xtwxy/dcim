@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
  *
  * @author master
  */
-public class Connected extends Message.Adapter {
+public final class Connected extends Message.Adapter {
 
     private final Channel channel;
 
@@ -19,12 +19,7 @@ public class Connected extends Message.Adapter {
     }
 
     @Override
-    public boolean isOob() {
-        return true;
-    }
-
-    @Override
     public String toString() {
-        return String.format("Connected %s", getChannel());
+        return String.format("%s %s", getClass().getSimpleName(), getChannel());
     }
 }

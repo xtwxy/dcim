@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class Accept extends Message.Adapter {
+public final class Accept extends Message.Adapter {
 
     private final String host;
     private final int port;
@@ -23,11 +23,6 @@ public class Accept extends Message.Adapter {
     }
 
     @Override
-    public boolean isOob() {
-        return true;
-    }
-
-    @Override
     public void apply(HandlerContext ctx, Handler handler) {
         if (handler instanceof ChannelOutboundHandler) {
             ((ChannelOutboundHandler) handler).handleAccept(ctx, this);
@@ -38,6 +33,6 @@ public class Accept extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("Accept on %s:%d", host, port);
+        return String.format("%s on %s:%d", getClass().getSimpleName(), host, port);
     }
 }

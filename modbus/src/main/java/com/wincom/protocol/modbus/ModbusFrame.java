@@ -1,7 +1,8 @@
 package com.wincom.protocol.modbus;
 
+import com.wincom.dcim.agentd.primitives.AbstractWireable;
+import com.wincom.dcim.agentd.primitives.Wireable;
 import com.google.common.primitives.UnsignedBytes;
-import static com.wincom.protocol.modbus.AbstractWireable.appendHeader;
 import com.wincom.protocol.modbus.internal.CRC;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

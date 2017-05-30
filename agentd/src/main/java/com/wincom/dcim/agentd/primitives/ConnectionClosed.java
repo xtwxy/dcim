@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
  *
  * @author master
  */
-public class ConnectionClosed extends Message.Adapter {
+public final class ConnectionClosed extends Message.Adapter {
 
     private final Channel channel;
 

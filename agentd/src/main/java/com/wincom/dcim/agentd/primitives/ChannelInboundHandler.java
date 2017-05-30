@@ -47,6 +47,12 @@ public interface ChannelInboundHandler extends Handler {
             log.info(String.format("handleConnectionClosed(%s, %s)", ctx, m));
         }
         
+        @Override
+        public void handlePayloadReceived(HandlerContext ctx, Message m) {
+            log.info(String.format("handlePayloadReceived(%s, %s)", ctx, m));
+        }
+        
+        @Override
         public void handlePayloadSent(HandlerContext ctx, Message m) {
             ctx.onRequestCompleted(m);
         }

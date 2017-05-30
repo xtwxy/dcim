@@ -17,11 +17,6 @@ public class SetMillsecFromNowTimer extends Message.Adapter {
     }
 
     @Override
-    public boolean isOob() {
-        return true;
-    }
-    
-    @Override
     public void apply(HandlerContext ctx, Handler handler) {
         if (handler instanceof TimerHandler) {
             ((TimerHandler) handler).handleSetMillsecFromNowTimer(ctx, this);
@@ -32,6 +27,6 @@ public class SetMillsecFromNowTimer extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("SetMillsecFromNowTimer %s millsec from now.", millsec);
+        return String.format("%s %s millsec from now.", getClass().getSimpleName(), millsec);
     }
 }

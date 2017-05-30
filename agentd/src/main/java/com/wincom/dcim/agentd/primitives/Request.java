@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class Request {
+public final class Request {
 
     public final Message message;
     public final Handler handler;

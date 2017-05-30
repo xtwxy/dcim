@@ -5,7 +5,7 @@ import com.wincom.dcim.agentd.domain.Event;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PushEvents extends Message.Adapter {
+public final class PushEvents extends Message.Adapter {
 
     private List<Event> events;
 

@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class ExecuteRunnable extends Message.Adapter {
+public final class ExecuteRunnable extends Message.Adapter {
 
     private final Runnable runnable;
 
@@ -18,6 +18,6 @@ public class ExecuteRunnable extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("ExecuteRunnable %s", runnable);
+        return String.format("%s %s", getClass().getSimpleName(), runnable);
     }
 }

@@ -1,10 +1,8 @@
 package com.wincom.dcim.agentd.statemachine;
 
-import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
 
 /**
  *
@@ -16,9 +14,7 @@ public class ReceiveState extends State.Adapter {
     }
 
     @Override
-    public State on(HandlerContext ctx, Message m) {
-        m.apply(ctx, ctx.getInboundHandler());
-        
+    public State on(HandlerContext ctx, Message m) {        
         if (m instanceof ChannelInactive) {
             ctx.fireClosed(m);
             return fail();

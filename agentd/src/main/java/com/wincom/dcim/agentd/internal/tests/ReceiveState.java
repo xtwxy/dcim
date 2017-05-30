@@ -37,7 +37,7 @@ public class ReceiveState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         if (m instanceof BytesReceived) {
             // echo back the bytes.
-            ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
+            ctx.send(new SendBytes(ctx, ((BytesReceived) m).getByteBuffer()));
             return success();
         } else if (m instanceof WriteComplete) {
             // sendBytes(ctx);
@@ -83,7 +83,7 @@ public class ReceiveState extends State.Adapter {
     }
 
     public void sendBytes(HandlerContext ctx) {
-        ctx.send(new SendBytes(ByteBuffer.wrap(ba)));
+        ctx.send(new SendBytes(ctx, ByteBuffer.wrap(ba)));
     }
 
     @Override

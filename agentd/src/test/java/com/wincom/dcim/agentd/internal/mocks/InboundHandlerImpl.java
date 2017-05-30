@@ -3,6 +3,7 @@ package com.wincom.dcim.agentd.internal.mocks;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
@@ -13,27 +14,25 @@ import java.nio.ByteBuffer;
  * @author master
  */
 public class InboundHandlerImpl extends ChannelInboundHandler.Adapter {
+
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
         super.handleChannelActive(ctx, m);
-        
+
         ByteBuffer buffer = ByteBuffer.wrap("Hello, World!".getBytes());
-        Message sendBytes = new SendBytes(buffer);
+        Message sendBytes = new SendBytes(ctx, buffer);
 
-        HandlerContext reply = new HandlerContext.NullContext();
-
-        sendBytes.apply(reply, m.getContext().getOutboundHandler());
+        ctx.send(sendBytes);
     }
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        sendBytes(ctx);
+        ctx.onRequestCompleted(m);
     }
 
-    
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
-        log.info(String.format("handlePayloadReceived(%s, %s, %s)", this, ctx, m));
+        sendBytes(ctx);
     }
 
     @Override
@@ -49,8 +48,8 @@ public class InboundHandlerImpl extends ChannelInboundHandler.Adapter {
         }
     }
 
-    private static void sendBytes(HandlerContext ctx) {
+    private void sendBytes(HandlerContext ctx) {
         ByteBuffer buffer = ByteBuffer.wrap(BA);
-        ctx.send(new SendBytes(buffer));
+        ctx.send(new SendBytes(ctx, buffer));
     }
 }

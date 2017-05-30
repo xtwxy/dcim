@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class WriteTimeout extends ChannelTimeout {
+public final class WriteTimeout extends ChannelTimeout {
 
     public WriteTimeout(HandlerContext c) {
         super(c);

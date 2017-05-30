@@ -29,6 +29,6 @@ public abstract class ChannelInbound implements Message {
     
     @Override
     public String toString() {
-        return String.format("ChannelInbound %s", getContext());
+        return String.format("%s %s", getClass().getSimpleName(), getContext());
     }
 }

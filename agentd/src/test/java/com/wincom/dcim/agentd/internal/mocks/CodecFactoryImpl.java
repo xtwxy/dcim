@@ -22,10 +22,10 @@ public class CodecFactoryImpl implements CodecFactory {
     public Codec create(AgentdService service, Properties props) {
         log.info(props.toString());
 
-        Codec inboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
+        Codec outboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
         CodecImpl theCodec = new CodecImpl();
-        inboundCodec.openOutbound(service, 
+        outboundCodec.openOutbound(service, 
                 (Properties) props.get(OUTBOUND_CTX_PROPS_KEY),
                 theCodec);
         

@@ -4,7 +4,7 @@ import com.wincom.dcim.agentd.domain.Signal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SetSignalValues {
+public final class SetSignalValues {
 
     public static class Request  extends Message.Adapter {
 

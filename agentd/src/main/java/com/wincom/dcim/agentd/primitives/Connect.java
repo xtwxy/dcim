@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class Connect extends Message.Adapter {
+public final class Connect extends Message.Adapter {
 
     private final String host;
     private final int port;
@@ -32,12 +32,7 @@ public class Connect extends Message.Adapter {
     }
 
     @Override
-    public boolean isOob() {
-        return true;
-    }
-
-    @Override
     public String toString() {
-        return String.format("Connect to %s:%d", host, port);
+        return String.format("%s to %s:%d", getClass().getSimpleName(), host, port);
     }
 }

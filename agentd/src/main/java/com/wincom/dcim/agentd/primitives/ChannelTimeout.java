@@ -10,17 +10,7 @@ public class ChannelTimeout extends ChannelInbound {
     }
 
     @Override
-    public boolean isOob() {
-        return true;
-    }
-
-    @Override
     public void applyChannelInbound(HandlerContext ctx, ChannelInboundHandler handler) {
         handler.handleChannelTimeout(ctx, this);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("ChannelTimeout %s", getContext());
     }
 }

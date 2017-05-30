@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class Unknown extends Message.Adapter {
+public final class Unknown extends Message.Adapter {
 
     private final Object message;
 
@@ -18,6 +18,7 @@ public class Unknown extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("SendBytes %s", message);
+        return String.format("%s %s", getClass().getSimpleName());
     }
+
 }

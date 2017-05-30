@@ -22,12 +22,6 @@ public class StateBuilderTest {
         public void apply(HandlerContext ctx, Handler handler) {
             handler.handle(null, this);
         }
-
-        @Override
-        public boolean isOob() {
-            return false;
-        }
-
     };
     private final Handler handler = new Handler() {
         @Override

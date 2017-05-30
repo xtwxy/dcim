@@ -4,15 +4,10 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class ChannelActive extends ChannelInbound {
+public final class ChannelActive extends ChannelInbound {
 
     public ChannelActive(HandlerContext c) {
         super(c);
-    }
-
-    @Override
-    public boolean isOob() {
-        return true;
     }
 
     @Override
@@ -22,6 +17,6 @@ public class ChannelActive extends ChannelInbound {
 
     @Override
     public String toString() {
-        return String.format("ChannelActive %s", getContext());
+        return String.format("%s %s", getClass().getSimpleName(), getContext());
     }
 }

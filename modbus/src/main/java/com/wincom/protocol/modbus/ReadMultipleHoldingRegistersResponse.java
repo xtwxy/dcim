@@ -1,6 +1,7 @@
 package com.wincom.protocol.modbus;
 
 import com.google.common.primitives.UnsignedBytes;
+import com.wincom.dcim.agentd.primitives.HandlerContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -9,7 +10,7 @@ import java.nio.ByteOrder;
  * @author master
  */
 public class ReadMultipleHoldingRegistersResponse
-        extends AbstractWireable
+        extends AbstractModbusResponse
         implements ModbusPayload {
 
     private byte numberOfBytes;
@@ -76,4 +77,8 @@ public class ReadMultipleHoldingRegistersResponse
         this.bytes = bytes;
     }
 
+    @Override
+    public void applyModbusResponse(HandlerContext ctx, ModbusPayloadInboundHandler handler) {
+        handler.handleReadMultipleHoldingRegistersResponse(ctx, this);
+    }
 }

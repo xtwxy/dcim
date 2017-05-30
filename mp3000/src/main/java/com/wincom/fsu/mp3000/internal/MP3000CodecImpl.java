@@ -2,9 +2,8 @@ package com.wincom.fsu.mp3000.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
-import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import java.util.Properties;
  *
  * @author master
  */
-public class MP3000CodecImpl implements Codec {
+public class MP3000CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     private String HOST;
     private final int BASE_PORT;
@@ -40,13 +39,8 @@ public class MP3000CodecImpl implements Codec {
     }
 
     @Override
-    public void codecActive(HandlerContext outboundContext) {
-        // this codec does not handle inbound messages - ignore.
-    }
-
-    @Override
-    public ChannelInboundHandler openOutbound(
-            AgentdService service, Properties props, ChannelOutboundHandler inboundHandler) {
+    public HandlerContext openOutbound(
+            AgentdService service, Properties props, ChannelInboundHandler inboundHandler) {
         Integer comport = Integer.valueOf(props.getProperty(COM_PORT_KEY));
         HandlerContext ctx = inbound.get(comport);
         if (comport <= PORT_COUNT) {
@@ -64,10 +58,5 @@ public class MP3000CodecImpl implements Codec {
             }
         }
         return ctx;
-    }
-
-    @Override
-    public void handle(HandlerContext ctx, Message m) {
-        // this codec does not handle inbound messages - ignore.
     }
 }

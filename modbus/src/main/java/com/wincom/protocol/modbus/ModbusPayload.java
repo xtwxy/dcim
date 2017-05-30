@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus;
 
+import com.wincom.dcim.agentd.primitives.Wireable;
 import com.wincom.dcim.agentd.primitives.Message;
 
 /**

@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public class Failed extends Message.Adapter {
+public final class Failed extends Message.Adapter {
 
     private Throwable cause;
 
@@ -18,6 +18,6 @@ public class Failed extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("Failed %s", cause);
+        return String.format("%s %s", getClass().getSimpleName(), cause);
     }
 }

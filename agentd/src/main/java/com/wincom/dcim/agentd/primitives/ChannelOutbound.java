@@ -29,6 +29,6 @@ public abstract class ChannelOutbound implements Message {
     
     @Override
     public String toString() {
-        return String.format("ChannelOutbound %s", getContext());
+        return String.format("%s %s", getClass().getSimpleName(), getContext());
     }
 }

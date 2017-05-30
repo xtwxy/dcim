@@ -30,7 +30,6 @@ public class ModbusRequestState extends State.Adapter {
     @Override
     public State enter(HandlerContext ctx) {
         // encode and send.
-        ctx.getHandler(request.getClass()).handle(ctx, request);
         return this;
     }
 

@@ -63,8 +63,6 @@ public class ConnectState extends State.Adapter {
             //ctx.send(new SetMillsecFromNowTimer(60000));
 
             return success();
-        } else if(m instanceof ChannelTimeout) {
-            return success();
         } else {
             log.warn(String.format("Unknown state: (%s, %s, %s)", this, ctx, m));
             return this;

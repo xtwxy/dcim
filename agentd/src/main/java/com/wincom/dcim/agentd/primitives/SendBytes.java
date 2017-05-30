@@ -1,16 +1,19 @@
 package com.wincom.dcim.agentd.primitives;
 
+import static com.wincom.dcim.agentd.primitives.AbstractWireable.appendHeader;
+import static com.wincom.dcim.agentd.primitives.AbstractWireable.appendValue;
 import java.nio.ByteBuffer;
 
 /**
  *
  * @author master
  */
-public class SendBytes extends Message.Adapter {
+public final class SendBytes extends ChannelOutbound implements Wireable {
 
     private final ByteBuffer buffer;
 
-    public SendBytes(ByteBuffer o) {
+    public SendBytes(HandlerContext c, ByteBuffer o) {
+        super(c);
         this.buffer = o;
     }
 
@@ -19,16 +22,36 @@ public class SendBytes extends Message.Adapter {
     }
 
     @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        if (handler instanceof ChannelOutboundHandler) {
-            ((ChannelOutboundHandler) handler).handleSendPayload(ctx, this);
-        } else {
-            handler.handle(ctx, this);
-        }
+    public void applyChannelOutbound(HandlerContext ctx, ChannelOutboundHandler handler) {
+        handler.handleSendPayload(ctx, this);
+    }
+
+    @Override
+    public int getWireLength() {
+        return buffer.remaining();
+    }
+
+    @Override
+    public void toWire(ByteBuffer buffer) {
+        buffer.put(this.buffer);
+    }
+
+    @Override
+    public void fromWire(ByteBuffer buffer) {
+        this.buffer.put(buffer);
+    }
+
+    @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, getClass().getSimpleName());
+        depth++;
+        appendValue(buf, depth, "Buffer", buffer);
     }
 
     @Override
     public String toString() {
-        return String.format("SendBytes %s", buffer);
+        StringBuilder buf = new StringBuilder();
+        toStringBuilder(buf, 0);
+        return buf.toString();
     }
 }

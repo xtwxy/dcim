@@ -23,10 +23,10 @@ public class ModbusOutboundHandlerImpl extends ChannelOutboundHandler.Adapter {
         frame.toWire(buffer);
         buffer.flip();
         
-        outboundContext.send(new SendBytes(buffer), inboundHandler);
+        outboundContext.send(new SendBytes(ctx, buffer));
     }
 
-    public HandlerContext getOutboundContext() {
-        return outboundContext;
+    public void setOutboundContext(HandlerContext outboundContext) {
+        this.outboundContext = outboundContext;
     }
 }

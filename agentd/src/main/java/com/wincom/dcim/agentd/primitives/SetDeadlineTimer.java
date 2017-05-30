@@ -6,7 +6,7 @@ import java.util.Date;
  *
  * @author master
  */
-public class SetDeadlineTimer extends Message.Adapter {
+public final class SetDeadlineTimer extends Message.Adapter {
     
     private final Date time;
     
@@ -29,6 +29,6 @@ public class SetDeadlineTimer extends Message.Adapter {
 
     @Override
     public String toString() {
-        return String.format("SetDeadlineTimer %s", time);
+        return String.format("%s %s", getClass().getSimpleName(), time);
     }
 }

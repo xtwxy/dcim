@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * @author master
  */
-public class GetSignalValues {
+public final class GetSignalValues {
 
     public static class Request extends Message.Adapter {
 

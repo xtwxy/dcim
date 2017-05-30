@@ -61,7 +61,7 @@ public class CodecFactoryTest {
 
     private static void sendBytes(HandlerContext ctx) {
         ByteBuffer buffer = ByteBuffer.wrap(BA);
-        ctx.send(new SendBytes(buffer));
+        ctx.send(new SendBytes(ctx, buffer));
     }
 
     public static void main(String[] args) {

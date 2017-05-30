@@ -1,12 +1,14 @@
 package com.wincom.dcim.agentd.primitives;
 
+import static com.wincom.dcim.agentd.primitives.AbstractWireable.appendHeader;
+import static com.wincom.dcim.agentd.primitives.AbstractWireable.appendValue;
 import java.nio.ByteBuffer;
 
 /**
  *
  * @author master
  */
-public class BytesReceived extends ChannelInbound {
+public final class BytesReceived extends ChannelInbound implements Wireable {
 
     private final ByteBuffer buffer;
 
@@ -25,12 +27,31 @@ public class BytesReceived extends ChannelInbound {
     }
 
     @Override
-    public String toString() {
-        return String.format("BytesReceived %s, %s", getContext(), buffer);
+    public int getWireLength() {
+        return buffer.remaining();
     }
 
     @Override
-    public boolean isOob() {
-        return false;
+    public void toWire(ByteBuffer buffer) {
+        buffer.put(this.buffer);
+    }
+
+    @Override
+    public void fromWire(ByteBuffer buffer) {
+        this.buffer.put(buffer);
+    }
+
+   @Override
+    public void toStringBuilder(StringBuilder buf, int depth) {
+        appendHeader(buf, depth, getClass().getSimpleName());
+        depth++;
+        appendValue(buf, depth, "Buffer", buffer);
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        toStringBuilder(buf, 0);
+        return buf.toString();
     }
 }
