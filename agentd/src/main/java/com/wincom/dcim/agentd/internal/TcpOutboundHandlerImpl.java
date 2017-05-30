@@ -35,7 +35,7 @@ import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
  *
  * @author master
  */
-public final class TcpOutboundHandlerImpl implements ChannelOutboundHandler {
+public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter {
 
     private final Logger log;
 
@@ -122,7 +122,7 @@ public final class TcpOutboundHandlerImpl implements ChannelOutboundHandler {
     }
 
     @Override
-    public void handleSendPayload(HandlerContext ctx, SendBytes m) {
+    public void handleSendPayload(HandlerContext ctx, Message m) {
         ChannelPromise cp = channel.newPromise();
         cp.addListener(new GenericFutureListener() {
             @Override
@@ -137,11 +137,6 @@ public final class TcpOutboundHandlerImpl implements ChannelOutboundHandler {
         ByteBuf buf = Unpooled.wrappedBuffer(((SendBytes) m).getByteBuffer());
 
         channel.writeAndFlush(buf, cp);
-    }
-
-    @Override
-    public void handle(HandlerContext ctx, Message m) {
-        log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
     }
 
     @Override

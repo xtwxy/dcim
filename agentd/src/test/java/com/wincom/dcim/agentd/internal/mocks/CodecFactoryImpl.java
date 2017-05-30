@@ -25,7 +25,7 @@ public class CodecFactoryImpl implements CodecFactory {
         Codec inboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
         CodecImpl theCodec = new CodecImpl();
-        ChannelOutboundHandler outboundContext = inboundCodec.openOutbound(service, 
+        inboundCodec.openOutbound(service, 
                 (Properties) props.get(OUTBOUND_CTX_PROPS_KEY),
                 theCodec);
         

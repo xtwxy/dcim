@@ -2,9 +2,14 @@ package com.wincom.protocol.modbus.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
+import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.ChannelInactive;
+import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.Connected;
+import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
@@ -20,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author master
  */
-public class ModbusCodecImpl implements Codec {
+public class ModbusCodecImpl implements Codec, ChannelInboundHandler {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -34,16 +39,8 @@ public class ModbusCodecImpl implements Codec {
     }
 
     @Override
-    public void codecActive(HandlerContext outboundContext) {
-        this.delegate.activate(outboundContext);
-        for (Map.Entry<Byte, HandlerContext> e : inboundContexts.entrySet()) {
-            e.getValue().activate(delegate);
-        }
-    }
-
-    @Override
-    public ChannelInboundHandler openOutbound(
-            AgentdService service, Properties props, ChannelOutboundHandler inboundHandler) {
+    public ChannelOutboundHandler openOutbound(
+            AgentdService service, Properties props, ChannelInboundHandler inboundHandler) {
         log.info(String.format("%s", props));
 
         Byte address = Byte.valueOf(props.getProperty(ADDRESS));
@@ -55,19 +52,14 @@ public class ModbusCodecImpl implements Codec {
             inboundContexts.put(address, inboundContext);
         }
 
-        return inboundContext;
+        return inboundContext.getOutboundHandler();
     }
 
     private HandlerContext createInbound0(
             final Byte address,
-            final Handler inboundHandler) {
+            final ChannelInboundHandler inboundHandler) {
 
-        final HandlerContext handlerContext = new ModbusHandlerContextImpl(address, delegate) {
-            @Override
-            public void close() {
-                inboundContexts.remove(address);
-            }
-        };
+        final ModbusHandlerContextImpl handlerContext = new ModbusHandlerContextImpl(address, delegate);
         
         handlerContext.setInboundHandler(inboundHandler);
         
@@ -85,6 +77,52 @@ public class ModbusCodecImpl implements Codec {
         handlerContext.activate(this.delegate);
 
         return handlerContext;
+    }
+
+    @Override
+    public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+        this.delegate.activate(m.getContext());
+        for (Map.Entry<Byte, HandlerContext> e : inboundContexts.entrySet()) {
+            e.getValue().activate(delegate);
+        }
+    }
+
+    @Override
+    public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
+        this.delegate.activate(m.getContext());
+        for (Map.Entry<Byte, HandlerContext> e : inboundContexts.entrySet()) {
+            e.getValue().activate(delegate);
+        }
+    }
+
+    @Override
+    public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void handleConnectionClosed(HandlerContext ctx, ConnectionClosed m) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void handlePayloadReceived(HandlerContext ctx, Message m) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void handlePayloadSent(HandlerContext ctx, Message m) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void handleAccepted(HandlerContext ctx, Accepted m) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void handleConnected(HandlerContext ctx, Connected m) {
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     /**

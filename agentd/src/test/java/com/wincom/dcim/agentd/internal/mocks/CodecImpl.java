@@ -6,17 +6,14 @@ import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
-import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -39,7 +36,7 @@ public class CodecImpl implements Codec, ChannelInboundHandler {
     }
 
     @Override
-    public ChannelOutboundHandler openOutbound(
+    public HandlerContext openOutbound(
             AgentdService service, Properties props, ChannelInboundHandler inboundHandler) {
         log.info(String.format("%s", props));
 
@@ -50,7 +47,7 @@ public class CodecImpl implements Codec, ChannelInboundHandler {
             inbounds.put(props, inboundContext);
         }
 
-        return inboundContext.getOutboundHandler();
+        return inboundContext;
     }
 
     private HandlerContext createInbound0(

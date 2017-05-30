@@ -52,7 +52,6 @@ public class ModbusRequestState extends State.Adapter {
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.setActive(false);
-            ctx.close();
             ctx.fireClosed(m);
             return fail();
         } else {

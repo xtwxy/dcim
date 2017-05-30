@@ -13,4 +13,42 @@ public interface ChannelInboundHandler extends Handler {
     public void handleConnectionClosed(HandlerContext ctx, ConnectionClosed m);
     public void handlePayloadReceived(HandlerContext ctx, Message m);
     public void handlePayloadSent(HandlerContext ctx, Message m);
+    public static abstract class Adapter 
+            extends Handler.Default
+            implements ChannelInboundHandler {
+
+        @Override
+        public void handleAccepted(HandlerContext ctx, Accepted m) {
+            log.info(String.format("handleAccepted(%s, %s)", ctx, m));
+        }
+
+        @Override
+        public void handleConnected(HandlerContext ctx, Connected m) {
+            log.info(String.format("handleConnected(%s, %s)", ctx, m));
+        }
+
+        @Override
+        public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+            ctx.setActive(true);
+        }
+
+        @Override
+        public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
+            ctx.fireClosed(m);
+        }
+
+        @Override
+        public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+            log.info(String.format("handleChannelTimeout(%s, %s)", ctx, m));
+        }
+
+        @Override
+        public void handleConnectionClosed(HandlerContext ctx, ConnectionClosed m) {
+            log.info(String.format("handleConnectionClosed(%s, %s)", ctx, m));
+        }
+        
+        public void handlePayloadSent(HandlerContext ctx, Message m) {
+            ctx.onRequestCompleted(m);
+        }
+    }
 }

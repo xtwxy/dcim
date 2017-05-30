@@ -6,7 +6,6 @@ import com.wincom.dcim.agentd.primitives.CloseConnection;
 import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SendBytes;
 
 /**
  *
@@ -36,7 +35,7 @@ public class OutboundHandlerImpl implements ChannelOutboundHandler {
     }
 
     @Override
-    public void handleSendPayload(HandlerContext ctx, SendBytes m) {
+    public void handleSendPayload(HandlerContext ctx, Message m) {
         delegate.handleSendPayload(ctx, m);
     }
 

@@ -1,5 +1,8 @@
 package com.wincom.dcim.agentd.primitives;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author master
@@ -10,9 +13,11 @@ public interface Handler {
 
     public static class Default implements Handler {
 
+        protected Logger log = LoggerFactory.getLogger(this.getClass());
+
         @Override
         public void handle(HandlerContext ctx, Message m) {
+            log.info(String.format("handle(%s, %s)", ctx, m));
         }
-
     }
 }

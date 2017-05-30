@@ -9,7 +9,7 @@ import com.wincom.protocol.modbus.ModbusFrame;
  *
  * @author master
  */
-public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
+public class ModbusHandlerContextImpl extends HandlerContext.Adapter {
 
     private final byte slaveAddress;
     private final ModbusDecodeContextImpl delegate;
@@ -24,11 +24,6 @@ public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
         if (outboundContext != null) {
             setActive(true);
         }
-    }
-
-    @Override
-    public Handler getHandler(Class clazz) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -52,15 +47,6 @@ public abstract class ModbusHandlerContextImpl extends HandlerContext.Adapter {
             delegate.enqueueForSendWhenActive(s);
         } else {
             super.send(m, reply);
-        }
-    }
-
-    @Override
-    public void fire(Message m) {
-        if (isInprogress()) {
-            current.on(this, m);
-        } else {
-            machine.on(this, m);
         }
     }
 }
