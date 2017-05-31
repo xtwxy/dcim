@@ -1,15 +1,11 @@
 package com.wincom.dcim.agentd.statemachine;
 
-import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
-import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
+import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.Connected;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.timeout.IdleStateHandler;
+import com.wincom.dcim.agentd.primitives.ConnectFailed;
+import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,28 +39,18 @@ public class ConnectState extends State.Adapter {
 
     @Override
     public State on(HandlerContext ctx, Message m) {
-        if (m instanceof Connected) {
-            Connected a = (Connected) m;
-
-            log.info(String.format("Connection established: local: %s, remote:%s",
-                    a.getChannel().localAddress(), a.getChannel().remoteAddress()));
-
-            final StreamHandlerContextImpl clientContext
-                    = (StreamHandlerContextImpl) ctx;
-            clientContext.setChannel(a.getChannel());
-
-            a.getChannel().pipeline()
-                    .addLast(new LoggingHandler(LogLevel.INFO))
-                    .addLast(new IdleStateHandler(20, 1, 20))
-                    .addLast(new ChannelInboundHandler(ctx));
-
-            ctx.onRequestCompleted(m);
-            
-            //ctx.send(new SetMillsecFromNowTimer(60000));
-
+        if (m instanceof ChannelActive) {
+            Object o = ctx.get("timeout", null);
+            if(o instanceof Timeout) {
+                Timeout t = (Timeout) o;
+                t.cancel();
+            }
+            ctx.remove("timeout");
             return success();
+        } else if (m instanceof ConnectFailed) {
+            return error();
         } else {
-            log.warn(String.format("Unknown state: (%s, %s, %s)", this, ctx, m));
+            log.warn(String.format("state: (%s, %s, %s)", this, ctx, m));
             return this;
         }
     }
