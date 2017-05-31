@@ -28,9 +28,8 @@ public interface State {
      * For each state, this may only be called once.
      *
      * @param ctx
-     * @return
      */
-    public State exit(HandlerContext ctx);
+    public void exit(HandlerContext ctx);
 
     /**
      * Accept incoming <code>Message</code>.
@@ -157,8 +156,7 @@ public interface State {
         }
 
         @Override
-        public State exit(HandlerContext ctx) {
-            return this;
+        public void exit(HandlerContext ctx) {
         }
         
         @Override

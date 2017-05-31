@@ -53,7 +53,7 @@ public class ReceiveState extends State.Adapter {
             ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelActive) {
-            Object o = ctx.get("timeout");
+            Object o = ctx.get("timeout", null);
             if(o instanceof Timeout) {
                 Timeout t = (Timeout) o;
                 t.cancel();
@@ -65,7 +65,7 @@ public class ReceiveState extends State.Adapter {
             
             return success();
         } else if (m instanceof ChannelInactive) {
-            ctx.fireClosed(m);
+            ctx.onClosed(m);
             return fail();
         } else if (m instanceof ConnectFailed) {
             return fail();

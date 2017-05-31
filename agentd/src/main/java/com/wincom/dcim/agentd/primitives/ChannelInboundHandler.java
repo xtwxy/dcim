@@ -34,7 +34,7 @@ public interface ChannelInboundHandler extends Handler {
 
         @Override
         public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
-            ctx.fireClosed(m);
+            ctx.onClosed(m);
         }
 
         @Override

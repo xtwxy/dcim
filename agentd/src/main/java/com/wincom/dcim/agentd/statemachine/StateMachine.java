@@ -74,31 +74,24 @@ public class StateMachine implements State {
 
     @Override
     public State enter(HandlerContext ctx) {
-        if (prev != current) {
-            try {
-                return current.enter(ctx);
-            } catch (Throwable t) {
-                return current.fail();
-            }
-        }
-        return current.fail();
+        prev = current;
+        current = current.enter(ctx);
+        return current;
     }
 
     @Override
-    public State exit(HandlerContext ctx) {
-        if (prev != current && prev != null) {
-            try {
-                return prev.exit(ctx);
-            } catch (Throwable t) {
-                return current.fail();
-            }
-        }
-        return current.fail();
+    public void exit(HandlerContext ctx) {
+        prev.exit(ctx);
     }
 
     private void transition(HandlerContext ctx) {
-        enter(ctx);
-        exit(ctx);
+        if (prev != current) {
+            if (prev != null) {
+                prev.exit(ctx);
+            }
+
+            current = current.enter(ctx);
+        }
     }
 
     @Override

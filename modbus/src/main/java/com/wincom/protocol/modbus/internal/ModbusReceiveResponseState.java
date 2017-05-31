@@ -15,20 +15,25 @@ import java.nio.ByteBuffer;
  *
  * @author master
  */
-public class ModbusRequestState extends State.Adapter {
+public class ModbusReceiveResponseState extends State.Adapter {
 
-    private final ByteBuffer readBuffer;
-    final private ModbusFrame request;
+    private ByteBuffer readBuffer;
+    private ModbusFrame request;
+    
     final private HandlerContext replyTo;
+    public static final String READ_BUFFER = "READ_BUFFER";
 
-    ModbusRequestState(ModbusFrame m, HandlerContext replyTo) {
-        this.readBuffer = ByteBuffer.allocate(2048);
-        this.request = m;
+    ModbusReceiveResponseState(HandlerContext replyTo) {
         this.replyTo = replyTo;
     }
     
     @Override
     public State enter(HandlerContext ctx) {
+        readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(READ_BUFFER, ByteBuffer.allocate(2048));
+        request = (ModbusFrame) ctx.get(ModbusSendRequestState.MODBUS_REQUEST);
+        if(request == null) {
+            return fail();
+        }
         // encode and send.
         return this;
     }
@@ -51,7 +56,7 @@ public class ModbusRequestState extends State.Adapter {
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.setActive(false);
-            ctx.fireClosed(m);
+            ctx.onClosed(m);
             return fail();
         } else {
             log.info(String.format("default: (%s, %s, %s), leave to the inbound handler.", this, ctx, m));

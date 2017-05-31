@@ -16,7 +16,7 @@ public class ReceiveState extends State.Adapter {
     @Override
     public State on(HandlerContext ctx, Message m) {        
         if (m instanceof ChannelInactive) {
-            ctx.fireClosed(m);
+            ctx.onClosed(m);
             return fail();
         } else {
             return success();

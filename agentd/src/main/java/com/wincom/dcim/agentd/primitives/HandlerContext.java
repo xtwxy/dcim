@@ -43,13 +43,23 @@ public interface HandlerContext {
      */
     public void set(Object key, Object value);
 
+    public Object get(Object key);
     /**
      * Get context variables.
      *
      * @param key
      * @return
      */
-    public Object get(Object key);
+    public Object get(Object key, Object defaultValue);
+    
+    /**
+     * Get context variable if exists, and set default value and return 
+     * the default set if not.
+     * @param key
+     * @param defaultValue
+     * @return 
+     */
+    public Object getOrSetIfNotExist(Object key, Object defaultValue);
 
     /**
      * Remove context variables.
@@ -83,7 +93,7 @@ public interface HandlerContext {
 
     public Handler getOutboundHandler();
 
-    public void fireClosed(Message m);
+    public void onClosed(Message m);
 
     public static class Adapter implements HandlerContext {
 
@@ -157,15 +167,16 @@ public interface HandlerContext {
         }
 
         @Override
-        public void fireClosed(Message m) {
-            active = false;
-            if (isInprogress()) {
-                current = null;
-            }
-
-            while (!queue.isEmpty()) {
-                Message s = queue.poll();
-            }
+        public synchronized void onClosed(Message m) {
+            setActive(false);
+            onRequestCompleted(m);
+            /*
+             * Do not empty the queue!
+             */
+            /* while (!queue.isEmpty()) {
+             *   Message s = queue.poll();
+             * }
+             */
         }
 
         @Override
@@ -194,6 +205,22 @@ public interface HandlerContext {
         @Override
         public Object get(Object key) {
             return variables.get(key);
+        }
+
+        @Override
+        public Object get(Object key, Object defaultValue) {
+            return variables.getOrDefault(key, defaultValue);
+        }
+
+        @Override
+        public Object getOrSetIfNotExist(Object key, Object defaultValue) {
+            Object v = variables.get(key);
+            if(v == null) {
+                variables.put(key, defaultValue);
+                return defaultValue;
+            } else {
+                return v;
+            }
         }
 
         @Override

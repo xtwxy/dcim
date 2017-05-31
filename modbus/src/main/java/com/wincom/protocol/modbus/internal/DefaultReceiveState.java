@@ -30,7 +30,7 @@ public class DefaultReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.setActive(false);
-            ctx.fireClosed(m);
+            ctx.onClosed(m);
             return fail();
         } else {
             log.info(String.format("default: (%s, %s, %s), leave to the inbound handler.", this, ctx, m));
