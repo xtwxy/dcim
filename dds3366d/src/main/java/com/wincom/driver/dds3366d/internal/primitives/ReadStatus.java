@@ -58,9 +58,9 @@ public class ReadStatus {
                 .add("send", new ReadStatusRequestState())
                 .add("receive", new ReadStatusResponseState(replyTo))
                 .add("stop", stopState())
-                .transision("send", "receive", "stop")
-                .transision("receive", "stop", "stop")
-                .transision("stop", "stop", "stop")
+                .transision("send", "receive", "stop", null)
+                .transision("receive", "stop", "stop", null)
+                .transision("stop", "stop", "stop", null)
                 .buildWithInitialAndStop("send", "stop");
     }
 

@@ -50,15 +50,13 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuffer buffer = null;
         if (msg instanceof ByteBuf) {
-            buffer = (ByteBuffer) buffer;
-            clientContext.fire(new BytesReceived(clientContext, buffer));
-        } else if (msg instanceof ByteBuffer) {
             ByteBuf buf = (ByteBuf) msg;
             buffer = buf.nioBuffer();
-
             clientContext.fire(new BytesReceived(clientContext, buffer));
-
             buf.release();
+        } else if (msg instanceof ByteBuffer) {
+            buffer = (ByteBuffer) msg;
+            clientContext.fire(new BytesReceived(clientContext, buffer));
         } else {
             clientContext.fire(new Unknown(msg));
         }

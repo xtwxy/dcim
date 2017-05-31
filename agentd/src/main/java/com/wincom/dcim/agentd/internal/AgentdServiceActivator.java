@@ -53,8 +53,8 @@ public final class AgentdServiceActivator implements BundleActivator {
         StateMachine server = builder
                 .add("acceptState", new AcceptState(service, handlerContext, "0.0.0.0", 9080))
                 .add("failState", new FailedState())
-                .transision("acceptState", "acceptState", "failState")
-                .transision("failState", "failState", "failState")
+                .transision("acceptState", "acceptState", "failState", "failState")
+                .transision("failState", "failState", "failState", "failState")
                 .buildWithInitialAndStop("acceptState", "failState");
 
         handlerContext.getStateMachine()
@@ -70,9 +70,9 @@ public final class AgentdServiceActivator implements BundleActivator {
                 .add("connectState", new ConnectState(handlerContext, "192.168.0.68", 9080))
                 .add("receiveState", new ReceiveState())
                 .add("waitState", new WaitTimeoutState(6000))
-                .transision("connectState", "receiveState", "waitState")
-                .transision("receiveState", "receiveState", "waitState")
-                .transision("waitState", "connectState", "connectState")
+                .transision("connectState", "receiveState", "waitState", "waitState")
+                .transision("receiveState", "receiveState", "waitState", "waitState")
+                .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
 
         handlerContext.getStateMachine()

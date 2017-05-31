@@ -66,15 +66,15 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.onClosed(m);
-            return fail();
+            return error();
         } else if (m instanceof ConnectFailed) {
-            return fail();
+            return error();
         } else if (m instanceof MillsecFromNowTimeout) {
             ctx.remove("timeout");
             if (ctx.isActive()) {
                 return success();
             } else {
-                return fail();
+                return error();
             }
         } else {
             log.warn(String.format("unknown message: %s , send CloseConnection", m));

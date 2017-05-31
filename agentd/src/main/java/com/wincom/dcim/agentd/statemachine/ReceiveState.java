@@ -17,7 +17,7 @@ public class ReceiveState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {        
         if (m instanceof ChannelInactive) {
             ctx.onClosed(m);
-            return fail();
+            return error();
         } else {
             return success();
         }

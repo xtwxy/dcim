@@ -21,11 +21,12 @@ public class StateMachineBuilder {
         return this;
     }
 
-    public StateMachineBuilder transision(String name, String success, String fail) {
+    public StateMachineBuilder transision(String name, String success, String failure, String error) {
         State state = this.states.get(name);
         State s = this.states.get(success);
-        State f = this.states.get(fail);
-        state.success(s).fail(f);
+        State f = this.states.get(failure);
+        State e = this.states.get(error);
+        state.success(s).failure(f).error(e);
 
         return this;
     }

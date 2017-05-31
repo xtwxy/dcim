@@ -33,12 +33,16 @@ public final class StreamHandlerContextImpl
         super(sm);
         this.service = service;
         this.outboundHandler = new TcpOutboundHandlerImpl(service);
+        this.inboundHandler = new TcpInboundHandlerImpl(service);
     }
 
     public void setChannel(Channel channel) {
         this.channel = channel;
         if(outboundHandler != null) {
             ((TcpOutboundHandlerImpl)outboundHandler).setChannel(channel);
+        }
+        if(inboundHandler instanceof TcpInboundHandlerImpl) {
+            ((TcpInboundHandlerImpl)inboundHandler).setChannel(channel);
         }
     }
 

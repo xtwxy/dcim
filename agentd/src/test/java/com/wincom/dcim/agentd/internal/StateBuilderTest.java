@@ -80,7 +80,7 @@ public class StateBuilderTest {
                     @Override
                     public State on(HandlerContext ctx, Message m) {
                         m.apply(ctx, handler);
-                        return fail();
+                        return error();
                     }
                 })
                 .fail().state(new State.Adapter() {
@@ -121,7 +121,7 @@ public class StateBuilderTest {
                     @Override
                     public State on(HandlerContext ctx, Message m) {
                         m.apply(ctx, handler);
-                        return fail();
+                        return error();
                     }
                 })
                 .success().state(new State.Adapter() {

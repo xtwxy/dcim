@@ -46,9 +46,9 @@ public class TcpClientCodecImpl implements Codec {
                 .add("connectState", new ConnectState(handlerContext, host, Integer.valueOf(port)))
                 .add("receiveState", new ReceiveState())
                 .add("waitState", new WaitTimeoutState(Integer.valueOf(waiteTimeout)))
-                .transision("connectState", "receiveState", "waitState")
-                .transision("receiveState", "receiveState", "waitState")
-                .transision("waitState", "connectState", "connectState")
+                .transision("connectState", "receiveState", "waitState", "waitState")
+                .transision("receiveState", "receiveState", "waitState", "waitState")
+                .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
         
         handlerContext.setInboundHandler(inboundHandler);

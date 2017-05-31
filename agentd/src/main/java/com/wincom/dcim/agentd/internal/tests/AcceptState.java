@@ -57,7 +57,7 @@ public class AcceptState extends State.Adapter {
 
             StateMachine connection = new StateMachineBuilder()
                     .add("receiveState", new ReceiveState())
-                    .transision("receiveState", "receiveState", "receiveState")
+                    .transision("receiveState", "receiveState", "receiveState", "receiveState")
                     .buildWithInitialState("receiveState");
 
             clientContext.getChannel().pipeline()
@@ -69,7 +69,7 @@ public class AcceptState extends State.Adapter {
             context.onRequestCompleted(m);
             return this;
         } else {
-            return fail();
+            return error();
         }
     }
 

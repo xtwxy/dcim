@@ -32,7 +32,7 @@ public class ModbusReceiveResponseState extends State.Adapter {
         readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(READ_BUFFER, ByteBuffer.allocate(2048));
         request = (ModbusFrame) ctx.get(ModbusSendRequestState.MODBUS_REQUEST);
         if(request == null) {
-            return fail();
+            return error();
         }
         // encode and send.
         return this;
@@ -49,15 +49,9 @@ public class ModbusReceiveResponseState extends State.Adapter {
         } else if (m instanceof ChannelTimeout) {
             ctx.onRequestCompleted(m);
             return success();
-        } else if (m instanceof ChannelActive) {
-            ctx.setActive(true);
-            ctx.getInboundHandler().handle(ctx, m);
-            // TODO: notify the inbound handlers.
-            return success();
         } else if (m instanceof ChannelInactive) {
-            ctx.setActive(false);
-            ctx.onClosed(m);
-            return fail();
+            ctx.onRequestCompleted(m);
+            return error();
         } else {
             log.info(String.format("default: (%s, %s, %s), leave to the inbound handler.", this, ctx, m));
             ctx.getInboundHandler().handle(ctx, m);

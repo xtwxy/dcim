@@ -28,7 +28,7 @@ public class DefaultReceiveState extends State.Adapter {
             ctx.setActive(false);
             ctx.close();
             ctx.onClosed(m);
-            return fail();
+            return error();
         } else {
             log.info(String.format("default: (%s, %s, %s), leave to the inbound handler.", this, ctx, m));
             ctx.getInboundHandler().handle(ctx, m);

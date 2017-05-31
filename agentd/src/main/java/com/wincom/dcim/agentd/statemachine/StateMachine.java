@@ -89,8 +89,11 @@ public class StateMachine implements State {
             if (prev != null) {
                 prev.exit(ctx);
             }
-
-            current = current.enter(ctx);
+            if (current != null) {
+                current = current.enter(ctx);
+            } else {
+                log.warn("current == null");
+            }
         }
     }
 
@@ -98,6 +101,9 @@ public class StateMachine implements State {
     public synchronized State on(HandlerContext ctx, Message m) {
         prev = current;
         current = current.on(ctx, m);
+        if (null == current) {
+            log.warn("current == null");
+        }
 
         transition(ctx);
 
@@ -107,11 +113,6 @@ public class StateMachine implements State {
     @Override
     public boolean stopped() {
         return current.stopped();
-    }
-
-    @Override
-    public State next() {
-        return current.next();
     }
 
     @Override
@@ -125,13 +126,23 @@ public class StateMachine implements State {
     }
 
     @Override
-    public State fail(State s) {
-        return current.fail(s);
+    public State failure(State s) {
+        return current.failure(s);
     }
 
     @Override
-    public State fail() {
-        return current.fail();
+    public State failure() {
+        return current.failure();
+    }
+
+    @Override
+    public State error(State s) {
+        return current.error(s);
+    }
+
+    @Override
+    public State error() {
+        return current.error();
     }
 
     public State initial() {

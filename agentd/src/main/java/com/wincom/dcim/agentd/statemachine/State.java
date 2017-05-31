@@ -48,13 +48,6 @@ public interface State {
     public boolean stopped();
 
     /**
-     * Get the next Determined <code>State</code>.
-     *
-     * @return
-     */
-    public State next();
-
-    /**
      * Set the next <code>State</code> for after current state is completed
      * successfully.
      *
@@ -73,12 +66,29 @@ public interface State {
 
     /**
      * Set the next <code>State</code> for after current state is completed with
+     * error.
+     *
+     * @param s
+     * @return
+     */
+    public State error(State s);
+
+    /**
+     * Get the next <code>State</code> for after current state is completed with
+     * error.
+     *
+     * @return
+     */
+    public State error();
+
+    /**
+     * Set the next <code>State</code> for after current state is completed with
      * failure.
      *
      * @param s
      * @return
      */
-    public State fail(State s);
+    public State failure(State s);
 
     /**
      * Get the next <code>State</code> for after current state is completed with
@@ -86,7 +96,7 @@ public interface State {
      *
      * @return
      */
-    public State fail();
+    public State failure();
 
     public static class Adapter implements State {
 
@@ -94,7 +104,8 @@ public interface State {
 
         protected State next;
         private State success;
-        private State fail;
+        private State failure;
+        private State error;
 
         public Adapter() {
             this.next = this;
@@ -103,7 +114,7 @@ public interface State {
         public Adapter(State success, State fail) {
             this.next = this;
             this.success = success;
-            this.fail = fail;
+            this.error = fail;
         }
 
         @Override
@@ -118,28 +129,23 @@ public interface State {
         }
 
         @Override
-        public State next() {
-            return next;
-        }
-
-        @Override
         public State success(State s) {
             this.success = s;
             return this;
         }
 
         @Override
-        public State fail(State s) {
-            this.fail = s;
+        public State error(State s) {
+            this.error = s;
             return this;
         }
 
         @Override
-        public State fail() {
-            if (this.fail != null) {
-                return this.fail;
-            } else if (this.success != null) {
-                return this.success.fail();
+        public State error() {
+            if (this.error != null) {
+                return this.error;
+            } else if (this.success != this && this.success != null) {
+                return this.success.error();
             } else {
                 return null;
             }
@@ -148,6 +154,23 @@ public interface State {
         @Override
         public State success() {
             return this.success;
+        }
+
+        @Override
+        public State failure(State s) {
+            this.failure = s;
+            return this.failure;
+        }
+
+        @Override
+        public State failure() {
+            if (this.failure != null) {
+                return this.failure;
+            } else if (this.success != this && this.success != null) {
+                return this.success.failure();
+            } else {
+                return null;
+            }
         }
 
         @Override

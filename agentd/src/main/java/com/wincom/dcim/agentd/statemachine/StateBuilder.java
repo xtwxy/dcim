@@ -79,9 +79,9 @@ public class StateBuilder {
             builder.current.success(builder.stop);
         }
         if (builder.fail != null) {
-            builder.current.fail(traverse(builder.fail));
+            builder.current.error(traverse(builder.fail));
         } else {
-            builder.current.fail(builder.stop);
+            builder.current.error(builder.stop);
         }
         return builder.current;
     }
@@ -135,9 +135,9 @@ public class StateBuilder {
             node.current.success(node.stop);
         }
         if (node.fail != null) {
-            node.current.fail(node.fail.current);
+            node.current.error(node.fail.current);
         }else{
-            node.current.fail(node.stop);
+            node.current.error(node.stop);
         }
     }
 
