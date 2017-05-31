@@ -50,7 +50,7 @@ public class ConnectState extends State.Adapter {
         } else if (m instanceof ConnectFailed) {
             return error();
         } else {
-            log.warn(String.format("state: (%s, %s, %s)", this, ctx, m));
+            log.info(String.format("state: (%s, %s, %s)", this, ctx, m));
             return this;
         }
     }

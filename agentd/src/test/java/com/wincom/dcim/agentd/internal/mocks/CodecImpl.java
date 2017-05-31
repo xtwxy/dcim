@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
 import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
@@ -11,9 +12,9 @@ import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.statemachine.ReceiveState;
-import com.wincom.dcim.agentd.statemachine.StateMachine;
-import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -64,16 +65,23 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     @Override
     public void handleAccepted(HandlerContext ctx, Accepted m) {
-        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
-        }
     }
 
     @Override
     public void handleConnected(HandlerContext ctx, Connected m) {
-        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
-        }
+        log.info(String.format("Connection established: local: %s, remote:%s",
+                m.getChannel().localAddress(), m.getChannel().remoteAddress()));
+
+        final StreamHandlerContextImpl clientContext
+                = (StreamHandlerContextImpl) ctx;
+        clientContext.setChannel(m.getChannel());
+
+        m.getChannel().pipeline()
+                .addLast(new LoggingHandler(LogLevel.INFO))
+                .addLast(new IdleStateHandler(20, 1, 20))
+                .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(ctx));
+
+        ctx.onRequestCompleted(m);
     }
 
     @Override

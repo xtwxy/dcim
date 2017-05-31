@@ -1,19 +1,13 @@
 package com.wincom.dcim.agentd.internal.tests;
 
 import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.ConnectFailed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
-import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
-import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import com.wincom.dcim.agentd.statemachine.State;
-import io.netty.util.Timeout;
 import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,41 +35,13 @@ public class ReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof WriteComplete) {
             // sendBytes(ctx);
-            ctx.onRequestCompleted(m);
-            return success();
-        } else if (m instanceof WriteTimeout) {
-            // sendBytes(ctx);
-            return success();
-        } else if (m instanceof ReadTimeout) {
-            ctx.onRequestCompleted(m);
             return success();
         } else if (m instanceof ChannelTimeout) {
-            ctx.onRequestCompleted(m);
-            return success();
-        } else if (m instanceof ChannelActive) {
-            Object o = ctx.get("timeout", null);
-            if(o instanceof Timeout) {
-                Timeout t = (Timeout) o;
-                t.cancel();
-            }
-            ctx.remove("timeout");
-            ctx.setActive(true);
-            
             sendBytes(ctx);
-            
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.onClosed(m);
             return error();
-        } else if (m instanceof ConnectFailed) {
-            return error();
-        } else if (m instanceof MillsecFromNowTimeout) {
-            ctx.remove("timeout");
-            if (ctx.isActive()) {
-                return success();
-            } else {
-                return error();
-            }
         } else {
             log.warn(String.format("unknown message: %s , send CloseConnection", m));
             return success();

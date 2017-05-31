@@ -85,7 +85,7 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
                     protected void initChannel(SocketChannel ch) throws Exception {
                         StreamHandlerContextImpl impl = (StreamHandlerContextImpl) ctx;
                         impl.setChannel(ch);
-                        ctx.fire(new Connected(ch));
+                        ctx.fire(new Connected(ctx, ch));
                     }
 
                 })
