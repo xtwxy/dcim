@@ -5,7 +5,7 @@ import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.Failed;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.Timeout;
 import com.wincom.dcim.agentd.primitives.Unknown;
@@ -67,7 +67,7 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent e = (IdleStateEvent) evt;
             if (null == e.state()) {
-                clientContext.fire(new Timeout());
+                clientContext.fire(new ChannelTimeout(clientContext));
             } else {
                 switch (e.state()) {
                     case READER_IDLE:
@@ -90,7 +90,7 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
-        clientContext.fire(new Failed(cause));
+        clientContext.fire(new Failed(clientContext, cause));
         ctx.close();
     }
 }

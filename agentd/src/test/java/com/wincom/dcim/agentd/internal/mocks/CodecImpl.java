@@ -4,11 +4,10 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,20 +24,22 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     private HandlerContext outboundContext;
+    private final HandlerContext codecContext;
     private final Map<Properties, HandlerContext> inbounds;
 
     CodecImpl() {
+        this.codecContext = new HandlerContextImpl();
         this.inbounds = new HashMap<>();
     }
 
     @Override
-    public HandlerContext openOutbound(
-            AgentdService service, Properties props, Handler inboundHandler) {
+    public HandlerContext openInbound(
+            AgentdService service, Properties props, HandlerContext inboundHandlerContext) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
         if (inboundContext == null) {
-            inboundContext = createInbound0(service, props, inboundHandler);
+            inboundContext = createInbound0(service, props, inboundHandlerContext);
 
             inbounds.put(props, inboundContext);
         }
@@ -49,18 +50,17 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     private HandlerContext createInbound0(
             AgentdService service,
             Properties props,
-            Handler inboundHandler) {
+            HandlerContext inboundHandlerContext) {
         log.info(props.toString());
 
         final HandlerContextImpl handlerContext = new HandlerContextImpl();
-        handlerContext.addInboundHandler(inboundHandler);
+        handlerContext.addInboundContext(inboundHandlerContext);
 
         return handlerContext;
     }
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        super.handleChannelActive(ctx, m);
         this.outboundContext = m.getContext();
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
             OutboundHandlerImpl outImpl = (OutboundHandlerImpl) e.getValue().getOutboundHandler();
@@ -78,7 +78,6 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        ctx.onRequestCompleted(m);
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
             e.getValue().fire(m);
         }
@@ -100,9 +99,12 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     @Override
     public void handlePayloadSent(HandlerContext ctx, Message m) {
-        ctx.onRequestCompleted(m);
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
             e.getValue().fire(m);
         }
+    }
+
+    public HandlerContext getCodecContext() {
+        return codecContext;
     }
 }

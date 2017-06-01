@@ -7,14 +7,13 @@ import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import com.wincom.protocol.modbus.ModbusFrame;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
-import java.nio.ByteBuffer;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,22 +64,7 @@ public class CodecFactoryTest {
             Properties modbusOutbound = new Properties();
             modbusOutbound.put(ModbusCodecImpl.ADDRESS_KEY, MODBUS_ADDRESS_1);
 
-            outboundContext = c.openOutbound(agent, modbusOutbound, new Handler() {
-                @Override
-                public void handle(HandlerContext ctx, Message m) {
-                    log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
-                    if (m instanceof BytesReceived) {
-                        ctx.send(new SendBytes(ctx, ((BytesReceived) m).getByteBuffer()));
-                    } else if (m instanceof WriteComplete) {
-                    } else if (m instanceof WriteTimeout) {
-                        sendRequest(outboundContext);
-                    } else if (m instanceof ChannelActive) {
-                        sendRequest(outboundContext);
-                    } else {
-                        log.info(String.format("Unprocessed: %s", m));
-                    }
-                }
-            });
+            outboundContext = c.openInbound(agent, modbusOutbound, new HandlerContext.NullContext());
 
             sendRequest(outboundContext);
         } catch (Throwable t) {

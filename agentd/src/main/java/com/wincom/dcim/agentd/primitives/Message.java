@@ -1,5 +1,7 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
+
 /**
  *
  * @author master

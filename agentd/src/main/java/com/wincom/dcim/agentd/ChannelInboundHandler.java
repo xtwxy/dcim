@@ -1,4 +1,14 @@
-package com.wincom.dcim.agentd.primitives;
+package com.wincom.dcim.agentd;
+
+import com.wincom.dcim.agentd.primitives.Accepted;
+import com.wincom.dcim.agentd.primitives.ChannelActive;
+import com.wincom.dcim.agentd.primitives.ChannelInactive;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.Connected;
+import com.wincom.dcim.agentd.primitives.ConnectionClosed;
+import com.wincom.dcim.agentd.primitives.Failed;
+import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.Message;
 
 /**
  *
@@ -21,8 +31,10 @@ public interface ChannelInboundHandler extends Handler {
     public void handlePayloadReceived(HandlerContext ctx, Message m);
 
     public void handlePayloadSent(HandlerContext ctx, Message m);
+    
+    public void handleFailed(HandlerContext ctx, Failed m);
 
-    public static abstract class Adapter
+    public static class Adapter
             extends Handler.Default
             implements ChannelInboundHandler {
 
@@ -38,6 +50,7 @@ public interface ChannelInboundHandler extends Handler {
 
         @Override
         public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+            ctx.getOutboundHandler().setOutbound(m.getContext());
             ctx.setActive(true);
         }
 
@@ -62,6 +75,11 @@ public interface ChannelInboundHandler extends Handler {
 
         @Override
         public void handlePayloadSent(HandlerContext ctx, Message m) {
+            ctx.onRequestCompleted(m);
+        }
+
+        @Override
+        public void handleFailed(HandlerContext ctx, Failed m) {
             ctx.onRequestCompleted(m);
         }
     }

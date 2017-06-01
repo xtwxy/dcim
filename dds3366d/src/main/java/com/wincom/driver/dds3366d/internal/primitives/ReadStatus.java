@@ -5,7 +5,7 @@ import com.wincom.dcim.agentd.domain.AnalogSignal;
 import com.wincom.dcim.agentd.domain.Signal;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;

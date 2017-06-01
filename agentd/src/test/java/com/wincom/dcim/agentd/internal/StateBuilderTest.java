@@ -1,7 +1,7 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateBuilder;

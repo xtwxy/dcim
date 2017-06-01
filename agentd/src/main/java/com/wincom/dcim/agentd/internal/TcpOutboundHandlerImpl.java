@@ -10,7 +10,7 @@ import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.Failed;
 import io.netty.channel.Channel;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
@@ -29,13 +29,24 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
+import com.wincom.dcim.agentd.ChannelOutboundHandler;
+import com.wincom.dcim.agentd.TimerOutboundHandler;
+import com.wincom.dcim.agentd.primitives.DeadlineTimeout;
+import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
+import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
+import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
+import com.wincom.dcim.agentd.primitives.SetPeriodicTimer;
+import io.netty.util.Timeout;
+import io.netty.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author master
  */
-public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter {
+public final class TcpOutboundHandlerImpl 
+        extends ChannelOutboundHandler.Adapter 
+        implements TimerOutboundHandler {
 
     private final Logger log;
 
@@ -108,7 +119,7 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
     @Override
     public void handleClose(HandlerContext ctx, CloseConnection m) {
         if (!ctx.isActive()) {
-            ctx.fire(new Failed(new Exception("Not connected.")));
+            ctx.fire(new Failed(ctx, new Exception("Not connected.")));
             return;
         }
         ChannelPromise cp = channel.newPromise();
@@ -118,7 +129,7 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
                 if (f.isSuccess()) {
                     ctx.fire(new ConnectionClosed(channel));
                 } else {
-                    ctx.fire(new Failed(f.cause()));
+                    ctx.fire(new Failed(ctx, f.cause()));
                 }
             }
         });
@@ -128,7 +139,7 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
     @Override
     public void handleSendPayload(HandlerContext ctx, Message m) {
         if (!ctx.isActive()) {
-            ctx.fire(new Failed(new Exception("Not connected.")));
+            ctx.fire(new Failed(ctx, new Exception("Not connected.")));
             return;
         }
         ChannelPromise cp = channel.newPromise();
@@ -138,7 +149,7 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
                 if (f.isSuccess()) {
                     ctx.fire(new WriteComplete(ctx));
                 } else {
-                    ctx.fire(new Failed(f.cause()));
+                    ctx.fire(new Failed(ctx, f.cause()));
                 }
             }
         });
@@ -148,7 +159,40 @@ public final class TcpOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
     }
 
     @Override
-    public String toString() {
-        return "TcpOutboundHandlerImpl@" + this.hashCode();
+    public void handleSetDeadlineTimer(HandlerContext ctx, SetDeadlineTimer m) {
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run(Timeout tmt) throws Exception {
+                ctx.fire(new DeadlineTimeout());
+            }
+
+        };
+        long deadline = m.getTime().getTime();
+        long now = System.currentTimeMillis();
+        if (deadline > now) {
+            service.getTimer().newTimeout(tt, (deadline - now), TimeUnit.MILLISECONDS);
+        } else {
+            ctx.fire(new DeadlineTimeout());
+        }
+    }
+
+    @Override
+    public void handleSetMillsecFromNowTimer(HandlerContext ctx, SetMillsecFromNowTimer m) {
+        SetMillsecFromNowTimer setTimer = (SetMillsecFromNowTimer) m;
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run(Timeout tmt) throws Exception {
+                log.info("timout.");
+                tmt.cancel();
+                ctx.fire(new MillsecFromNowTimeout());
+            }
+
+        };
+        service.getTimer().newTimeout(tt, setTimer.getMillsec(), TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void handleSetPeriodicTimer(HandlerContext ctx, SetPeriodicTimer m) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

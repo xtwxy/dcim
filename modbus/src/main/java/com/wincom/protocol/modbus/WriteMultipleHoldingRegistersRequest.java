@@ -1,7 +1,7 @@
 package com.wincom.protocol.modbus;
 
 import com.google.common.primitives.UnsignedBytes;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 

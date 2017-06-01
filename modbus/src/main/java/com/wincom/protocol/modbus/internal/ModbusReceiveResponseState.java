@@ -2,7 +2,7 @@ package com.wincom.protocol.modbus.internal;
 
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.Failed;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.protocol.modbus.ModbusFrame;
@@ -16,18 +16,18 @@ public class ModbusReceiveResponseState extends State.Adapter {
 
     private ByteBuffer readBuffer;
     private ModbusFrame request;
-    
+
     final private HandlerContext replyTo;
 
     ModbusReceiveResponseState(HandlerContext replyTo) {
         this.replyTo = replyTo;
     }
-    
+
     @Override
     public State enter(HandlerContext ctx) {
         readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(ModbusCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
         request = (ModbusFrame) ctx.get(ModbusCodecImpl.MODBUS_REQUEST_KEY);
-        if(request == null) {
+        if (request == null) {
             return error();
         }
         // encode and send.
@@ -36,15 +36,14 @@ public class ModbusReceiveResponseState extends State.Adapter {
 
     @Override
     public State on(HandlerContext ctx, Message m) {
-        
+
         if (m instanceof BytesReceived) {
             decode(ctx, readBuffer);
         }
         return success();
     }
 
-    public void decode(HandlerContext ctx, Object msg) {
-        receive(msg);
+    private void decode(HandlerContext ctx, ByteBuffer readBuffer) {
         if (request == null) {
             readBuffer.clear();
             return;
@@ -54,7 +53,6 @@ public class ModbusReceiveResponseState extends State.Adapter {
         }
 
         byte[] src = null;
-        byte[] dst = null;
         switch (request.getFunction()) {
             case READ_COILS:
                 break;
@@ -70,8 +68,8 @@ public class ModbusReceiveResponseState extends State.Adapter {
                 if (readBuffer.remaining() < LENGTH) {
                     break;
                 }
-                dst = new byte[LENGTH];
-                decode(ctx, src, dst, request);
+
+                decode(ctx, ByteBuffer.wrap(src, 0, LENGTH), request);
 
                 break;
             case READ_INPUT_REGISTERS:
@@ -86,9 +84,8 @@ public class ModbusReceiveResponseState extends State.Adapter {
                     break;
                 }
 
-                dst = new byte[8];
                 src = readBuffer.array();
-                decode(ctx, src, dst, request);
+                decode(ctx, ByteBuffer.wrap(src, 0, 8), request);
                 break;
             default:
                 // TODO: handle default case.
@@ -96,30 +93,29 @@ public class ModbusReceiveResponseState extends State.Adapter {
         }
     }
 
-    private void decode(HandlerContext ctx, byte[] src, byte[] dst, ModbusFrame request) {
-        System.arraycopy(src, 0, dst, 0, dst.length);
-        ByteBuffer buf = ByteBuffer.wrap(dst);
+    private void decode(HandlerContext ctx, ByteBuffer buf, ModbusFrame request) {
+        final int LENGTH = buf.remaining();
         ModbusFrame response = new ModbusFrame();
+        Message result = null;
         try {
             response.fromWire(buf);
+            if (request.getSlaveAddress() == response.getSlaveAddress()
+                    && request.getFunction() == response.getFunction()) {
+                result = response;
+            } else {
+                final String error = String.format("request(address = %s, function = %s) != response(address = %s, function = %s)",
+                        request.getSlaveAddress(), request.getFunction(),
+                        response.getSlaveAddress(), response.getFunction());
+
+                result = new Failed(ctx, new Exception(error));
+            }
         } catch (Exception e) {
-            ctx.onRequestCompleted(new Failed(e));
-            readBuffer.position(dst.length);
-            readBuffer.compact();
-            return;
+            result = new Failed(ctx, e);
         }
-        if(request.getSlaveAddress() == response.getSlaveAddress()
-                && request.getFunction() == response.getFunction()) {
-            ctx.onRequestCompleted(response.getPayload());
-        } else {
-            final String error = String.format("request(address = %s, function = %s) != response(address = %s, function = %s)", 
-                    request.getSlaveAddress(), request.getFunction(),
-                    response.getSlaveAddress(), response.getFunction());
-            
-            ctx.onRequestCompleted(new Failed(new Exception(error)));
-        }
-        readBuffer.position(dst.length);
+        readBuffer.position(LENGTH);
         readBuffer.compact();
+        replyTo.fire(result);
+        ctx.onRequestCompleted(result);
     }
 
     private boolean locateModbusAddress(ModbusFrame request) {
@@ -137,19 +133,5 @@ public class ModbusReceiveResponseState extends State.Adapter {
             }
         } while (readBuffer.hasRemaining());
         return addressLocated;
-    }
-
-    private void receive(Object msg) throws IllegalArgumentException {
-        if (msg instanceof ByteBuffer) {
-            ByteBuffer buf = (ByteBuffer) msg;
-            readBuffer.put(buf);
-        } else {
-            log.error(String.format("Not a ByteBuf or ByteBuffer: %s", msg));
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "ModbusRequestState@" + this.hashCode();
     }
 }

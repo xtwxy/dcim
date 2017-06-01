@@ -1,5 +1,6 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,8 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import java.util.Date;
+import com.wincom.dcim.agentd.TimerOutboundHandler;
 
 /**
  *
@@ -20,8 +22,8 @@ public final class SetDeadlineTimer extends Message.Adapter {
     
     @Override
     public void apply(HandlerContext ctx, Handler handler) {
-        if (handler instanceof TimerHandler) {
-            ((TimerHandler) handler).handleSetDeadlineTimer(ctx, this);
+        if (handler instanceof TimerOutboundHandler) {
+            ((TimerOutboundHandler) handler).handleSetDeadlineTimer(ctx, this);
         } else {
             handler.handle(ctx, this);
         }

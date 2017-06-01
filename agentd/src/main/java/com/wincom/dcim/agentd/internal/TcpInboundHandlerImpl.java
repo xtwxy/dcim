@@ -1,4 +1,4 @@
- package com.wincom.dcim.agentd.internal;
+package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.internal.tests.ReceiveState;
@@ -6,9 +6,13 @@ import com.wincom.dcim.agentd.primitives.Accepted;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.Connected;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.TimerInboundHandler;
+import com.wincom.dcim.agentd.primitives.DeadlineTimeout;
+import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
+import com.wincom.dcim.agentd.primitives.PeriodicTimeout;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import io.netty.handler.logging.LogLevel;
@@ -19,7 +23,9 @@ import io.netty.handler.timeout.IdleStateHandler;
  *
  * @author master
  */
-public final class TcpInboundHandlerImpl extends ChannelInboundHandler.Adapter {
+public final class TcpInboundHandlerImpl
+        extends ChannelInboundHandler.Adapter
+        implements TimerInboundHandler {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -76,5 +82,20 @@ public final class TcpInboundHandlerImpl extends ChannelInboundHandler.Adapter {
     @Override
     public String toString() {
         return "TcpInboundHandlerImpl@" + this.hashCode();
+    }
+
+    @Override
+    public void handleDeadlineTimeout(HandlerContext ctx, DeadlineTimeout m) {
+        ctx.onRequestCompleted(m);
+    }
+
+    @Override
+    public void handleMillsecFromNowTimeout(HandlerContext ctx, MillsecFromNowTimeout m) {
+        ctx.onRequestCompleted(m);
+    }
+
+    @Override
+    public void handlePeriodicTimeout(HandlerContext ctx, PeriodicTimeout m) {
+        ctx.onRequestCompleted(m);
     }
 }

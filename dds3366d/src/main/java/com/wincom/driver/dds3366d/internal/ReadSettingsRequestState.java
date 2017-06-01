@@ -1,6 +1,6 @@
 package com.wincom.driver.dds3366d.internal;
 
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.statemachine.State;

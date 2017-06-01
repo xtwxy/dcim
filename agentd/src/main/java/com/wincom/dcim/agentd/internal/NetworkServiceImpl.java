@@ -1,7 +1,7 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;

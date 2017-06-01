@@ -3,7 +3,7 @@ package com.wincom.dcim.agentd.internal.tests;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;

@@ -1,17 +1,17 @@
 package com.wincom.dcim.agentd.internal.mocks;
 
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
 import com.wincom.dcim.agentd.primitives.SetPeriodicTimer;
-import com.wincom.dcim.agentd.primitives.TimerHandler;
+import com.wincom.dcim.agentd.TimerOutboundHandler;
 
 /**
  *
  * @author master
  */
-public class TimerHandlerImpl implements TimerHandler {
+public class TimerHandlerImpl implements TimerOutboundHandler {
 
     @Override
     public void handleSetDeadlineTimer(HandlerContext ctx, SetDeadlineTimer m) {

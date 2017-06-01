@@ -2,7 +2,7 @@ package com.wincom.protocol.modbus;
 
 import com.wincom.dcim.agentd.primitives.AbstractWireable;
 import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 
 /**
  *

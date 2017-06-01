@@ -1,9 +1,9 @@
 package com.wincom.dcim.agentd.internal.mocks;
 
 import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import java.nio.ByteBuffer;

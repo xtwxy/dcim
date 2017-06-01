@@ -1,6 +1,6 @@
 package com.wincom.protocol.modbus.internal;
 
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.primitives.WriteComplete;

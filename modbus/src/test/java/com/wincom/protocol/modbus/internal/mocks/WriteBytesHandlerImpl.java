@@ -1,7 +1,7 @@
 package com.wincom.protocol.modbus.internal.mocks;
 
 import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class WriteBytesHandlerImpl implements Handler {
 
     @Override
     public void handle(HandlerContext ctx, Message m) {
-        outbound.send(m, ctx);
+        outbound.send(m);
     }
 
 }

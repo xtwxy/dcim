@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ModbusCodecFactoryImpl implements CodecFactory {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
     public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
@@ -31,9 +31,9 @@ public class ModbusCodecFactoryImpl implements CodecFactory {
         Codec outboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
         ModbusCodecImpl theCodec = new ModbusCodecImpl();
-        outboundCodec.openOutbound(service,
+        outboundCodec.openInbound(service,
                 (Properties) props.get(OUTBOUND_CTX_PROPS_KEY),
-                theCodec);
+                theCodec.getCodecContext());
 
         return theCodec;
     }

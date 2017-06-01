@@ -3,8 +3,7 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.ConnectState;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.WaitTimeoutState;
@@ -33,10 +32,10 @@ public class TcpClientCodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openOutbound(AgentdService service, Properties outbound, Handler inboundHandler) {
+    public HandlerContext openInbound(AgentdService service, Properties outbound, HandlerContext inboundContext) {
         log.info(outbound.toString());
 
-        final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl)network.createHandlerContext();
+        final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createHandlerContext();
         final StateMachineBuilder builder = new StateMachineBuilder();
         final String host = outbound.getProperty(HOST_KEY);
         final String port = outbound.getProperty(PORT_KEY);
@@ -50,12 +49,18 @@ public class TcpClientCodecImpl implements Codec {
                 .transision("receiveState", "receiveState", "waitState", "waitState")
                 .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
-        
-        handlerContext.addInboundHandler(inboundHandler);
+
+        handlerContext.addInboundContext(inboundContext);
+
         handlerContext.getStateMachine()
                 .buildWith(client)
                 .enter(handlerContext);
 
         return handlerContext;
+    }
+
+    @Override
+    public HandlerContext getCodecContext() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

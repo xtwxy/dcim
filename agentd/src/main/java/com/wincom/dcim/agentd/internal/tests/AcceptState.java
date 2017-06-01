@@ -2,7 +2,7 @@ package com.wincom.dcim.agentd.internal.tests;
 
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.primitives.Accepted;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.primitives.Accept;

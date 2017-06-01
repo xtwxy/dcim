@@ -9,7 +9,7 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.internal.tests.AcceptState;
 import com.wincom.dcim.agentd.internal.tests.ReceiveState;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
 import java.util.Properties;

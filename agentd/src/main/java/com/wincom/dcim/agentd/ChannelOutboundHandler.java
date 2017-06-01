@@ -1,4 +1,10 @@
-package com.wincom.dcim.agentd.primitives;
+package com.wincom.dcim.agentd;
+
+import com.wincom.dcim.agentd.primitives.Accept;
+import com.wincom.dcim.agentd.primitives.CloseConnection;
+import com.wincom.dcim.agentd.primitives.Connect;
+import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.primitives.Message;
 
 /**
  *
@@ -14,9 +20,13 @@ public interface ChannelOutboundHandler extends Handler {
 
     public void handleSendPayload(HandlerContext ctx, Message m);
 
-    public static abstract class Adapter 
+    public void setOutbound(HandlerContext ctx);
+
+    public static abstract class Adapter
             extends Handler.Default
             implements ChannelOutboundHandler {
+
+        protected HandlerContext outboundContext;
 
         @Override
         public void handleAccept(HandlerContext ctx, Accept m) {
@@ -31,6 +41,11 @@ public interface ChannelOutboundHandler extends Handler {
         @Override
         public void handleClose(HandlerContext ctx, CloseConnection m) {
             log.info(String.format("handleClose(%s, %s)", ctx, m));
+        }
+
+        @Override
+        public void setOutbound(HandlerContext ctx) {
+            outboundContext = ctx;
         }
     }
 }

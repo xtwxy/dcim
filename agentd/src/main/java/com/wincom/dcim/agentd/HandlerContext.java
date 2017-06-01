@@ -1,5 +1,7 @@
-package com.wincom.dcim.agentd.primitives;
+package com.wincom.dcim.agentd;
 
+import com.wincom.dcim.agentd.primitives.ChannelActive;
+import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -89,11 +91,9 @@ public interface HandlerContext {
 
     public void setActive(boolean b);
 
-    public void addInboundHandler(Handler handler);
+    public void addInboundContext(HandlerContext ctx);
 
-    public void setOutboundHandler(Handler handler);
-
-    public Handler getOutboundHandler();
+    public ChannelOutboundHandler getOutboundHandler();
 
     public void onClosed(Message m);
 
@@ -106,8 +106,9 @@ public interface HandlerContext {
         protected final ConcurrentLinkedQueue<Message> queue;
         protected Message current;
         private boolean active;
-        protected Handler outboundHandler;
-        protected Set<Handler> inboundHandlers;
+        protected ChannelOutboundHandler outboundHandler;
+        protected ChannelInboundHandler inboundHandler;
+        protected Set<HandlerContext> inboundHandlers;
 
         public Adapter() {
             this(new StateMachine());
@@ -123,21 +124,18 @@ public interface HandlerContext {
         }
 
         @Override
-        public void addInboundHandler(Handler handler) {
-            inboundHandlers.add(handler);
+        public synchronized void addInboundContext(HandlerContext ctx) {
+            if(ctx != null) {
+                inboundHandlers.add(ctx);
+            }
             if (isActive()) {
                 Message m = new ChannelActive(this);
-                m.apply(this, handler);
+                ctx.fire(m);
             }
         }
 
         @Override
-        public void setOutboundHandler(Handler handler) {
-            this.outboundHandler = handler;
-        }
-
-        @Override
-        public Handler getOutboundHandler() {
+        public ChannelOutboundHandler getOutboundHandler() {
             return this.outboundHandler;
         }
 
@@ -153,8 +151,9 @@ public interface HandlerContext {
 
         @Override
         public void fire(Message m) {
-            for (Handler h : inboundHandlers) {
-                m.apply(this, h);
+            m.apply(this, inboundHandler);
+            for (HandlerContext ctx : inboundHandlers) {
+                ctx.fire(m);
             }
             machine.on(this, m);
         }
@@ -191,22 +190,22 @@ public interface HandlerContext {
         }
 
         @Override
-        public void set(Object key, Object value) {
+        public final void set(Object key, Object value) {
             variables.put(key, value);
         }
 
         @Override
-        public Object get(Object key) {
+        public final Object get(Object key) {
             return variables.get(key);
         }
 
         @Override
-        public Object get(Object key, Object defaultValue) {
+        public final Object get(Object key, Object defaultValue) {
             return variables.getOrDefault(key, defaultValue);
         }
 
         @Override
-        public Object getOrSetIfNotExist(Object key, Object defaultValue) {
+        public final Object getOrSetIfNotExist(Object key, Object defaultValue) {
             Object v = variables.get(key);
             if (v == null) {
                 variables.put(key, defaultValue);
@@ -217,7 +216,7 @@ public interface HandlerContext {
         }
 
         @Override
-        public Object remove(Object key) {
+        public final Object remove(Object key) {
             return variables.remove(key);
         }
 
@@ -236,7 +235,7 @@ public interface HandlerContext {
         }
 
         @Override
-        public void setActive(boolean b) {
+        public synchronized void setActive(boolean b) {
             this.active = b;
             if (!isInprogress()) {
                 sendNext();

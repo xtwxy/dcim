@@ -2,9 +2,8 @@ package com.wincom.protocol.modbus.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
@@ -30,8 +29,8 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     }
 
     @Override
-    public HandlerContext openOutbound(
-            AgentdService service, Properties props, Handler inboundHandler) {
+    public HandlerContext openInbound(
+            AgentdService service, Properties props, HandlerContext inboundHandler) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
@@ -47,11 +46,11 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     private HandlerContext createInbound0(
             AgentdService service,
             Properties props,
-            Handler inboundHandler) {
+            HandlerContext inboundHandler) {
         log.info(props.toString());
 
         final HandlerContext handlerContext = new HandlerContextImpl();
-        handlerContext.addInboundHandler(inboundHandler);
+        handlerContext.addInboundContext(inboundHandler);
         
         final StateMachineBuilder builder = new StateMachineBuilder();
 
@@ -65,5 +64,10 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
                 .enter(handlerContext);
 
         return handlerContext;
+    }
+
+    @Override
+    public HandlerContext getCodecContext() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

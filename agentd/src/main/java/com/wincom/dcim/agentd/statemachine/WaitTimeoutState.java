@@ -1,6 +1,6 @@
 package com.wincom.dcim.agentd.statemachine;
 
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
@@ -31,8 +31,6 @@ public class WaitTimeoutState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         log.info(m.toString());
         if (m instanceof MillsecFromNowTimeout) {
-            ctx.remove("timeout");
-            ctx.onRequestCompleted(m);
             return success();
         } else {
             log.warn(String.format("Unknown state: (%s, %s, %s)", this, ctx, m));

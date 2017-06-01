@@ -5,7 +5,7 @@ import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import com.wincom.protocol.modbus.ModbusFrame;
@@ -47,7 +47,7 @@ public class DDS3366DCodecImpl implements Codec {
         };
         inboundContexts.add(ctx);
 
-        ctx.addInboundHandler(inboundHandler);
+        ctx.addInboundContext(inboundHandler);
         ctx.activate(this.outboundContext);
         
         final StateMachineBuilder builder = new StateMachineBuilder();

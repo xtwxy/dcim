@@ -1,5 +1,7 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
 import io.netty.channel.Channel;
 
 /**

@@ -3,7 +3,8 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.internal.mocks.CodecFactoryImpl;
 import com.wincom.dcim.agentd.internal.mocks.InboundHandlerImpl;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import java.nio.ByteBuffer;
 import java.util.Properties;
@@ -46,7 +47,12 @@ public class CodecFactoryTest {
 
         try {
             Codec c = agent.createCodec(FACTORY_ID, CODEC_ID, props);
-            c.openOutbound(agent, outbound, new InboundHandlerImpl());            
+            HandlerContext inboundHandlerContext = new HandlerContext.NullContext() {
+                public void fire(Message m) {
+                    log.info(String.format("fire(%s)", m));
+                }
+            };
+            c.openInbound(agent, outbound, inboundHandlerContext);
         } catch (Throwable t) {
             t.printStackTrace();
         }

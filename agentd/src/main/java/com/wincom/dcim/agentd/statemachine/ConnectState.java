@@ -2,7 +2,7 @@ package com.wincom.dcim.agentd.statemachine;
 
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Connect;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.ConnectFailed;
 import io.netty.util.Timeout;

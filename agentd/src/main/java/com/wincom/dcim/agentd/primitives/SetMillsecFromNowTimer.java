@@ -1,5 +1,8 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.TimerOutboundHandler;
+
 /**
  *
  * @author master
@@ -18,8 +21,8 @@ public class SetMillsecFromNowTimer extends Message.Adapter {
 
     @Override
     public void apply(HandlerContext ctx, Handler handler) {
-        if (handler instanceof TimerHandler) {
-            ((TimerHandler) handler).handleSetMillsecFromNowTimer(ctx, this);
+        if (handler instanceof TimerOutboundHandler) {
+            ((TimerOutboundHandler) handler).handleSetMillsecFromNowTimer(ctx, this);
         } else {
             handler.handle(ctx, this);
         }

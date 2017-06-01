@@ -1,7 +1,7 @@
 package com.wincom.dcim.agentd.internal.mocks;
 
-import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
-import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.ChannelOutboundHandler;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 
 /**
