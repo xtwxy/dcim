@@ -58,7 +58,6 @@ public interface ChannelInboundHandler extends Handler {
 
         @Override
         public void handlePayloadReceived(HandlerContext ctx, Message m) {
-            log.info(String.format("handlePayloadReceived(%s, %s)", ctx, m));
         }
 
         @Override

@@ -1,10 +1,10 @@
 package com.wincom.dcim.agentd.primitives;
 
 import com.wincom.dcim.agentd.statemachine.StateMachine;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +107,7 @@ public interface HandlerContext {
         protected Message current;
         private boolean active;
         protected Handler outboundHandler;
-        protected List<Handler> inboundHandlers;
+        protected Set<Handler> inboundHandlers;
 
         public Adapter() {
             this(new StateMachine());
@@ -117,7 +117,7 @@ public interface HandlerContext {
             this.machine = machine;
             this.variables = new HashMap<>();
             this.queue = new ConcurrentLinkedQueue<>();
-            this.inboundHandlers = new ArrayList<>();
+            this.inboundHandlers = new LinkedHashSet<>();
             this.current = null;
             this.active = false;
         }
