@@ -2,11 +2,9 @@ package com.wincom.protocol.modbus.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.internal.ChannelInboundHandler;
-import com.wincom.dcim.agentd.primitives.ChannelActive;
+import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
@@ -20,7 +18,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author master
  */
-public class CodecImpl implements Codec {
+public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -32,8 +30,8 @@ public class CodecImpl implements Codec {
     }
 
     @Override
-    public ChannelInboundHandler openOutbound(
-            AgentdService service, Properties props, ChannelOutboundHandler inboundHandler) {
+    public HandlerContext openOutbound(
+            AgentdService service, Properties props, Handler inboundHandler) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
@@ -67,26 +65,5 @@ public class CodecImpl implements Codec {
                 .enter(handlerContext);
 
         return handlerContext;
-    }
-
-    @Override
-    public void handle(HandlerContext ctx, Message m) {
-        log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
-        if (m.isOob()) {
-            if(m instanceof ChannelActive) {
-                codecActive(ctx);
-            }
-        }
-        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            e.getValue().fire(m);
-        }
-    }
-
-    @Override
-    public void codecActive(HandlerContext outboundContext) {
-        this.outboundContext = outboundContext;
-        for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            e.getValue().activate(outboundContext);
-        }
     }
 }

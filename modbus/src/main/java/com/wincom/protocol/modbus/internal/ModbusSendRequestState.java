@@ -16,7 +16,6 @@ public class ModbusSendRequestState extends State.Adapter {
 
     final private ModbusFrame request;
     final private HandlerContext outbound;
-    public static final String MODBUS_REQUEST = "MODBUS_REQUEST";
 
     ModbusSendRequestState(ModbusFrame m, HandlerContext outbound) {
         this.request = m;
@@ -30,7 +29,7 @@ public class ModbusSendRequestState extends State.Adapter {
         request.toWire(buffer);
         buffer.flip();
         outbound.send(new SendBytes(ctx, buffer));
-        ctx.set(MODBUS_REQUEST, request);
+        ctx.set(ModbusCodecImpl.MODBUS_REQUEST_KEY, request);
         return this;
     }
 
@@ -40,8 +39,6 @@ public class ModbusSendRequestState extends State.Adapter {
         if (m instanceof WriteComplete) {
             return success();
         } else {
-            log.info(String.format("default: (%s, %s, %s), leave to the inbound handler.", this, ctx, m));
-            ctx.getInboundHandler().handle(ctx, m);
             return this;
         }
     }

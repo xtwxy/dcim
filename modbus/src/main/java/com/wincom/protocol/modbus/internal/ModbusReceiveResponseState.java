@@ -1,9 +1,6 @@
 package com.wincom.protocol.modbus.internal;
 
 import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
@@ -21,7 +18,6 @@ public class ModbusReceiveResponseState extends State.Adapter {
     private ModbusFrame request;
     
     final private HandlerContext replyTo;
-    public static final String READ_BUFFER = "READ_BUFFER";
 
     ModbusReceiveResponseState(HandlerContext replyTo) {
         this.replyTo = replyTo;
@@ -29,8 +25,8 @@ public class ModbusReceiveResponseState extends State.Adapter {
     
     @Override
     public State enter(HandlerContext ctx) {
-        readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(READ_BUFFER, ByteBuffer.allocate(2048));
-        request = (ModbusFrame) ctx.get(ModbusSendRequestState.MODBUS_REQUEST);
+        readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(ModbusCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
+        request = (ModbusFrame) ctx.get(ModbusCodecImpl.MODBUS_REQUEST_KEY);
         if(request == null) {
             return error();
         }
@@ -42,21 +38,9 @@ public class ModbusReceiveResponseState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         
         if (m instanceof BytesReceived) {
-            // TODO: notify the inbound handlers.
-            BytesReceived bm = (BytesReceived) m;
-            decode(ctx, bm.getByteBuffer());
-            return success();
-        } else if (m instanceof ChannelTimeout) {
-            ctx.onRequestCompleted(m);
-            return success();
-        } else if (m instanceof ChannelInactive) {
-            ctx.onRequestCompleted(m);
-            return error();
-        } else {
-            log.info(String.format("default: (%s, %s, %s), leave to the inbound handler.", this, ctx, m));
-            ctx.getInboundHandler().handle(ctx, m);
-            return success();
+            decode(ctx, readBuffer);
         }
+        return success();
     }
 
     public void decode(HandlerContext ctx, Object msg) {

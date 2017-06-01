@@ -40,7 +40,7 @@ public class MP3000CodecImpl extends ChannelInboundHandler.Adapter implements Co
 
     @Override
     public HandlerContext openOutbound(
-            AgentdService service, Properties props, ChannelInboundHandler inboundHandler) {
+            AgentdService service, Properties props, Handler inboundHandler) {
         Integer comport = Integer.valueOf(props.getProperty(COM_PORT_KEY));
         HandlerContext ctx = inbound.get(comport);
         if (comport <= PORT_COUNT) {

@@ -3,7 +3,7 @@ package com.wincom.dcim.agentd.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
+import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.ConnectState;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
@@ -33,7 +33,7 @@ public class TcpClientCodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openOutbound(AgentdService service, Properties outbound, ChannelInboundHandler inboundHandler) {
+    public HandlerContext openOutbound(AgentdService service, Properties outbound, Handler inboundHandler) {
         log.info(outbound.toString());
 
         final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl)network.createHandlerContext();

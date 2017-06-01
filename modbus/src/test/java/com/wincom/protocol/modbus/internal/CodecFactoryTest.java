@@ -63,45 +63,39 @@ public class CodecFactoryTest {
             Codec c = agent.createCodec(MODBUS_FACTORY_ID, MODBUS_CODEC_ID, props);
 
             Properties modbusOutbound = new Properties();
-            modbusOutbound.put(ModbusCodecImpl.ADDRESS, MODBUS_ADDRESS_1);
+            modbusOutbound.put(ModbusCodecImpl.ADDRESS_KEY, MODBUS_ADDRESS_1);
 
             outboundContext = c.openOutbound(agent, modbusOutbound, new Handler() {
                 @Override
                 public void handle(HandlerContext ctx, Message m) {
                     log.info(String.format("handle(%s, %s, %s)", this, ctx, m));
                     if (m instanceof BytesReceived) {
-                        ctx.send(new SendBytes(((BytesReceived) m).getByteBuffer()));
+                        ctx.send(new SendBytes(ctx, ((BytesReceived) m).getByteBuffer()));
                     } else if (m instanceof WriteComplete) {
                     } else if (m instanceof WriteTimeout) {
-                        sendRequest(outboundContext, ctx);
+                        sendRequest(outboundContext);
                     } else if (m instanceof ChannelActive) {
-                        sendRequest(outboundContext, ctx);
+                        sendRequest(outboundContext);
                     } else {
                         log.info(String.format("Unprocessed: %s", m));
                     }
                 }
             });
 
-            final HandlerContext ctx = new HandlerContext.NullContext() {
-                @Override
-                public void fire(Message m) {
-                    log.info("ignored: fire " + m);
-                }
-            };
-            sendRequest(outboundContext, ctx);
+            sendRequest(outboundContext);
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
-    private static void sendRequest(HandlerContext ctx, HandlerContext reply) {
+    private static void sendRequest(HandlerContext ctx) {
         ModbusFrame frame = new ModbusFrame();
         ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
         request.setStartAddress((short) 0x01f4);
         request.setNumberOfRegisters((short) 10);
         frame.setPayload(request);
 
-        ctx.send(frame, reply);
+        ctx.send(frame);
     }
 
     public static void main(String[] args) {

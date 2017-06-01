@@ -1,6 +1,8 @@
 package com.wincom.protocol.modbus.internal;
 
+import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Message;
 import java.nio.ByteBuffer;
 
 /**
@@ -9,14 +11,12 @@ import java.nio.ByteBuffer;
  */
 public class ModbusDecodeContextImpl extends HandlerContext.Adapter {
 
-    private final ByteBuffer readBuffer;
-
-    ModbusDecodeContextImpl() {
-        this.readBuffer = ByteBuffer.allocate(2048);
-    }
-
-    public ByteBuffer getReadBuffer() {
-        return readBuffer;
+    @Override
+    public void fire(Message m) {
+        for (Handler h : inboundHandlers) {
+            m.apply(this, h);
+        }
+        machine.on(this, m);
     }
 
 }

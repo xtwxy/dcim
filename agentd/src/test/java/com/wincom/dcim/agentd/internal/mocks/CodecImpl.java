@@ -2,19 +2,14 @@ package com.wincom.dcim.agentd.internal.mocks;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.internal.StreamHandlerContextImpl;
-import com.wincom.dcim.agentd.primitives.Accepted;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
+import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.timeout.IdleStateHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -38,7 +33,7 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     @Override
     public HandlerContext openOutbound(
-            AgentdService service, Properties props, ChannelInboundHandler inboundHandler) {
+            AgentdService service, Properties props, Handler inboundHandler) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
@@ -54,7 +49,7 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     private HandlerContext createInbound0(
             AgentdService service,
             Properties props,
-            ChannelInboundHandler inboundHandler) {
+            Handler inboundHandler) {
         log.info(props.toString());
 
         final HandlerContextImpl handlerContext = new HandlerContextImpl();

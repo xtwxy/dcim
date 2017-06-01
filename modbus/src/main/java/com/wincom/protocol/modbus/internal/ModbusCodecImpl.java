@@ -7,8 +7,10 @@ import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -22,21 +24,26 @@ public class ModbusCodecImpl
         extends ChannelInboundHandler.Adapter
         implements Codec {
 
-    public static final String ADDRESS = "address";
+    public static final String ADDRESS_KEY = "address";
+    public static final String READ_BUFFER_KEY = "READ_BUFFER";
+    public static final String MODBUS_REQUEST_KEY = "MODBUS_REQUEST";
+
+    private final ByteBuffer readBuffer;
     private final ModbusDecodeContextImpl decodeContext;
     private final Map<Byte, ModbusSlaveContextImpl> inboundContexts;
 
     public ModbusCodecImpl() {
         this.inboundContexts = new HashMap<>();
         this.decodeContext = new ModbusDecodeContextImpl();
+        readBuffer = (ByteBuffer) this.decodeContext.getOrSetIfNotExist(READ_BUFFER_KEY, ByteBuffer.allocate(2048));
     }
 
     @Override
     public HandlerContext openOutbound(
-            AgentdService service, Properties props, ChannelInboundHandler inboundHandler) {
+            AgentdService service, Properties props, Handler inboundHandler) {
         log.info(String.format("%s", props));
 
-        Byte address = Byte.valueOf(props.getProperty(ADDRESS));
+        Byte address = Byte.valueOf(props.getProperty(ADDRESS_KEY));
         // FIXME: add address validation.
         ModbusSlaveContextImpl inboundContext = inboundContexts.get(address);
         if (inboundContext == null) {
@@ -50,7 +57,7 @@ public class ModbusCodecImpl
 
     private ModbusSlaveContextImpl createInbound0(
             final Byte address,
-            final ChannelInboundHandler inboundHandler) {
+            final Handler inboundHandler) {
 
         final ModbusSlaveContextImpl handlerContext = new ModbusSlaveContextImpl(address, decodeContext);
 
@@ -86,7 +93,7 @@ public class ModbusCodecImpl
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
         BytesReceived b = (BytesReceived) m;
-        decodeContext.getReadBuffer().put(b.getByteBuffer());
+        readBuffer.put(b.getByteBuffer());
     }
 
     @Override
