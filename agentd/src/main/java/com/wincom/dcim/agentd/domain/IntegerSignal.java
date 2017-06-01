@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.domain;
  *
  * @author master
  */
-public class IntegerSignal extends Signal {
+public final class IntegerSignal extends Signal {
     private final Integer value;
 
     public IntegerSignal(Integer value) {

@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.domain;
  *
  * @author master
  */
-public class StringSignal extends Signal {
+public final class StringSignal extends Signal {
     private String value;
 
     public StringSignal() {

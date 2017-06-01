@@ -4,7 +4,7 @@ package com.wincom.dcim.agentd.domain;
  *
  * @author master
  */
-public class DigitalSignal extends Signal {
+public final class DigitalSignal extends Signal {
     private final Boolean value;
 
     public DigitalSignal(Boolean value) {

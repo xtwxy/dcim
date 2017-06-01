@@ -6,7 +6,7 @@ import java.util.Date;
  *
  * @author master
  */
-public class TimstampSignal extends Signal {
+public final class TimstampSignal extends Signal {
     private final Date value;
 
     public TimstampSignal(Date value) {
