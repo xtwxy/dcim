@@ -3,7 +3,6 @@ package com.wincom.dcim.agentd.internal.mocks;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecFactory;
-import com.wincom.dcim.agentd.primitives.ChannelOutboundHandler;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

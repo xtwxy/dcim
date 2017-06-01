@@ -119,7 +119,6 @@ public interface State {
 
         @Override
         public State on(HandlerContext ctx, Message m) {
-            log.warn("stopped?");
             return this;
         }
 

@@ -1,7 +1,9 @@
 package com.wincom.dcim.agentd.primitives;
 
 import com.wincom.dcim.agentd.statemachine.StateMachine;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
@@ -44,6 +46,7 @@ public interface HandlerContext {
     public void set(Object key, Object value);
 
     public Object get(Object key);
+
     /**
      * Get context variables.
      *
@@ -51,13 +54,14 @@ public interface HandlerContext {
      * @return
      */
     public Object get(Object key, Object defaultValue);
-    
+
     /**
-     * Get context variable if exists, and set default value and return 
-     * the default set if not.
+     * Get context variable if exists, and set default value and return the
+     * default set if not.
+     *
      * @param key
      * @param defaultValue
-     * @return 
+     * @return
      */
     public Object getOrSetIfNotExist(Object key, Object defaultValue);
 
@@ -85,9 +89,7 @@ public interface HandlerContext {
 
     public void setActive(boolean b);
 
-    public void setInboundHandler(Handler handler);
-
-    public Handler getInboundHandler();
+    public void addInboundHandler(Handler handler);
 
     public void setOutboundHandler(Handler handler);
 
@@ -105,7 +107,7 @@ public interface HandlerContext {
         protected Message current;
         private boolean active;
         protected Handler outboundHandler;
-        protected Handler inboundHandler;
+        protected List<Handler> inboundHandlers;
 
         public Adapter() {
             this(new StateMachine());
@@ -115,28 +117,17 @@ public interface HandlerContext {
             this.machine = machine;
             this.variables = new HashMap<>();
             this.queue = new ConcurrentLinkedQueue<>();
+            this.inboundHandlers = new ArrayList<>();
             this.current = null;
             this.active = false;
         }
 
         @Override
-        public Handler getInboundHandler() {
-            return this.inboundHandler;
-        }
-
-        @Override
-        public void setInboundHandler(Handler handler) {
-            Handler old = this.inboundHandler;
-            this.inboundHandler = handler;
+        public void addInboundHandler(Handler handler) {
+            inboundHandlers.add(handler);
             if (isActive()) {
-                if (old != handler) {
-                    if (old != null) {
-                        Message m = new ChannelInactive(this);
-                        m.apply(this, old);
-                    }
-                }
                 Message m = new ChannelActive(this);
-                m.apply(this, this.inboundHandler);
+                m.apply(this, handler);
             }
         }
 
@@ -162,7 +153,9 @@ public interface HandlerContext {
 
         @Override
         public void fire(Message m) {
-            m.apply(this, getInboundHandler());
+            for (Handler h : inboundHandlers) {
+                m.apply(this, h);
+            }
             machine.on(this, m);
         }
 
@@ -173,7 +166,7 @@ public interface HandlerContext {
             /*
              * Do not empty the queue!
              */
-            /* while (!queue.isEmpty()) {
+ /* while (!queue.isEmpty()) {
              *   Message s = queue.poll();
              * }
              */
@@ -215,7 +208,7 @@ public interface HandlerContext {
         @Override
         public Object getOrSetIfNotExist(Object key, Object defaultValue) {
             Object v = variables.get(key);
-            if(v == null) {
+            if (v == null) {
                 variables.put(key, defaultValue);
                 return defaultValue;
             } else {
@@ -258,7 +251,7 @@ public interface HandlerContext {
                 log.info(queue.toString());
                 log.info("inprogress: " + current);
                 log.info("active: " + active);
-                log.info("inboundHandler: " + inboundHandler);
+                log.info("inboundHandler: " + inboundHandlers);
                 new Exception().printStackTrace();
             }
         }

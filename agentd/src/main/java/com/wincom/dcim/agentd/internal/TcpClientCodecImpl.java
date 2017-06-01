@@ -51,7 +51,7 @@ public class TcpClientCodecImpl implements Codec {
                 .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
         
-        handlerContext.setInboundHandler(inboundHandler);
+        handlerContext.addInboundHandler(inboundHandler);
         handlerContext.getStateMachine()
                 .buildWith(client)
                 .enter(handlerContext);

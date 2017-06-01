@@ -54,7 +54,7 @@ public class ModbusCodecImpl
 
         final ModbusSlaveContextImpl handlerContext = new ModbusSlaveContextImpl(address, decodeContext);
 
-        handlerContext.setInboundHandler(inboundHandler);
+        handlerContext.addInboundHandler(inboundHandler);
 
         return handlerContext;
     }

@@ -47,7 +47,7 @@ public class DDS3366DCodecImpl implements Codec {
         };
         inboundContexts.add(ctx);
 
-        ctx.setInboundHandler(inboundHandler);
+        ctx.addInboundHandler(inboundHandler);
         ctx.activate(this.outboundContext);
         
         final StateMachineBuilder builder = new StateMachineBuilder();

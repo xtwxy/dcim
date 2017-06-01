@@ -58,30 +58,9 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
         log.info(props.toString());
 
         final HandlerContextImpl handlerContext = new HandlerContextImpl();
-        handlerContext.setInboundHandler(inboundHandler);
+        handlerContext.addInboundHandler(inboundHandler);
 
         return handlerContext;
-    }
-
-    @Override
-    public void handleAccepted(HandlerContext ctx, Accepted m) {
-    }
-
-    @Override
-    public void handleConnected(HandlerContext ctx, Connected m) {
-        log.info(String.format("Connection established: local: %s, remote:%s",
-                m.getChannel().localAddress(), m.getChannel().remoteAddress()));
-
-        final StreamHandlerContextImpl clientContext
-                = (StreamHandlerContextImpl) ctx;
-        clientContext.setChannel(m.getChannel());
-
-        m.getChannel().pipeline()
-                .addLast(new LoggingHandler(LogLevel.INFO))
-                .addLast(new IdleStateHandler(20, 1, 20))
-                .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(ctx));
-
-        ctx.onRequestCompleted(m);
     }
 
     @Override
@@ -91,14 +70,14 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
             OutboundHandlerImpl outImpl = (OutboundHandlerImpl) e.getValue().getOutboundHandler();
             outImpl.setOutbound(ctx);
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
+            e.getValue().fire(m);
         }
     }
 
     @Override
     public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
+            e.getValue().fire(m);
         }
     }
 
@@ -106,21 +85,21 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
         ctx.onRequestCompleted(m);
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
+            e.getValue().fire(m);
         }
     }
 
     @Override
     public void handleConnectionClosed(HandlerContext ctx, ConnectionClosed m) {
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
+            e.getValue().fire(m);
         }
     }
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
+            e.getValue().fire(m);
         }
     }
 
@@ -128,7 +107,7 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     public void handlePayloadSent(HandlerContext ctx, Message m) {
         ctx.onRequestCompleted(m);
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
-            m.apply(e.getValue(), e.getValue().getInboundHandler());
+            e.getValue().fire(m);
         }
     }
 }

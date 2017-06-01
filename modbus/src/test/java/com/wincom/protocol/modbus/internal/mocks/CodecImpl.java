@@ -53,7 +53,7 @@ public class CodecImpl implements Codec {
         log.info(props.toString());
 
         final HandlerContext handlerContext = new HandlerContextImpl();
-        handlerContext.setInboundHandler(inboundHandler);
+        handlerContext.addInboundHandler(inboundHandler);
         
         final StateMachineBuilder builder = new StateMachineBuilder();
 
