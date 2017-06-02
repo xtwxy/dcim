@@ -8,14 +8,16 @@ import org.osgi.framework.BundleContext;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.internal.tests.ReceiveState;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Accept;
+import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
+import java.nio.ByteBuffer;
 import java.util.Properties;
 import org.osgi.framework.ServiceReference;
 
@@ -76,12 +78,17 @@ public final class AgentdServiceActivator implements BundleActivator {
                     @Override
                     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
                         ctx.setActive(true);
+                        handlerContext.send(new SendBytes(ctx, ByteBuffer.wrap("Hello, World!".getBytes())));
                         log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
                     }
 
                     @Override
                     public void handlePayloadReceived(HandlerContext ctx, Message m) {
-                        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+                        log.info(String.format("handlePayloadReceived(%s, %s)", ctx, m));
+                        if(m instanceof BytesReceived) {
+                            BytesReceived b = (BytesReceived) m;
+                            handlerContext.send(new SendBytes(handlerContext, b.getByteBuffer()));
+                        }
                     }
 
                     @Override
