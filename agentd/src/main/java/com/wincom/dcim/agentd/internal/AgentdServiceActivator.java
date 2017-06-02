@@ -55,16 +55,20 @@ public final class AgentdServiceActivator implements BundleActivator {
 
     static void createConnection(NetworkService service) {
         HandlerContext handlerContext = service.createHandlerContext();
+        
         StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine client = builder
-                .add("connectState", new ConnectState(handlerContext, "192.168.0.68", 9080))
+                .add("connectState", new ConnectState(handlerContext, "localhost", 9080))
                 .add("receiveState", new ReceiveState())
                 .add("waitState", new WaitTimeoutState(6000))
                 .transision("connectState", "receiveState", "waitState", "waitState")
                 .transision("receiveState", "receiveState", "waitState", "waitState")
                 .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
+        
+        handlerContext.getInboundHandler().setStateMachine(client);
+        client.enter(handlerContext);
     }
 
     public static void main(String[] args) {

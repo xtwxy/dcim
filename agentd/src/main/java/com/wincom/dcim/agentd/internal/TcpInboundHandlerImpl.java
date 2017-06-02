@@ -12,6 +12,7 @@ import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.TimerInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.DeadlineTimeout;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
@@ -54,9 +55,9 @@ public final class TcpInboundHandlerImpl
                 .add("receiveState", new ReceiveState())
                 .transision("receiveState", "receiveState", "receiveState", "receiveState")
                 .buildWithInitialState("receiveState");
-        
+
         clientContext.getInboundHandler().setStateMachine(state);
-        
+
         clientContext.getChannel().pipeline()
                 .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(clientContext));
 
@@ -88,13 +89,21 @@ public final class TcpInboundHandlerImpl
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
         super.handleChannelActive(ctx, m);
+        ctx.fireInboundHandlerContexts(m);
         state.on(ctx, m);
     }
 
     @Override
     public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
         super.handleChannelInactive(ctx, m);
+        ctx.fireInboundHandlerContexts(m);
         state.on(ctx, m);
+    }
+
+    @Override
+    public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+        super.handleChannelTimeout(ctx, m);
+        ctx.fireInboundHandlerContexts(m);
     }
 
     @Override
