@@ -21,13 +21,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author master
  */
-public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
+public class StreamChannelInboundHandler extends ChannelInboundHandlerAdapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final HandlerContext clientContext;
 
-    public ChannelInboundHandler(HandlerContext clientContext) {
+    public StreamChannelInboundHandler(HandlerContext clientContext) {
         this.clientContext = clientContext;
     }
 

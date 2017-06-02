@@ -1,4 +1,4 @@
- package com.wincom.dcim.agentd.internal;
+package com.wincom.dcim.agentd.internal;
 
 import java.util.Dictionary;
 
@@ -6,11 +6,14 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.internal.tests.AcceptState;
 import com.wincom.dcim.agentd.internal.tests.ReceiveState;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Accept;
+import com.wincom.dcim.agentd.primitives.ChannelActive;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
 import java.util.Properties;
@@ -55,7 +58,7 @@ public final class AgentdServiceActivator implements BundleActivator {
 
     static void createConnection(NetworkService service) {
         HandlerContext handlerContext = service.createHandlerContext();
-        
+
         StateMachineBuilder builder = new StateMachineBuilder();
 
         StateMachine client = builder
@@ -66,7 +69,29 @@ public final class AgentdServiceActivator implements BundleActivator {
                 .transision("receiveState", "receiveState", "waitState", "waitState")
                 .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
-        
+        handlerContext.addInboundContext(new HandlerContext.NullContext() {
+            @Override
+            public void fire(Message m) {
+                m.apply(this, new ChannelInboundHandler.Adapter() {
+                    @Override
+                    public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+                        ctx.setActive(true);
+                        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+                    }
+
+                    @Override
+                    public void handlePayloadReceived(HandlerContext ctx, Message m) {
+                        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+                    }
+
+                    @Override
+                    public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+                        super.handleChannelTimeout(ctx, m);
+                        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+                    }
+                });
+            }
+        });
         handlerContext.getInboundHandler().setStateMachine(client);
         client.enter(handlerContext);
     }

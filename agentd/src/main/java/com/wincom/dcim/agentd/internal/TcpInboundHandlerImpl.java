@@ -1,11 +1,8 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.internal.tests.ReceiveState;
 import com.wincom.dcim.agentd.primitives.Accepted;
 import io.netty.channel.Channel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.HandlerContext;
@@ -18,7 +15,7 @@ import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.PeriodicTimeout;
 import com.wincom.dcim.agentd.primitives.SystemError;
-import com.wincom.dcim.agentd.statemachine.StateMachine;
+import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -59,7 +56,9 @@ public final class TcpInboundHandlerImpl
         clientContext.getInboundHandler().setStateMachine(state);
 
         clientContext.getChannel().pipeline()
-                .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(clientContext));
+                .addLast(new LoggingHandler(LogLevel.INFO))
+                .addLast(new IdleStateHandler(20, 1, 20))
+                .addLast(new com.wincom.dcim.agentd.internal.StreamChannelInboundHandler(clientContext));
 
         // continue accepting new connections in this state machine...
         ctx.onRequestCompleted(m);
@@ -79,7 +78,7 @@ public final class TcpInboundHandlerImpl
         m.getChannel().pipeline()
                 .addLast(new LoggingHandler(LogLevel.INFO))
                 .addLast(new IdleStateHandler(20, 1, 20))
-                .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(ctx));
+                .addLast(new com.wincom.dcim.agentd.internal.StreamChannelInboundHandler(ctx));
 
         ctx.onRequestCompleted(m);
 
@@ -104,6 +103,7 @@ public final class TcpInboundHandlerImpl
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
         super.handleChannelTimeout(ctx, m);
         ctx.fireInboundHandlerContexts(m);
+        state.on(ctx, m);
     }
 
     @Override
