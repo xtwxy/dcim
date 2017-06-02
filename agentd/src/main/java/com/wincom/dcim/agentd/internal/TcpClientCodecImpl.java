@@ -49,9 +49,8 @@ public class TcpClientCodecImpl implements Codec {
 
         handlerContext.addInboundContext(inboundContext);
 
-        handlerContext.getStateMachine()
-                .buildWith(client)
-                .enter(handlerContext);
+        handlerContext.getInboundHandler().setStateMachine(client);
+        client.enter(handlerContext);
 
         return handlerContext;
     }

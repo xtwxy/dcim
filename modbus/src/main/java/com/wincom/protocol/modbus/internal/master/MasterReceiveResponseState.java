@@ -3,7 +3,9 @@ package com.wincom.protocol.modbus.internal.master;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.SystemError;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.protocol.modbus.ModbusFrame;
 import java.nio.ByteBuffer;
@@ -25,7 +27,7 @@ public class MasterReceiveResponseState extends State.Adapter {
 
     @Override
     public State enter(HandlerContext ctx) {
-        readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(MasterCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
+        readBuffer = (ByteBuffer) ctx.get(MasterCodecImpl.READ_BUFFER_KEY);
         request = (ModbusFrame) ctx.get(MasterCodecImpl.MODBUS_REQUEST_KEY);
         if (request == null) {
             return error();
@@ -39,6 +41,11 @@ public class MasterReceiveResponseState extends State.Adapter {
 
         if (m instanceof BytesReceived) {
             decode(ctx, readBuffer);
+        } else if(m instanceof ChannelInactive
+                || m instanceof ApplicationFailure
+                || m instanceof SystemError) {
+            replyTo.fire(m);
+            return failure();
         }
         return success();
     }

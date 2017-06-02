@@ -18,16 +18,17 @@ public class MasterCodecImpl implements Codec {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public static final String ADDRESS_KEY = "address";
+    public static final String ADDRESS_KEY = "ADDRESS";
     public static final String READ_BUFFER_KEY = "READ_BUFFER";
     public static final String MODBUS_REQUEST_KEY = "MODBUS_REQUEST";
+    public static final String INBOUND_CONTEXTS_KEY = "INBOUND_CONTEXTS";
 
     private final MasterDecodeContextImpl decodeContext;
     private final Map<Byte, MasterContextImpl> inboundContexts;
 
     public MasterCodecImpl() {
         this.inboundContexts = new HashMap<>();
-        this.decodeContext = new MasterDecodeContextImpl();
+        this.decodeContext = new MasterDecodeContextImpl(inboundContexts);
     }
 
     @Override

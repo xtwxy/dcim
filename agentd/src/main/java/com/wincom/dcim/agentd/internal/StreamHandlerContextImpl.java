@@ -5,8 +5,6 @@ import com.wincom.dcim.agentd.NetworkService;
 import io.netty.channel.Channel;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -14,8 +12,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class StreamHandlerContextImpl
         extends HandlerContext.Adapter {
-
-    Logger log = LoggerFactory.getLogger(this.getClass());
 
     private Channel channel;
     private final NetworkService service;
@@ -31,7 +27,6 @@ public final class StreamHandlerContextImpl
     StreamHandlerContextImpl(StateMachine sm,
             NetworkService service
     ) {
-        super(sm);
         this.service = service;
         this.outboundHandler = new TcpOutboundHandlerImpl(service);
         this.inboundHandler = new TcpInboundHandlerImpl(service);

@@ -6,8 +6,9 @@ import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.ApplicationFailure;
+import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.Message;
-import java.util.HashMap;
+import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
@@ -17,15 +18,17 @@ import java.util.Map;
 public class MasterDecodeInboundHandlerImpl
         extends ChannelInboundHandler.Adapter {
 
+    private ByteBuffer readBuffer;
     private final Map<Byte, MasterContextImpl> inboundContexts;
 
-    public MasterDecodeInboundHandlerImpl() {
-        this.inboundContexts = new HashMap<>();
+    public MasterDecodeInboundHandlerImpl(Map<Byte, MasterContextImpl> inboundContexts) {
+        this.inboundContexts = inboundContexts;
     }
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
         super.handleChannelActive(ctx, m);
+        readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(MasterCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
         fireToInbounds(m);
     }
 
@@ -41,6 +44,8 @@ public class MasterDecodeInboundHandlerImpl
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
+        BytesReceived b = (BytesReceived) m;
+        this.readBuffer.put(b.getByteBuffer());
     }
 
     @Override

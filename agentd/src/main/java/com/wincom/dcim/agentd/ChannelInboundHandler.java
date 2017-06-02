@@ -10,6 +10,7 @@ import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SystemError;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 
 /**
  *
@@ -37,10 +38,14 @@ public interface ChannelInboundHandler extends Handler {
 
     public void handleSystemError(HandlerContext ctx, SystemError m);
 
+    public void setStateMachine(StateMachine sm);
+
     public static class Adapter
             extends Handler.Default
             implements ChannelInboundHandler {
-
+        
+        protected StateMachine state;
+        
         @Override
         public void handleAccepted(HandlerContext ctx, Accepted m) {
             log.info(String.format("handleAccepted(%s, %s)", ctx, m));
@@ -89,6 +94,11 @@ public interface ChannelInboundHandler extends Handler {
         @Override
         public void handleSystemError(HandlerContext ctx, SystemError m) {
             ctx.onRequestCompleted(m);
+        }
+
+        @Override
+        public void setStateMachine(StateMachine sm) {
+            state = sm;
         }
     }
 }

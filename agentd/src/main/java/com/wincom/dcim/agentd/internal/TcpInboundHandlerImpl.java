@@ -10,9 +10,13 @@ import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.TimerInboundHandler;
+import com.wincom.dcim.agentd.primitives.ChannelActive;
+import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.DeadlineTimeout;
+import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.PeriodicTimeout;
+import com.wincom.dcim.agentd.primitives.SystemError;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import io.netty.handler.logging.LogLevel;
@@ -26,8 +30,6 @@ import io.netty.handler.timeout.IdleStateHandler;
 public final class TcpInboundHandlerImpl
         extends ChannelInboundHandler.Adapter
         implements TimerInboundHandler {
-
-    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private Channel channel;
     private final NetworkService service;
@@ -48,18 +50,20 @@ public final class TcpInboundHandlerImpl
         final StreamHandlerContextImpl clientContext
                 = (StreamHandlerContextImpl) m.getContext();
 
-        StateMachine connection = new StateMachineBuilder()
+        state = new StateMachineBuilder()
                 .add("receiveState", new ReceiveState())
                 .transision("receiveState", "receiveState", "receiveState", "receiveState")
                 .buildWithInitialState("receiveState");
-
+        
+        clientContext.getInboundHandler().setStateMachine(state);
+        
         clientContext.getChannel().pipeline()
                 .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(clientContext));
 
-        clientContext.getStateMachine().buildWith(connection).enter(clientContext);
-
         // continue accepting new connections in this state machine...
         ctx.onRequestCompleted(m);
+
+        state.enter(clientContext);
     }
 
     @Override
@@ -72,16 +76,36 @@ public final class TcpInboundHandlerImpl
         clientContext.setChannel(m.getChannel());
 
         m.getChannel().pipeline()
-                //.addLast(new LoggingHandler(LogLevel.INFO))
+                .addLast(new LoggingHandler(LogLevel.INFO))
                 .addLast(new IdleStateHandler(20, 1, 20))
                 .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(ctx));
 
         ctx.onRequestCompleted(m);
+
+        state.on(ctx, m);
     }
 
     @Override
-    public String toString() {
-        return "TcpInboundHandlerImpl@" + this.hashCode();
+    public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+        super.handleChannelActive(ctx, m);
+        state.on(ctx, m);
+    }
+
+    @Override
+    public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
+        super.handleChannelInactive(ctx, m);
+        state.on(ctx, m);
+    }
+
+    @Override
+    public void handlePayloadReceived(HandlerContext ctx, Message m) {
+        ctx.fireInboundHandlerContexts(m);
+    }
+
+    @Override
+    public void handleSystemError(HandlerContext ctx, SystemError m) {
+        super.handleSystemError(ctx, m);
+        state.on(ctx, m);
     }
 
     @Override
@@ -91,6 +115,7 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handleMillsecFromNowTimeout(HandlerContext ctx, MillsecFromNowTimeout m) {
+        state.on(ctx, m);
         ctx.onRequestCompleted(m);
     }
 

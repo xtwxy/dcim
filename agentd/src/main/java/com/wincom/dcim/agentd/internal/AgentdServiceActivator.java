@@ -10,6 +10,7 @@ import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.internal.tests.AcceptState;
 import com.wincom.dcim.agentd.internal.tests.ReceiveState;
 import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Accept;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
 import java.util.Properties;
@@ -48,18 +49,8 @@ public final class AgentdServiceActivator implements BundleActivator {
 
     private static void createAcceptor(NetworkService service) {
         HandlerContext handlerContext = service.createHandlerContext();
-        StateMachineBuilder builder = new StateMachineBuilder();
 
-        StateMachine server = builder
-                .add("acceptState", new AcceptState(service, handlerContext, "0.0.0.0", 9080))
-                .add("failState", new FailedState())
-                .transision("acceptState", "acceptState", "failState", "failState")
-                .transision("failState", "failState", "failState", "failState")
-                .buildWithInitialAndStop("acceptState", "failState");
-
-        handlerContext.getStateMachine()
-                .buildWith(server)
-                .enter(handlerContext);
+        handlerContext.send(new Accept(handlerContext, "0.0.0.0", 9080));
     }
 
     static void createConnection(NetworkService service) {
@@ -74,10 +65,6 @@ public final class AgentdServiceActivator implements BundleActivator {
                 .transision("receiveState", "receiveState", "waitState", "waitState")
                 .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
-
-        handlerContext.getStateMachine()
-                .buildWith(client)
-                .enter(handlerContext);
     }
 
     public static void main(String[] args) {

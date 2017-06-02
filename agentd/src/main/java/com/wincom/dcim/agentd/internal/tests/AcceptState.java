@@ -43,16 +43,10 @@ public class AcceptState extends State.Adapter {
     @Override
     public State on(HandlerContext context, Message m) {
         if (m instanceof Accepted) {
-            Accepted a = (Accepted) m;
 
             return this;
         } else {
             return error();
         }
-    }
-
-    @Override
-    public String toString() {
-        return "AcceptState@" + this.hashCode();
     }
 }

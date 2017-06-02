@@ -2,7 +2,6 @@ package com.wincom.dcim.agentd;
 
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -38,7 +37,14 @@ public interface HandlerContext {
      * @param m
      */
     public void fire(Message m);
-
+    
+    /**
+     * Fire message to upper layer inbound handler contexts.
+     * 
+     * @param m 
+     */
+    public void fireInboundHandlerContexts(Message m);
+    
     /**
      * Set context variables.
      *
@@ -76,13 +82,6 @@ public interface HandlerContext {
     public Object remove(Object key);
 
     /**
-     * Get state machine.
-     *
-     * @return
-     */
-    public StateMachine getStateMachine();
-
-    /**
      * Test if channel is ready to send & receive.
      *
      * @return
@@ -93,6 +92,7 @@ public interface HandlerContext {
 
     public void addInboundContext(HandlerContext ctx);
 
+    public ChannelInboundHandler getInboundHandler();
     public ChannelOutboundHandler getOutboundHandler();
 
     public void onClosed(Message m);
@@ -101,7 +101,6 @@ public interface HandlerContext {
 
         protected Logger log = LoggerFactory.getLogger(this.getClass());
 
-        protected StateMachine machine;
         private final Map<Object, Object> variables;
         protected final ConcurrentLinkedQueue<Message> queue;
         protected Message current;
@@ -111,11 +110,6 @@ public interface HandlerContext {
         protected Set<HandlerContext> inboundHandlers;
 
         public Adapter() {
-            this(new StateMachine());
-        }
-
-        public Adapter(StateMachine machine) {
-            this.machine = machine;
             this.variables = new HashMap<>();
             this.queue = new ConcurrentLinkedQueue<>();
             this.inboundHandlers = new LinkedHashSet<>();
@@ -140,6 +134,11 @@ public interface HandlerContext {
         }
 
         @Override
+        public ChannelInboundHandler getInboundHandler() {
+            return this.inboundHandler;
+        }
+
+        @Override
         public synchronized void send(Message m) {
             queue.add(m);
             if (!isInprogress()) {
@@ -152,10 +151,13 @@ public interface HandlerContext {
         @Override
         public void fire(Message m) {
             m.apply(this, inboundHandler);
+        }
+        
+        @Override
+        public void fireInboundHandlerContexts(Message m) {
             for (HandlerContext ctx : inboundHandlers) {
                 ctx.fire(m);
             }
-            machine.on(this, m);
         }
 
         @Override
@@ -172,7 +174,8 @@ public interface HandlerContext {
         }
 
         @Override
-        public synchronized void onRequestCompleted(Message response) {
+        public synchronized void onRequestCompleted(Message m) {
+            fireInboundHandlerContexts(m);
             if (isInprogress()) {
                 current = null;
             } else {
@@ -220,11 +223,6 @@ public interface HandlerContext {
             return variables.remove(key);
         }
 
-        @Override
-        public StateMachine getStateMachine() {
-            return machine;
-        }
-
         public boolean isInprogress() {
             return this.current != null;
         }
@@ -245,7 +243,6 @@ public interface HandlerContext {
         private void printState(Message m) {
             if (current != null || !queue.isEmpty()) {
                 log.info(m.toString());
-                log.info(machine.toString());
                 log.info(variables.toString());
                 log.info(queue.toString());
                 log.info("inprogress: " + current);
@@ -259,7 +256,6 @@ public interface HandlerContext {
     public static class NullContext extends Adapter {
 
         public NullContext() {
-            super(null);
         }
 
         @Override

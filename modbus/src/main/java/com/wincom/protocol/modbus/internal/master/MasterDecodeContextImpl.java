@@ -2,6 +2,7 @@ package com.wincom.protocol.modbus.internal.master;
 
 import com.wincom.dcim.agentd.HandlerContext;
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 /**
  *
@@ -9,12 +10,8 @@ import java.nio.ByteBuffer;
  */
 public class MasterDecodeContextImpl extends HandlerContext.Adapter {
 
-    private final ByteBuffer readBuffer;
-
-    MasterDecodeContextImpl() {
-        readBuffer = ByteBuffer.allocate(2048);
-        set(MasterCodecImpl.READ_BUFFER_KEY, readBuffer);
-        inboundHandler = new MasterDecodeInboundHandlerImpl();
-        outboundHandler = new MasterDecodeOutboundHandlerImpl();
+    MasterDecodeContextImpl(Map<Byte, MasterContextImpl> inboundContexts) {
+        inboundHandler = new MasterDecodeInboundHandlerImpl(inboundContexts);
+        outboundHandler = new MasterDecodeOutboundHandlerImpl(inboundContexts);
     }
 }

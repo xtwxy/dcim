@@ -20,10 +20,7 @@ public class StateMachine implements State {
     State stop;
 
     public StateMachine() {
-        current = new State.Adapter();
-        prev = current;
-        initial = current;
-        stop = current;
+        reset();
     }
 
     public StateMachine(
@@ -47,7 +44,14 @@ public class StateMachine implements State {
         this.current = initial;
         this.prev = null;
     }
-
+    
+    public final void reset() {
+        current = new State.Adapter();
+        prev = current;
+        initial = current;
+        stop = current;
+    }
+    
     public StateMachine(StateBuilder builder) {
         buildWith(builder);
     }
