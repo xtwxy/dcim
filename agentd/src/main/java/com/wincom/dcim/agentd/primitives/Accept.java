@@ -7,12 +7,13 @@ import com.wincom.dcim.agentd.ChannelOutboundHandler;
  *
  * @author master
  */
-public final class Accept extends Message.Adapter {
+public final class Accept extends ChannelOutbound {
 
     private final String host;
     private final int port;
 
-    public Accept(String host, int port) {
+    public Accept(HandlerContext c, String host, int port) {
+        super(c);
         this.host = host;
         this.port = port;
     }
@@ -26,12 +27,8 @@ public final class Accept extends Message.Adapter {
     }
 
     @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        if (handler instanceof ChannelOutboundHandler) {
-            ((ChannelOutboundHandler) handler).handleAccept(ctx, this);
-        } else {
-            handler.handle(ctx, this);
-        }
+    public void applyChannelOutbound(HandlerContext ctx, ChannelOutboundHandler handler) {
+        handler.handleAccept(ctx, this);
     }
 
     @Override

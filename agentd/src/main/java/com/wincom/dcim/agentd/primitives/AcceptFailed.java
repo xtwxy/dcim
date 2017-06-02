@@ -6,9 +6,9 @@ import com.wincom.dcim.agentd.HandlerContext;
  *
  * @author master
  */
-public final class ConnectFailed extends SystemError {
+public final class AcceptFailed extends SystemError {
 
-    public ConnectFailed(HandlerContext c, Throwable cause) {
+    public AcceptFailed(HandlerContext c, Throwable cause) {
         super(c, cause);
     }
 

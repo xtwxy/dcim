@@ -1,9 +1,9 @@
-package com.wincom.protocol.modbus.internal;
+package com.wincom.protocol.modbus.internal.master;
 
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.Failed;
+import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.protocol.modbus.ModbusPayloadInboundHandler;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersResponse;
@@ -14,18 +14,18 @@ import com.wincom.protocol.modbus.WriteSingleHoldingRegisterResponse;
  *
  * @author master
  */
-public class ModbusPayloadInboundHandlerImpl
+public class MasterPayloadInboundHandlerImpl
         extends ModbusPayloadInboundHandler.Adapter
         implements ModbusPayloadInboundHandler {
 
     @Override
     public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
-        ctx.onClosed(m);
+        super.handleChannelInactive(ctx, m);
     }
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        ctx.onRequestCompleted(m);
+        super.handleChannelTimeout(ctx, m);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class ModbusPayloadInboundHandlerImpl
     }
 
     @Override
-    public void handleFailed(HandlerContext ctx, Failed m) {
+    public void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m) {
     }
 }

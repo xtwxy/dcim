@@ -8,7 +8,7 @@ import com.wincom.dcim.agentd.primitives.Connect;
 import com.wincom.dcim.agentd.primitives.ConnectFailed;
 import com.wincom.dcim.agentd.primitives.Connected;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
-import com.wincom.dcim.agentd.primitives.Failed;
+import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import io.netty.channel.Channel;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.TimerOutboundHandler;
+import com.wincom.dcim.agentd.primitives.AcceptFailed;
 import com.wincom.dcim.agentd.primitives.DeadlineTimeout;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
@@ -80,7 +81,19 @@ public final class TcpOutboundHandlerImpl
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-        boot.bind(a.getHost(), a.getPort());
+        ChannelFuture future = boot.bind(a.getHost(), a.getPort());
+        future.addListener(new GenericFutureListener() {
+            @Override
+            public void operationComplete(Future f) throws Exception {
+                if (f.isSuccess()) {
+                    log.info(String.format("connection was successful: %s", f));
+                } else {
+                    ctx.fire(new AcceptFailed(ctx, f.cause()));
+                    log.info(String.format("connection was failed: %s", f));
+                }
+            }
+
+        });
     }
 
     @Override
@@ -108,7 +121,7 @@ public final class TcpOutboundHandlerImpl
                 if (f.isSuccess()) {
                     log.info(String.format("connection was successful: %s", f));
                 } else {
-                    ctx.fire(new ConnectFailed());
+                    ctx.fire(new ConnectFailed(ctx, f.cause()));
                     log.info(String.format("connection was failed: %s", f));
                 }
             }
@@ -119,7 +132,7 @@ public final class TcpOutboundHandlerImpl
     @Override
     public void handleClose(HandlerContext ctx, CloseConnection m) {
         if (!ctx.isActive()) {
-            ctx.fire(new Failed(ctx, new Exception("Not connected.")));
+            ctx.fire(new ApplicationFailure(ctx, new Exception("Not connected.")));
             return;
         }
         ChannelPromise cp = channel.newPromise();
@@ -129,7 +142,7 @@ public final class TcpOutboundHandlerImpl
                 if (f.isSuccess()) {
                     ctx.fire(new ConnectionClosed(channel));
                 } else {
-                    ctx.fire(new Failed(ctx, f.cause()));
+                    ctx.fire(new ApplicationFailure(ctx, f.cause()));
                 }
             }
         });
@@ -139,7 +152,7 @@ public final class TcpOutboundHandlerImpl
     @Override
     public void handleSendPayload(HandlerContext ctx, Message m) {
         if (!ctx.isActive()) {
-            ctx.fire(new Failed(ctx, new Exception("Not connected.")));
+            ctx.fire(new ApplicationFailure(ctx, new Exception("Not connected.")));
             return;
         }
         ChannelPromise cp = channel.newPromise();
@@ -149,7 +162,7 @@ public final class TcpOutboundHandlerImpl
                 if (f.isSuccess()) {
                     ctx.fire(new WriteComplete(ctx));
                 } else {
-                    ctx.fire(new Failed(ctx, f.cause()));
+                    ctx.fire(new ApplicationFailure(ctx, f.cause()));
                 }
             }
         });

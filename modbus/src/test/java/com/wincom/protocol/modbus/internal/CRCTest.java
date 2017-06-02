@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus.internal;
 
+import com.wincom.protocol.modbus.CRC;
 import java.nio.ByteBuffer;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

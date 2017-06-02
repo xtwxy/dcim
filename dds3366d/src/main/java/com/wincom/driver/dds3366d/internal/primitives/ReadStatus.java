@@ -11,7 +11,6 @@ import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import com.wincom.driver.dds3366d.internal.ReadStatusRequestState;
 import com.wincom.driver.dds3366d.internal.ReadStatusResponseState;
-import com.wincom.protocol.modbus.*;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -204,12 +203,5 @@ public class ReadStatus {
         public void setFrequency(double frequency) {
             this.frequency = (short) Math.round(frequency / 0.01);
         }
-
-        @Override
-        public boolean isOob() {
-            return false;
-        }
-
     }
-
 }

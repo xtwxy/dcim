@@ -72,7 +72,7 @@ public final class TcpInboundHandlerImpl
         clientContext.setChannel(m.getChannel());
 
         m.getChannel().pipeline()
-                .addLast(new LoggingHandler(LogLevel.INFO))
+                //.addLast(new LoggingHandler(LogLevel.INFO))
                 .addLast(new IdleStateHandler(20, 1, 20))
                 .addLast(new com.wincom.dcim.agentd.internal.ChannelInboundHandler(ctx));
 

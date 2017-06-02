@@ -2,10 +2,8 @@ package com.wincom.fsu.mp3000.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
-import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.NetworkConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -16,7 +14,7 @@ import java.util.Properties;
  *
  * @author master
  */
-public class MP3000CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
+public class MP3000CodecImpl implements Codec {
 
     private String HOST;
     private final int BASE_PORT;
@@ -34,29 +32,34 @@ public class MP3000CodecImpl extends ChannelInboundHandler.Adapter implements Co
         this.HOST = props.getProperty("host");
         this.BASE_PORT = Integer.parseInt(props.getProperty("basePort"));
         this.PORT_COUNT = Integer.parseInt(props.getProperty("portCount"));
-        this.WAITE_TIMEOUT = props.getProperty(TcpClientCodecImpl.WAITE_TIMEOUT_KEY);
+        this.WAITE_TIMEOUT = props.getProperty(NetworkConfig.WAITE_TIMEOUT_KEY);
         this.CODEC_ID = props.getProperty(OUTBOUND_CODEC_ID_KEY);
     }
 
     @Override
-    public HandlerContext openOutbound(
-            AgentdService service, Properties props, Handler inboundHandler) {
+    public HandlerContext openInbound(
+            AgentdService service, Properties props, HandlerContext inboundHandler) {
         Integer comport = Integer.valueOf(props.getProperty(COM_PORT_KEY));
         HandlerContext ctx = inbound.get(comport);
         if (comport <= PORT_COUNT) {
             if (ctx == null) {
                 Codec inboundCodec = service.getCodec(CODEC_ID);
                 Properties p = new Properties();
-                p.put(TcpClientCodecImpl.HOST_KEY, HOST);
-                p.put(TcpClientCodecImpl.PORT_KEY, BASE_PORT + comport);
-                p.put(TcpClientCodecImpl.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
+                p.put(NetworkConfig.HOST_KEY, HOST);
+                p.put(NetworkConfig.PORT_KEY, BASE_PORT + comport);
+                p.put(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
-                ctx = inboundCodec.openOutbound(service, p, this);
+                ctx = inboundCodec.openInbound(service, p, null);
                 inbound.put(comport, ctx);
             } else {
                 // already opened.
             }
         }
         return ctx;
+    }
+
+    @Override
+    public HandlerContext getCodecContext() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

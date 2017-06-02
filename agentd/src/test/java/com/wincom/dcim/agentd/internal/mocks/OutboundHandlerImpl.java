@@ -12,7 +12,7 @@ public class OutboundHandlerImpl extends ChannelOutboundHandler.Adapter {
 
     private HandlerContext outbound;
 
-    public void setOutbound(HandlerContext delegate) {
+    public void setOutboundContext(HandlerContext delegate) {
         this.outbound = delegate;
     }
 

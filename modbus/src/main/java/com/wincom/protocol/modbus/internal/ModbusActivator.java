@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus.internal;
 
+import com.wincom.protocol.modbus.internal.master.MasterCodecFactoryImpl;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.CodecFactory;
 import org.osgi.framework.BundleActivator;
@@ -14,8 +15,8 @@ public final class ModbusActivator
             throws Exception {
         ServiceReference<AgentdService> serviceRef = bc.getServiceReference(AgentdService.class);
         AgentdService service = bc.getService(serviceRef);
-        CodecFactory factory = new ModbusCodecFactoryImpl();
-        service.registerCodecFactory("modbus", factory);
+        CodecFactory factory = new MasterCodecFactoryImpl();
+        service.registerCodecFactory("modbus-slave", factory);
     }
 
     @Override

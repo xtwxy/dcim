@@ -3,7 +3,10 @@ package com.wincom.protocol.modbus;
 import com.wincom.dcim.agentd.primitives.AbstractWireable;
 import com.wincom.dcim.agentd.primitives.Wireable;
 import com.google.common.primitives.UnsignedBytes;
-import com.wincom.protocol.modbus.internal.CRC;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
+import com.wincom.dcim.agentd.ChannelOutboundHandler;
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.primitives.Handler;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -20,16 +23,16 @@ public class ModbusFrame
     private ModbusPayload payload;
     private short crc16;
 
-    private transient boolean slave;
+    private transient boolean request;
 
     public ModbusFrame() {
-        slave = true;
+        request = true;
     }
 
-    public ModbusFrame(boolean slave) {
-        this.slave = slave;
+    public ModbusFrame(boolean request) {
+        this.request = request;
     }
-    
+
     @Override
     public int getWireLength() {
         return 1 // slave address
@@ -72,6 +75,20 @@ public class ModbusFrame
     }
 
     @Override
+    public void apply(HandlerContext ctx, Handler handler) {
+        if(isRequest()) {
+            if(handler instanceof ChannelOutboundHandler) {
+                ((ChannelOutboundHandler)handler).handleSendPayload(ctx, this);
+            }
+        } else {
+            if(handler instanceof ChannelInboundHandler) {
+                ((ChannelInboundHandler)handler).handlePayloadReceived(ctx, this);
+            }
+        }
+        handler.handle(ctx, this);
+    }
+
+    @Override
     public void toStringBuilder(StringBuilder buf, int depth) {
         appendHeader(buf, depth, getClass().getSimpleName());
         depth++;
@@ -97,7 +114,7 @@ public class ModbusFrame
 
     public void setFunction(ModbusFunction function) {
         this.function = function;
-        this.payload = isSlave() ? function.createResponse() : function.createRequest();
+        this.payload = isRequest() ? function.createRequest() : function.createResponse();
     }
 
     public ModbusPayload getPayload() {
@@ -109,11 +126,12 @@ public class ModbusFrame
         this.function = payload.getFunctionCode();
     }
 
-    public boolean isSlave() {
-        return slave;
+    public boolean isRequest() {
+        return request;
     }
 
-    public void setSlave(boolean slave) {
-        this.slave = slave;
+    public void setRequest(boolean request) {
+        this.request = request;
     }
+
 }

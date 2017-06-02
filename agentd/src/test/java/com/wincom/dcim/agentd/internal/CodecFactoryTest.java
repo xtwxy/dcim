@@ -2,8 +2,8 @@ package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.internal.mocks.CodecFactoryImpl;
-import com.wincom.dcim.agentd.internal.mocks.InboundHandlerImpl;
 import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.NetworkConfig;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
 import java.nio.ByteBuffer;
@@ -39,9 +39,9 @@ public class CodecFactoryTest {
         props.put(CodecFactoryImpl.OUTBOUND_CODEC_ID_KEY, TCP_CODEC_ID);
 
         Properties outbound = new Properties();
-        outbound.put(TcpClientCodecImpl.HOST_KEY, HOST);
-        outbound.put(TcpClientCodecImpl.PORT_KEY, PORT);
-        outbound.put(TcpClientCodecImpl.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
+        outbound.put(NetworkConfig.HOST_KEY, HOST);
+        outbound.put(NetworkConfig.PORT_KEY, PORT);
+        outbound.put(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
         props.put(CodecFactoryImpl.OUTBOUND_CTX_PROPS_KEY, outbound);
 

@@ -33,7 +33,7 @@ public class ConnectState extends State.Adapter {
 
     @Override
     public State enter(HandlerContext ctx) {
-        this.handlerContext.send(new Connect(host, port));
+        this.handlerContext.send(new Connect(ctx, host, port));
         return this;
     }
 

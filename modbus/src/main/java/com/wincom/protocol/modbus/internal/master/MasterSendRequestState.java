@@ -1,4 +1,4 @@
-package com.wincom.protocol.modbus.internal;
+package com.wincom.protocol.modbus.internal.master;
 
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
@@ -12,12 +12,12 @@ import java.nio.ByteBuffer;
  *
  * @author master
  */
-public class ModbusSendRequestState extends State.Adapter {
+public class MasterSendRequestState extends State.Adapter {
 
     final private ModbusFrame request;
     final private HandlerContext outbound;
 
-    ModbusSendRequestState(ModbusFrame m, HandlerContext outbound) {
+    MasterSendRequestState(ModbusFrame m, HandlerContext outbound) {
         this.request = m;
         this.outbound = outbound;
     }
@@ -29,7 +29,7 @@ public class ModbusSendRequestState extends State.Adapter {
         request.toWire(buffer);
         buffer.flip();
         outbound.send(new SendBytes(ctx, buffer));
-        ctx.set(ModbusCodecImpl.MODBUS_REQUEST_KEY, request);
+        ctx.set(MasterCodecImpl.MODBUS_REQUEST_KEY, request);
         return this;
     }
 

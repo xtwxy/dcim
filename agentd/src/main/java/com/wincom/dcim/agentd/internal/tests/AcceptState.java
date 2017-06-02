@@ -36,7 +36,7 @@ public class AcceptState extends State.Adapter {
 
     @Override
     public State enter(HandlerContext ctx) {
-        this.handlerContext.send(new Accept(host, port));
+        this.handlerContext.send(new Accept(ctx, host, port));
         return this;
     }
 

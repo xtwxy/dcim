@@ -21,17 +21,14 @@ public class DefaultReceiveState extends State.Adapter {
             return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);
-            ctx.getInboundHandler().handle(ctx, m);
             // TODO: notify the inbound handlers.
             return success();
         } else if (m instanceof ChannelInactive) {
             ctx.setActive(false);
-            ctx.close();
             ctx.onClosed(m);
             return error();
         } else {
             log.info(String.format("default: (%s, %s, %s), leave to the inbound handler.", this, ctx, m));
-            ctx.getInboundHandler().handle(ctx, m);
             return success();
         }
     }

@@ -158,7 +158,7 @@ public interface State {
         @Override
         public State failure(State s) {
             this.failure = s;
-            return this.failure;
+            return this;
         }
 
         @Override

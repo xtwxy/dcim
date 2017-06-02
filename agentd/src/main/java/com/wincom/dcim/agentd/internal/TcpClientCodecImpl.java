@@ -4,6 +4,7 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.NetworkConfig;
 import com.wincom.dcim.agentd.statemachine.ConnectState;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.WaitTimeoutState;
@@ -21,10 +22,6 @@ public class TcpClientCodecImpl implements Codec {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public static final String PORT_KEY = "port";
-    public static final String HOST_KEY = "host";
-    public static final String WAITE_TIMEOUT_KEY = "waiteTimeout";
-
     private final NetworkService network;
 
     public TcpClientCodecImpl(NetworkService network) {
@@ -37,9 +34,9 @@ public class TcpClientCodecImpl implements Codec {
 
         final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createHandlerContext();
         final StateMachineBuilder builder = new StateMachineBuilder();
-        final String host = outbound.getProperty(HOST_KEY);
-        final String port = outbound.getProperty(PORT_KEY);
-        final String waiteTimeout = outbound.getProperty(WAITE_TIMEOUT_KEY);
+        final String host = outbound.getProperty(NetworkConfig.HOST_KEY);
+        final String port = outbound.getProperty(NetworkConfig.PORT_KEY);
+        final String waiteTimeout = outbound.getProperty(NetworkConfig.WAITE_TIMEOUT_KEY);
 
         StateMachine client = builder
                 .add("connectState", new ConnectState(handlerContext, host, Integer.valueOf(port)))

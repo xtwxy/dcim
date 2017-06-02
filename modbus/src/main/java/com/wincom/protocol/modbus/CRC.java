@@ -1,4 +1,4 @@
-package com.wincom.protocol.modbus.internal;
+package com.wincom.protocol.modbus;
 
 /**
  *

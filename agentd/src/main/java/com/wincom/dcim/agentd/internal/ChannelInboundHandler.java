@@ -4,10 +4,9 @@ import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.Failed;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.ReadTimeout;
-import com.wincom.dcim.agentd.primitives.Timeout;
+import com.wincom.dcim.agentd.primitives.SystemError;
 import com.wincom.dcim.agentd.primitives.Unknown;
 import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import io.netty.buffer.ByteBuf;
@@ -90,7 +89,7 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
-        clientContext.fire(new Failed(clientContext, cause));
+        clientContext.fire(new SystemError(clientContext, cause));
         ctx.close();
     }
 }

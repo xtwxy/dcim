@@ -1,4 +1,4 @@
-package com.wincom.dcim.agentd.internal;
+ package com.wincom.dcim.agentd.internal;
 
 import java.util.Dictionary;
 
@@ -41,7 +41,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         out.println(service);
 
         createAcceptor(service);
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 10000; ++i) {
             createConnection(service);
         }
     }

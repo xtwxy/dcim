@@ -1,7 +1,7 @@
-package com.wincom.protocol.modbus.internal;
+package com.wincom.protocol.modbus.internal.master;
 
 import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.Failed;
+import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.State;
@@ -12,21 +12,21 @@ import java.nio.ByteBuffer;
  *
  * @author master
  */
-public class ModbusReceiveResponseState extends State.Adapter {
+public class MasterReceiveResponseState extends State.Adapter {
 
     private ByteBuffer readBuffer;
     private ModbusFrame request;
 
     final private HandlerContext replyTo;
 
-    ModbusReceiveResponseState(HandlerContext replyTo) {
+    MasterReceiveResponseState(HandlerContext replyTo) {
         this.replyTo = replyTo;
     }
 
     @Override
     public State enter(HandlerContext ctx) {
-        readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(ModbusCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
-        request = (ModbusFrame) ctx.get(ModbusCodecImpl.MODBUS_REQUEST_KEY);
+        readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(MasterCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
+        request = (ModbusFrame) ctx.get(MasterCodecImpl.MODBUS_REQUEST_KEY);
         if (request == null) {
             return error();
         }
@@ -107,10 +107,10 @@ public class ModbusReceiveResponseState extends State.Adapter {
                         request.getSlaveAddress(), request.getFunction(),
                         response.getSlaveAddress(), response.getFunction());
 
-                result = new Failed(ctx, new Exception(error));
+                result = new ApplicationFailure(ctx, new Exception(error));
             }
         } catch (Exception e) {
-            result = new Failed(ctx, e);
+            result = new ApplicationFailure(ctx, e);
         }
         readBuffer.position(LENGTH);
         readBuffer.compact();

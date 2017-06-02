@@ -1,17 +1,13 @@
 package com.wincom.protocol.modbus.internal;
 
+import com.wincom.protocol.modbus.internal.master.MasterCodecFactoryImpl;
+import com.wincom.protocol.modbus.internal.master.MasterCodecImpl;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.internal.AgentdServiceImpl;
 import com.wincom.dcim.agentd.internal.NetworkServiceImpl;
 import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
-import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SendBytes;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
-import com.wincom.dcim.agentd.primitives.WriteTimeout;
+import com.wincom.dcim.agentd.NetworkConfig;
 import com.wincom.protocol.modbus.ModbusFrame;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
 import java.util.Properties;
@@ -43,26 +39,26 @@ public class CodecFactoryTest {
         TcpClientCodecImpl tcpCodec = new TcpClientCodecImpl(network);
         agent.setCodec(TCP_CODEC_ID, tcpCodec);
 
-        ModbusCodecFactoryImpl modbusFactory = new ModbusCodecFactoryImpl();
+        MasterCodecFactoryImpl modbusFactory = new MasterCodecFactoryImpl();
 
         agent.registerCodecFactory(MODBUS_FACTORY_ID, modbusFactory);
 
         Properties props = new Properties();
 
-        props.put(ModbusCodecFactoryImpl.OUTBOUND_CODEC_ID_KEY, TCP_CODEC_ID);
+        props.put(MasterCodecFactoryImpl.OUTBOUND_CODEC_ID_KEY, TCP_CODEC_ID);
 
         Properties tcpOutbound = new Properties();
-        tcpOutbound.put(TcpClientCodecImpl.HOST_KEY, HOST);
-        tcpOutbound.put(TcpClientCodecImpl.PORT_KEY, PORT);
-        tcpOutbound.put(TcpClientCodecImpl.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
+        tcpOutbound.put(NetworkConfig.HOST_KEY, HOST);
+        tcpOutbound.put(NetworkConfig.PORT_KEY, PORT);
+        tcpOutbound.put(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
-        props.put(ModbusCodecFactoryImpl.OUTBOUND_CTX_PROPS_KEY, tcpOutbound);
+        props.put(MasterCodecFactoryImpl.OUTBOUND_CTX_PROPS_KEY, tcpOutbound);
 
         try {
             Codec c = agent.createCodec(MODBUS_FACTORY_ID, MODBUS_CODEC_ID, props);
 
             Properties modbusOutbound = new Properties();
-            modbusOutbound.put(ModbusCodecImpl.ADDRESS_KEY, MODBUS_ADDRESS_1);
+            modbusOutbound.put(MasterCodecImpl.ADDRESS_KEY, MODBUS_ADDRESS_1);
 
             outboundContext = c.openInbound(agent, modbusOutbound, new HandlerContext.NullContext());
 

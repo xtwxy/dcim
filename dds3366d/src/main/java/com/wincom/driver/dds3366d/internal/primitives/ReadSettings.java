@@ -183,11 +183,6 @@ public class ReadSettings {
         public void setCt(short ct) {
             this.ct = ct;
         }
-
-        @Override
-        public boolean isOob() {
-            return false;
-        }
     }
 
 }

@@ -31,10 +31,10 @@ public class DDS3366DCodecFactoryImpl implements CodecFactory {
 
         Codec inboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
-        Codec theCodec = new DDS3366DCodecImpl();
-        HandlerContext outboundContext = inboundCodec.openOutbound(service,
+        DDS3366DCodecImpl theCodec = new DDS3366DCodecImpl();
+        HandlerContext outboundContext = inboundCodec.openInbound(service,
                 (Properties) props.get(OUTBOUND_CTX_PROPS_KEY),
-                theCodec);
+                theCodec.getCodecContext());
 
         return theCodec;
     }

@@ -7,23 +7,20 @@ import com.wincom.dcim.agentd.ChannelOutboundHandler;
  *
  * @author master
  */
-public final class Connect extends Message.Adapter {
+public final class Connect extends ChannelOutbound {
 
     private final String host;
     private final int port;
 
-    public Connect(String host, int port) {
+    public Connect(HandlerContext c, String host, int port) {
+        super(c);
         this.host = host;
         this.port = port;
     }
 
     @Override
-    public void apply(HandlerContext ctx, Handler handler) {
-        if (handler instanceof ChannelOutboundHandler) {
-            ((ChannelOutboundHandler) handler).handleConnect(ctx, this);
-        } else {
-            handler.handle(ctx, this);
-        }
+    public void applyChannelOutbound(HandlerContext ctx, ChannelOutboundHandler handler) {
+        handler.handleConnect(ctx, this);
     }
 
     public String getHost() {

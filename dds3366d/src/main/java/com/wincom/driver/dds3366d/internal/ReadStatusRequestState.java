@@ -22,7 +22,7 @@ public class ReadStatusRequestState extends State.Adapter {
         request.setNumberOfRegisters((short)10);
         frame.setPayload(request);
 
-        ctxImpl.getOutboundContext().send(frame, ctx);
+        ctx.send(frame);
         
         return this;
     }

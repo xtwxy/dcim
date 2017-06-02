@@ -7,11 +7,11 @@ import com.wincom.dcim.agentd.ChannelInboundHandler;
  *
  * @author master
  */
-public final class Failed extends ChannelInbound {
+public final class ApplicationFailure extends ChannelInbound {
 
     private Throwable cause;
 
-    public Failed(HandlerContext c, Throwable cause) {
+    public ApplicationFailure(HandlerContext c, Throwable cause) {
         super(c);
         this.cause = cause;
     }
@@ -27,6 +27,6 @@ public final class Failed extends ChannelInbound {
 
     @Override
     public void applyChannelInbound(HandlerContext ctx, ChannelInboundHandler handler) {
-        handler.handleFailed(ctx, this);
+        handler.handleApplicationFailure(ctx, this);
     }
 }

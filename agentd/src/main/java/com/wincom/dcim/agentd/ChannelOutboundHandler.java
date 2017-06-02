@@ -20,7 +20,7 @@ public interface ChannelOutboundHandler extends Handler {
 
     public void handleSendPayload(HandlerContext ctx, Message m);
 
-    public void setOutbound(HandlerContext ctx);
+    public void setOutboundContext(HandlerContext ctx);
 
     public static abstract class Adapter
             extends Handler.Default
@@ -44,7 +44,7 @@ public interface ChannelOutboundHandler extends Handler {
         }
 
         @Override
-        public void setOutbound(HandlerContext ctx) {
+        public void setOutboundContext(HandlerContext ctx) {
             outboundContext = ctx;
         }
     }
