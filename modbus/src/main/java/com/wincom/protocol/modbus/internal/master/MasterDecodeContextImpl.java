@@ -1,7 +1,6 @@
 package com.wincom.protocol.modbus.internal.master;
 
 import com.wincom.dcim.agentd.HandlerContext;
-import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**

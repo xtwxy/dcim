@@ -1,5 +1,6 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
 
 /**
@@ -13,7 +14,7 @@ public final class WriteTimeout extends ChannelTimeout {
     }
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName();
+    public void applyChannelInbound(HandlerContext ctx, ChannelInboundHandler handler) {
+        handler.handleChannelWriteTimeout(ctx, this);
     }
 }

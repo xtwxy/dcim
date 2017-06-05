@@ -44,14 +44,14 @@ public class StateMachine implements State {
         this.current = initial;
         this.prev = null;
     }
-    
+
     public final void reset() {
         current = new State.Adapter();
         prev = current;
         initial = current;
         stop = current;
     }
-    
+
     public StateMachine(StateBuilder builder) {
         buildWith(builder);
     }
@@ -80,6 +80,7 @@ public class StateMachine implements State {
     public State enter(HandlerContext ctx) {
         prev = current;
         current = current.enter(ctx);
+        transition(ctx);
         return current;
     }
 
@@ -108,7 +109,6 @@ public class StateMachine implements State {
         if (null == current) {
             log.warn("current == null");
         }
-
         transition(ctx);
 
         return current;

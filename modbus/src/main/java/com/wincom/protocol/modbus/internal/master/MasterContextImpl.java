@@ -8,10 +8,7 @@ import com.wincom.dcim.agentd.HandlerContext;
  */
 public class MasterContextImpl extends HandlerContext.Adapter {
 
-    private final byte slaveAddress;
-
     public MasterContextImpl(byte slaveAddress) {
-        this.slaveAddress = slaveAddress;
         inboundHandler = new MasterPayloadInboundHandlerImpl();
         outboundHandler = new MasterPayloadOutboundHandlerImpl(slaveAddress);
     }

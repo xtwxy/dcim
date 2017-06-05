@@ -120,7 +120,7 @@ public class MasterReceiveResponseState extends State.Adapter {
             result = new ApplicationFailure(ctx, e);
         }
         readBuffer.position(LENGTH);
-        readBuffer.compact();
+        readBuffer.clear();
         replyTo.fire(result);
         ctx.onRequestCompleted(result);
     }

@@ -175,7 +175,6 @@ public interface HandlerContext {
 
         @Override
         public synchronized void onRequestCompleted(Message m) {
-            fireInboundHandlerContexts(m);
             if (isInprogress()) {
                 current = null;
             } else {

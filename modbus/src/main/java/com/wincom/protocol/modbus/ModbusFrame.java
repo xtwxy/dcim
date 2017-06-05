@@ -79,10 +79,12 @@ public class ModbusFrame
         if(isRequest()) {
             if(handler instanceof ChannelOutboundHandler) {
                 ((ChannelOutboundHandler)handler).handleSendPayload(ctx, this);
+                return;
             }
         } else {
             if(handler instanceof ChannelInboundHandler) {
                 ((ChannelInboundHandler)handler).handlePayloadReceived(ctx, this);
+                return;
             }
         }
         handler.handle(ctx, this);

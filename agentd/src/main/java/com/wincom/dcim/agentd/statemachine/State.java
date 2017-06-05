@@ -183,7 +183,7 @@ public interface State {
         
         @Override
         public String toString() {
-            return "Adapter@" + this.hashCode();
+            return String.format("%s@%s", getClass().getSimpleName(), hashCode());
         }
     }
 }

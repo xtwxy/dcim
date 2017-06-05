@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus.internal;
 
+import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.protocol.modbus.internal.master.MasterCodecFactoryImpl;
 import com.wincom.protocol.modbus.internal.master.MasterCodecImpl;
 import com.wincom.dcim.agentd.Codec;
@@ -8,7 +9,10 @@ import com.wincom.dcim.agentd.internal.NetworkServiceImpl;
 import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.NetworkConfig;
-import com.wincom.protocol.modbus.ModbusFrame;
+import com.wincom.dcim.agentd.primitives.ApplicationFailure;
+import com.wincom.dcim.agentd.primitives.ChannelActive;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -31,7 +35,7 @@ public class CodecFactoryTest {
     private static final String WAITE_TIMEOUT = "60000";
 
     HandlerContext outboundContext;
-    
+
     public void test() {
         AgentdServiceImpl agent = new AgentdServiceImpl();
         NetworkServiceImpl network = new NetworkServiceImpl();
@@ -60,22 +64,50 @@ public class CodecFactoryTest {
             Properties modbusOutbound = new Properties();
             modbusOutbound.put(MasterCodecImpl.ADDRESS_KEY, MODBUS_ADDRESS_1);
 
-            outboundContext = c.openInbound(agent, modbusOutbound, new HandlerContext.NullContext());
+            HandlerContext inboundHandlerContext = new HandlerContext.Adapter() {
+                public void fire(Message m) {
+                    m.apply(this, new ChannelInboundHandler.Adapter() {
+                        @Override
+                        public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+                            log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+                            ctx.setActive(true);
+                            sendRequest();
+                        }
 
-            sendRequest(outboundContext);
+                        @Override
+                        public void handlePayloadReceived(HandlerContext ctx, Message m) {
+                            log.info(String.format("handlePayloadReceived(%s, %s)", ctx, m));
+                        }
+
+                        @Override
+                        public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+                            log.info(String.format("handleChannelTimeout(%s, %s)", ctx, m));
+                            super.handleChannelTimeout(ctx, m);
+                            sendRequest();
+                        }
+
+                        @Override
+                        public void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m) {
+                            ctx.onRequestCompleted(m);
+                            sendRequest();
+                        }
+
+                    });
+                }
+            };
+            outboundContext = c.openInbound(agent, modbusOutbound, inboundHandlerContext);
+
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
-    private static void sendRequest(HandlerContext ctx) {
-        ModbusFrame frame = new ModbusFrame();
+    private void sendRequest() {
         ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
         request.setStartAddress((short) 0x01f4);
         request.setNumberOfRegisters((short) 10);
-        frame.setPayload(request);
 
-        ctx.send(frame);
+        outboundContext.send(request);
     }
 
     public static void main(String[] args) {

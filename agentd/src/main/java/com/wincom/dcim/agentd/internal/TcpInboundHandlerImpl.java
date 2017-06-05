@@ -57,7 +57,7 @@ public final class TcpInboundHandlerImpl
 
         clientContext.getChannel().pipeline()
                 .addLast(new LoggingHandler(LogLevel.INFO))
-                .addLast(new IdleStateHandler(20, 1, 20))
+                .addLast(new IdleStateHandler(0, 0, 20))
                 .addLast(new com.wincom.dcim.agentd.internal.StreamChannelInboundHandler(clientContext));
 
         // continue accepting new connections in this state machine...
@@ -77,7 +77,7 @@ public final class TcpInboundHandlerImpl
 
         m.getChannel().pipeline()
                 .addLast(new LoggingHandler(LogLevel.INFO))
-                .addLast(new IdleStateHandler(20, 1, 20))
+                .addLast(new IdleStateHandler(0, 0, 5))
                 .addLast(new com.wincom.dcim.agentd.internal.StreamChannelInboundHandler(ctx));
 
         ctx.onRequestCompleted(m);
@@ -87,23 +87,20 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        super.handleChannelActive(ctx, m);
-        ctx.fireInboundHandlerContexts(m);
         state.on(ctx, m);
+        super.handleChannelActive(ctx, m);
     }
 
     @Override
     public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
-        super.handleChannelInactive(ctx, m);
-        ctx.fireInboundHandlerContexts(m);
         state.on(ctx, m);
+        super.handleChannelInactive(ctx, m);
     }
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        super.handleChannelTimeout(ctx, m);
-        ctx.fireInboundHandlerContexts(m);
         state.on(ctx, m);
+        super.handleChannelTimeout(ctx, m);
     }
 
     @Override
@@ -113,8 +110,8 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handleSystemError(HandlerContext ctx, SystemError m) {
-        super.handleSystemError(ctx, m);
         state.on(ctx, m);
+        super.handleSystemError(ctx, m);
     }
 
     @Override

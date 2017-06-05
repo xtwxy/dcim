@@ -29,6 +29,7 @@ public class UnknownHandler implements Handler {
         log.warn(String.format("handle(%s, %s, %s)", ctx, m, m.getClass().getName()));
         new Exception().printStackTrace();
         ctx.onRequestCompleted(m);
+        ctx.fireInboundHandlerContexts(m);
     }
 
 }

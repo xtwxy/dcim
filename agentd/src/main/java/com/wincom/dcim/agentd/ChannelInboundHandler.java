@@ -9,7 +9,10 @@ import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.SystemError;
+import com.wincom.dcim.agentd.primitives.WriteComplete;
+import com.wincom.dcim.agentd.primitives.WriteTimeout;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 
 /**
@@ -25,6 +28,10 @@ public interface ChannelInboundHandler extends Handler {
     public void handleChannelActive(HandlerContext ctx, ChannelActive m);
 
     public void handleChannelInactive(HandlerContext ctx, ChannelInactive m);
+
+    public void handleChannelReadTimeout(HandlerContext ctx, ReadTimeout m);
+
+    public void handleChannelWriteTimeout(HandlerContext ctx, WriteTimeout m);
 
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m);
 
@@ -43,9 +50,13 @@ public interface ChannelInboundHandler extends Handler {
     public static class Adapter
             extends Handler.Default
             implements ChannelInboundHandler {
-        
+
         protected StateMachine state;
-        
+
+        public Adapter() {
+            state = new StateMachine();
+        }
+
         @Override
         public void handleAccepted(HandlerContext ctx, Accepted m) {
             log.info(String.format("handleAccepted(%s, %s)", ctx, m));
@@ -60,15 +71,30 @@ public interface ChannelInboundHandler extends Handler {
         public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
             ctx.getOutboundHandler().setOutboundContext(m.getContext());
             ctx.setActive(true);
+            ctx.fireInboundHandlerContexts(m);
         }
 
         @Override
         public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
+            ctx.fireInboundHandlerContexts(m);
             ctx.onClosed(m);
         }
 
         @Override
+        public void handleChannelReadTimeout(HandlerContext ctx, ReadTimeout m) {
+            ctx.fireInboundHandlerContexts(m);
+            ctx.onRequestCompleted(m);
+        }
+
+        @Override
+        public void handleChannelWriteTimeout(HandlerContext ctx, WriteTimeout m) {
+            ctx.fireInboundHandlerContexts(m);
+            ctx.onRequestCompleted(m);
+        }
+
+        @Override
         public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+            ctx.fireInboundHandlerContexts(m);
             ctx.onRequestCompleted(m);
         }
 
@@ -83,12 +109,14 @@ public interface ChannelInboundHandler extends Handler {
 
         @Override
         public void handlePayloadSent(HandlerContext ctx, Message m) {
+            ctx.fireInboundHandlerContexts(m);
             ctx.onRequestCompleted(m);
         }
 
         @Override
         public void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m) {
             ctx.onRequestCompleted(m);
+            ctx.fireInboundHandlerContexts(m);
         }
 
         @Override

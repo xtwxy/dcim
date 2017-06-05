@@ -7,13 +7,19 @@ import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import com.wincom.protocol.modbus.ModbusFrame;
+import com.wincom.protocol.modbus.ModbusPayloadOutboundHandler;
+import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
+import com.wincom.protocol.modbus.WriteMultipleHoldingRegistersRequest;
+import com.wincom.protocol.modbus.WriteSingleHoldingRegisterRequest;
 import java.util.Map;
 
 /**
  *
  * @author master
  */
-public class MasterDecodeOutboundHandlerImpl extends ChannelOutboundHandler.Adapter {
+public class MasterDecodeOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
+        implements ModbusPayloadOutboundHandler {
+
     private final Map<Byte, MasterContextImpl> inboundContexts;
 
     public MasterDecodeOutboundHandlerImpl(Map<Byte, MasterContextImpl> inboundContexts) {
@@ -25,15 +31,30 @@ public class MasterDecodeOutboundHandlerImpl extends ChannelOutboundHandler.Adap
         ModbusFrame request = (ModbusFrame) m;
         StateMachineBuilder builder = new StateMachineBuilder();
         StateMachine machine = builder
-                .add("send", new MasterSendRequestState(request, outboundContext))
+                .add("send", new MasterSendRequestState(request, outboundContext, inboundContexts.get(request.getSlaveAddress())))
                 .add("receive", new MasterReceiveResponseState(inboundContexts.get(request.getSlaveAddress())))
                 .add("stop", new State.Adapter())
                 .transision("send", "receive", "stop", "stop")
                 .transision("receive", "stop", "stop", "stop")
                 .transision("stop", "stop", "stop", "stop")
                 .buildWithInitialAndStop("send", "stop");
-        
+
         ctx.getInboundHandler().setStateMachine(machine);
         machine.enter(ctx);
+    }
+
+    @Override
+    public void handleReadMultipleHoldingRegistersRequest(HandlerContext ctx, ReadMultipleHoldingRegistersRequest m) {
+        handleSendPayload(ctx, m);
+    }
+
+    @Override
+    public void handleWriteMultipleHoldingRegistersRequest(HandlerContext ctx, WriteMultipleHoldingRegistersRequest m) {
+        handleSendPayload(ctx, m);
+    }
+
+    @Override
+    public void handleWriteSingleHoldingRegisterRequest(HandlerContext ctx, WriteSingleHoldingRegisterRequest m) {
+        handleSendPayload(ctx, m);
     }
 }

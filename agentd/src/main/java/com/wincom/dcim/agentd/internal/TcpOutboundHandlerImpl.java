@@ -155,20 +155,22 @@ public final class TcpOutboundHandlerImpl
             ctx.fire(new ApplicationFailure(ctx, new Exception("Not connected.")));
             return;
         }
-        ChannelPromise cp = channel.newPromise();
-        cp.addListener(new GenericFutureListener() {
-            @Override
-            public void operationComplete(Future f) throws Exception {
-                if (f.isSuccess()) {
-                    ctx.fire(new WriteComplete(ctx));
-                } else {
-                    ctx.fire(new ApplicationFailure(ctx, f.cause()));
-                }
-            }
-        });
+        // FIXME: half sync-half-async casues WriteCompleted fired in sync mode.
+//        ChannelPromise cp = channel.newPromise();
+//        cp.addListener(new GenericFutureListener() {
+//            @Override
+//            public void operationComplete(Future f) throws Exception {
+//                if (f.isSuccess()) {
+//                    ctx.fire(new WriteComplete(ctx));
+//                } else {
+//                    ctx.fire(new ApplicationFailure(ctx, f.cause()));
+//                }
+//            }
+//        });
         ByteBuf buf = Unpooled.wrappedBuffer(((SendBytes) m).getByteBuffer());
 
-        channel.writeAndFlush(buf, cp);
+        channel.writeAndFlush(buf);
+        ctx.onRequestCompleted(m);
     }
 
     @Override

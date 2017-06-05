@@ -31,12 +31,8 @@ public class InboundHandlerImpl extends ChannelInboundHandler.Adapter {
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
-        sendBytes(ctx);
-    }
-
-    @Override
-    public void handlePayloadSent(HandlerContext ctx, Message m) {
         ctx.onRequestCompleted(m);
+        sendBytes(ctx);
     }
 
     private static final byte[] BA = new byte[128];

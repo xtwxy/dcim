@@ -8,6 +8,7 @@ import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.primitives.SystemError;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -29,23 +30,26 @@ public class MasterDecodeInboundHandlerImpl
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
         super.handleChannelActive(ctx, m);
         readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(MasterCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
-        fireToInbounds(m);
+        fireToInbounds(new ChannelActive(ctx));
     }
 
     @Override
     public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
         ctx.onClosed(m);
-        fireToInbounds(m);
+        fireToInbounds(new ChannelInactive(ctx));
     }
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+        state.on(ctx, m);
+        fireToInbounds(new ChannelTimeout(ctx));
     }
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
         BytesReceived b = (BytesReceived) m;
         this.readBuffer.put(b.getByteBuffer());
+        state.on(ctx, m);
     }
 
     @Override
@@ -53,7 +57,15 @@ public class MasterDecodeInboundHandlerImpl
     }
 
     @Override
+    public void handleSystemError(HandlerContext ctx, SystemError m) {
+        super.handleSystemError(ctx, m);
+        state.on(ctx, m);
+    }
+
+    @Override
     public void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m) {
+        super.handleApplicationFailure(ctx, m);
+        state.on(ctx, m);
     }
 
     private void fireToInbounds(Message m) {

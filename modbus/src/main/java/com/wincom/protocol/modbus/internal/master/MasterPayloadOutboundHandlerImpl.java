@@ -43,7 +43,7 @@ public class MasterPayloadOutboundHandlerImpl
         ModbusFrame frame = new ModbusFrame();
         frame.setSlaveAddress(slaveAddress);
         frame.setPayload(m);
-        outboundContext.send(m);
+        outboundContext.send(frame);
     }
 
     @Override
