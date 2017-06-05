@@ -71,7 +71,7 @@ public final class AgentdServiceActivator implements BundleActivator {
                 .transision("receiveState", "receiveState", "waitState", "waitState")
                 .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
-        handlerContext.addInboundContext(new HandlerContext.NullContext() {
+        handlerContext.addInboundContext(new HandlerContext.Adapter() {
             @Override
             public void fire(Message m) {
                 m.apply(this, new ChannelInboundHandler.Adapter() {

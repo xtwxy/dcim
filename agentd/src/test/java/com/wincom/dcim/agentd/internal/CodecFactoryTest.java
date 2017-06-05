@@ -47,7 +47,7 @@ public class CodecFactoryTest {
 
         try {
             Codec c = agent.createCodec(FACTORY_ID, CODEC_ID, props);
-            HandlerContext inboundHandlerContext = new HandlerContext.NullContext() {
+            HandlerContext inboundHandlerContext = new HandlerContext.Adapter() {
                 public void fire(Message m) {
                     log.info(String.format("fire(%s)", m));
                 }

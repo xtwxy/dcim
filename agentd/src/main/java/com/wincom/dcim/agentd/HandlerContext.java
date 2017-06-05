@@ -239,28 +239,5 @@ public interface HandlerContext {
                 sendNext();
             }
         }
-
-        private void printState(Message m) {
-            if (current != null || !queue.isEmpty()) {
-                log.info(m.toString());
-                log.info(variables.toString());
-                log.info(queue.toString());
-                log.info("inprogress: " + current);
-                log.info("active: " + active);
-                log.info("inboundHandler: " + inboundHandlers);
-                new Exception().printStackTrace();
-            }
-        }
-    }
-
-    public static class NullContext extends Adapter {
-
-        public NullContext() {
-        }
-
-        @Override
-        public void fire(Message m) {
-            log.info(String.format("fire(%s)", m));
-        }
     }
 }
