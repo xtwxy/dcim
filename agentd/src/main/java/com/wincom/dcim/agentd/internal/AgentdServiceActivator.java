@@ -53,13 +53,13 @@ public final class AgentdServiceActivator implements BundleActivator {
     }
 
     private static void createAcceptor(NetworkService service) {
-        HandlerContext handlerContext = service.createHandlerContext();
+        HandlerContext handlerContext = service.createStreamHandlerContext();
 
         handlerContext.send(new Accept(handlerContext, "0.0.0.0", 9080));
     }
 
     static void createConnection(NetworkService service) {
-        HandlerContext handlerContext = service.createHandlerContext();
+        HandlerContext handlerContext = service.createStreamHandlerContext();
 
         StateMachineBuilder builder = new StateMachineBuilder();
 

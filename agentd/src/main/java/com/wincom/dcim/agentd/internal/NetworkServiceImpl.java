@@ -48,7 +48,7 @@ public final class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public HandlerContext createHandlerContext() {
+    public HandlerContext createStreamHandlerContext() {
         return new StreamHandlerContextImpl(this);
     }
 

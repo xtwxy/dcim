@@ -73,7 +73,7 @@ public final class TcpOutboundHandlerImpl
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        StreamHandlerContextImpl impl = (StreamHandlerContextImpl) service.createHandlerContext();
+                        StreamHandlerContextImpl impl = (StreamHandlerContextImpl) service.createStreamHandlerContext();
                         impl.setChannel(ch);
                         ctx.fire(new Accepted(impl));
                     }

@@ -11,5 +11,5 @@ public interface NetworkService {
 
     public EventLoopGroup getEventLoopGroup();
 
-    public HandlerContext createHandlerContext();
+    public HandlerContext createStreamHandlerContext();
 }

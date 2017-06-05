@@ -32,7 +32,7 @@ public class TcpClientCodecImpl implements Codec {
     public HandlerContext openInbound(AgentdService service, Properties outbound, HandlerContext inboundContext) {
         log.info(outbound.toString());
 
-        final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createHandlerContext();
+        final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createStreamHandlerContext();
         final StateMachineBuilder builder = new StateMachineBuilder();
         final String host = outbound.getProperty(NetworkConfig.HOST_KEY);
         final String port = outbound.getProperty(NetworkConfig.PORT_KEY);
