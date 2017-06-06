@@ -11,9 +11,7 @@ import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.ReadTimeout;
 import com.wincom.dcim.agentd.primitives.SystemError;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
 import com.wincom.dcim.agentd.primitives.WriteTimeout;
-import com.wincom.dcim.agentd.statemachine.StateMachine;
 
 /**
  *

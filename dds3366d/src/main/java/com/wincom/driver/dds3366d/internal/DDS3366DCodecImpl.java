@@ -13,7 +13,18 @@ import org.slf4j.LoggerFactory;
  */
 public class DDS3366DCodecImpl implements Codec {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    public static final String ADDRESS_KEY = "ADDRESS";
+    public static final String READ_BUFFER_KEY = "READ_BUFFER";
+    public static final String MODBUS_REQUEST_KEY = "MODBUS_REQUEST";
+    public static final String INBOUND_CONTEXTS_KEY = "INBOUND_CONTEXTS";
+
+    private final DDS3366DHandlerContextImpl decodeContext;
+
+    public DDS3366DCodecImpl() {
+        this.decodeContext = new DDS3366DHandlerContextImpl();
+    }
 
     @Override
     public HandlerContext openInbound(AgentdService service, Properties props, HandlerContext inboundContext) {
@@ -22,7 +33,6 @@ public class DDS3366DCodecImpl implements Codec {
 
     @Override
     public HandlerContext getCodecContext() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return decodeContext;
     }
-
 }

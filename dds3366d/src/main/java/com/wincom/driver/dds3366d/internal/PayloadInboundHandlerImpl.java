@@ -20,18 +20,21 @@ public class PayloadInboundHandlerImpl
     public void handleReadMultipleHoldingRegistersResponse(HandlerContext ctx, ReadMultipleHoldingRegistersResponse m) {
         ctx.fireInboundHandlerContexts(m);
         ctx.onRequestCompleted(m);
+        ctx.state().on(ctx, m);
     }
 
     @Override
     public void handleWriteMultipleHoldingRegistersResponse(HandlerContext ctx, WriteMultipleHoldingRegistersResponse m) {
         ctx.fireInboundHandlerContexts(m);
         ctx.onRequestCompleted(m);
+        ctx.state().on(ctx, m);
     }
 
     @Override
     public void handleWriteSingleHoldingRegisterResponse(HandlerContext ctx, WriteSingleHoldingRegisterResponse m) {
         ctx.fireInboundHandlerContexts(m);
         ctx.onRequestCompleted(m);
+        ctx.state().on(ctx, m);
     }
 
     @Override

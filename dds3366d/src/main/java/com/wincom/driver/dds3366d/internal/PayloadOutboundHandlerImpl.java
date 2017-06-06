@@ -36,6 +36,7 @@ public class PayloadOutboundHandlerImpl
     }
 
     public void handleSendModbusPayload(ModbusPayload m) {
+        outboundContext.send(m);
     }
 
     @Override
