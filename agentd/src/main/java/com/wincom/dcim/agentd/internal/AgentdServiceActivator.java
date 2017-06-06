@@ -99,7 +99,7 @@ public final class AgentdServiceActivator implements BundleActivator {
                 });
             }
         });
-        handlerContext.getInboundHandler().setStateMachine(client);
+        handlerContext.state(client);
         client.enter(handlerContext);
     }
 

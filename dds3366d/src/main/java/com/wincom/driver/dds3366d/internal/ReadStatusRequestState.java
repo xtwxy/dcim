@@ -24,7 +24,8 @@ public class ReadStatusRequestState extends State.Adapter {
 
         ctx.send(frame);
         
-        return this;
+        // FIXME: hack for netty half sync-half-async promise.
+        return success();
     }
 
     @Override

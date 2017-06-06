@@ -41,7 +41,7 @@ public class MasterDecodeInboundHandlerImpl
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
         fireToInbounds(new ChannelTimeout(ctx));
     }
 
@@ -49,7 +49,7 @@ public class MasterDecodeInboundHandlerImpl
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
         BytesReceived b = (BytesReceived) m;
         this.readBuffer.put(b.getByteBuffer());
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
     }
 
     @Override
@@ -59,13 +59,13 @@ public class MasterDecodeInboundHandlerImpl
     @Override
     public void handleSystemError(HandlerContext ctx, SystemError m) {
         super.handleSystemError(ctx, m);
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
     }
 
     @Override
     public void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m) {
         super.handleApplicationFailure(ctx, m);
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
     }
 
     private void fireToInbounds(Message m) {

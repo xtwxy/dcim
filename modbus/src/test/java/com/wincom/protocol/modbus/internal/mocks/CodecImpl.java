@@ -59,7 +59,7 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
                 .transision("receiveState", "receiveState", "receiveState", null)
                 .buildWithInitialState("receiveState");
 
-        handlerContext.getInboundHandler().setStateMachine(client);
+        handlerContext.state(client);
                 client.enter(handlerContext);
 
         return handlerContext;

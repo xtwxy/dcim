@@ -56,9 +56,9 @@ public class ReadSettings {
                 .add("send", new ReadSettingsRequestState())
                 .add("receive", new ReadSettingsResponseState(replyTo))
                 .add("stop", stopState())
-                .transision("send", "receive", "stop", null)
-                .transision("receive", "stop", "stop", null)
-                .transision("stop", "stop", "stop", null)
+                .transision("send", "receive", "stop", "stop")
+                .transision("receive", "stop", "stop", "stop")
+                .transision("stop", "stop", "stop", "stop")
                 .buildWithInitialAndStop("send", "stop");
     }
 

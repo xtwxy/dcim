@@ -39,7 +39,7 @@ public class MasterDecodeOutboundHandlerImpl extends ChannelOutboundHandler.Adap
                 .transision("stop", "stop", "stop", "stop")
                 .buildWithInitialAndStop("send", "stop");
 
-        ctx.getInboundHandler().setStateMachine(machine);
+        ctx.state(machine);
         machine.enter(ctx);
     }
 

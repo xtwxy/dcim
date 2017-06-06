@@ -153,7 +153,6 @@ public class ReadStatus {
 
         public void setPositiveActivePower(double positiveActivePower) {
             this.positiveActivePower = (int) Math.round(positiveActivePower / 0.01);
-            ;
         }
 
         public double getReverseActivePower() {

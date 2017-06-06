@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd;
 
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -37,14 +38,14 @@ public interface HandlerContext {
      * @param m
      */
     public void fire(Message m);
-    
+
     /**
      * Fire message to upper layer inbound handler contexts.
-     * 
-     * @param m 
+     *
+     * @param m
      */
     public void fireInboundHandlerContexts(Message m);
-    
+
     /**
      * Set context variables.
      *
@@ -93,14 +94,20 @@ public interface HandlerContext {
     public void addInboundContext(HandlerContext ctx);
 
     public ChannelInboundHandler getInboundHandler();
+
     public ChannelOutboundHandler getOutboundHandler();
 
     public void onClosed(Message m);
+
+    public void state(StateMachine sm);
+
+    public StateMachine state();
 
     public static class Adapter implements HandlerContext {
 
         protected Logger log = LoggerFactory.getLogger(this.getClass());
 
+        protected StateMachine state;
         private final Map<Object, Object> variables;
         protected final ConcurrentLinkedQueue<Message> queue;
         protected Message current;
@@ -110,6 +117,7 @@ public interface HandlerContext {
         protected Set<HandlerContext> inboundHandlers;
 
         public Adapter() {
+            this.state = new StateMachine();
             this.variables = new HashMap<>();
             this.queue = new ConcurrentLinkedQueue<>();
             this.inboundHandlers = new LinkedHashSet<>();
@@ -119,7 +127,7 @@ public interface HandlerContext {
 
         @Override
         public synchronized void addInboundContext(HandlerContext ctx) {
-            if(ctx != null) {
+            if (ctx != null) {
                 inboundHandlers.add(ctx);
             }
             if (isActive()) {
@@ -152,7 +160,7 @@ public interface HandlerContext {
         public void fire(Message m) {
             m.apply(this, inboundHandler);
         }
-        
+
         @Override
         public void fireInboundHandlerContexts(Message m) {
             for (HandlerContext ctx : inboundHandlers) {
@@ -237,6 +245,16 @@ public interface HandlerContext {
             if (!isInprogress()) {
                 sendNext();
             }
+        }
+
+        @Override
+        public void state(StateMachine sm) {
+            state = sm;
+        }
+
+        @Override
+        public StateMachine state() {
+            return this.state;
         }
     }
 }

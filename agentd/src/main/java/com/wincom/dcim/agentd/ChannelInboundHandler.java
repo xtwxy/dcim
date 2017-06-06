@@ -45,17 +45,9 @@ public interface ChannelInboundHandler extends Handler {
 
     public void handleSystemError(HandlerContext ctx, SystemError m);
 
-    public void setStateMachine(StateMachine sm);
-
     public static class Adapter
             extends Handler.Default
             implements ChannelInboundHandler {
-
-        protected StateMachine state;
-
-        public Adapter() {
-            state = new StateMachine();
-        }
 
         @Override
         public void handleAccepted(HandlerContext ctx, Accepted m) {
@@ -122,11 +114,6 @@ public interface ChannelInboundHandler extends Handler {
         @Override
         public void handleSystemError(HandlerContext ctx, SystemError m) {
             ctx.onRequestCompleted(m);
-        }
-
-        @Override
-        public void setStateMachine(StateMachine sm) {
-            state = sm;
         }
     }
 }

@@ -16,6 +16,7 @@ import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.PeriodicTimeout;
 import com.wincom.dcim.agentd.primitives.SystemError;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
+import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -48,12 +49,12 @@ public final class TcpInboundHandlerImpl
         final StreamHandlerContextImpl clientContext
                 = (StreamHandlerContextImpl) m.getContext();
 
-        state = new StateMachineBuilder()
+        StateMachine state = new StateMachineBuilder()
                 .add("receiveState", new ReceiveState())
                 .transision("receiveState", "receiveState", "receiveState", "receiveState")
                 .buildWithInitialState("receiveState");
 
-        clientContext.getInboundHandler().setStateMachine(state);
+        clientContext.state(state);
 
         clientContext.getChannel().pipeline()
                 .addLast(new LoggingHandler(LogLevel.INFO))
@@ -82,24 +83,24 @@ public final class TcpInboundHandlerImpl
 
         ctx.onRequestCompleted(m);
 
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
     }
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
         super.handleChannelActive(ctx, m);
     }
 
     @Override
     public void handleChannelInactive(HandlerContext ctx, ChannelInactive m) {
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
         super.handleChannelInactive(ctx, m);
     }
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
         super.handleChannelTimeout(ctx, m);
     }
 
@@ -110,7 +111,7 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handleSystemError(HandlerContext ctx, SystemError m) {
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
         super.handleSystemError(ctx, m);
     }
 
@@ -121,7 +122,7 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handleMillsecFromNowTimeout(HandlerContext ctx, MillsecFromNowTimeout m) {
-        state.on(ctx, m);
+        ctx.state().on(ctx, m);
         ctx.onRequestCompleted(m);
     }
 
