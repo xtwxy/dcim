@@ -38,7 +38,7 @@ public class MP3000CodecImpl implements Codec {
 
     @Override
     public HandlerContext openInbound(
-            AgentdService service, Properties props, HandlerContext inboundHandler) {
+            AgentdService service, Properties props) {
         Integer comport = Integer.valueOf(props.getProperty(COM_PORT_KEY));
         HandlerContext ctx = inbound.get(comport);
         if (comport <= PORT_COUNT) {
@@ -49,17 +49,12 @@ public class MP3000CodecImpl implements Codec {
                 p.put(NetworkConfig.PORT_KEY, BASE_PORT + comport);
                 p.put(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
-                ctx = inboundCodec.openInbound(service, p, null);
+                ctx = inboundCodec.openInbound(service, p);
                 inbound.put(comport, ctx);
             } else {
                 // already opened.
             }
         }
         return ctx;
-    }
-
-    @Override
-    public HandlerContext getCodecContext() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

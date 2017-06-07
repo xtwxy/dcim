@@ -8,6 +8,7 @@ import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.ConnectionClosed;
 import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
 import com.wincom.dcim.agentd.primitives.Message;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,22 +25,29 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     private HandlerContext outboundContext;
-    private final HandlerContext codecContext;
     private final Map<Properties, HandlerContext> inbounds;
+    private final HandlerContext codecContext;
 
-    CodecImpl() {
-        this.codecContext = new HandlerContextImpl();
+    CodecImpl(HandlerContext outboundHandlerContext) {
+        codecContext = new HandlerContextImpl();
+        outboundHandlerContext.addInboundContext(codecContext);
+        codecContext.addDisposeHandler(new DisposeHandler() {
+            @Override
+            public void onDispose(HandlerContext ctx) {
+                outboundHandlerContext.removeInboundContext(ctx);
+            }
+        });
         this.inbounds = new HashMap<>();
     }
 
     @Override
     public HandlerContext openInbound(
-            AgentdService service, Properties props, HandlerContext inboundHandlerContext) {
+            AgentdService service, Properties props) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
         if (inboundContext == null) {
-            inboundContext = createInbound0(service, props, inboundHandlerContext);
+            inboundContext = createInbound0(service, props);
 
             inbounds.put(props, inboundContext);
         }
@@ -49,12 +57,10 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     private HandlerContext createInbound0(
             AgentdService service,
-            Properties props,
-            HandlerContext inboundHandlerContext) {
+            Properties props) {
         log.info(props.toString());
 
         final HandlerContextImpl handlerContext = new HandlerContextImpl();
-        handlerContext.addInboundContext(inboundHandlerContext);
 
         return handlerContext;
     }
@@ -102,9 +108,5 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
             e.getValue().fire(m);
         }
-    }
-
-    public HandlerContext getCodecContext() {
-        return codecContext;
     }
 }

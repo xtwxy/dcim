@@ -186,4 +186,10 @@ public interface State {
             return String.format("%s@%s", getClass().getSimpleName(), hashCode());
         }
     }
+    public static class Stop extends Adapter {
+        @Override
+        public boolean stopped() {
+            return true;
+        }
+    }
 }

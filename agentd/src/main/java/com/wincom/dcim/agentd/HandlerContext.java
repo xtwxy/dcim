@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd;
 
 import com.wincom.dcim.agentd.primitives.ChannelActive;
 import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -92,22 +93,29 @@ public interface HandlerContext {
     public void setActive(boolean b);
 
     public void addInboundContext(HandlerContext ctx);
+    public void removeInboundContext(HandlerContext ctx);
 
     public ChannelInboundHandler getInboundHandler();
 
     public ChannelOutboundHandler getOutboundHandler();
 
     public void onClosed(Message m);
+    public void dispose();
+    public void addDisposeHandler(DisposeHandler h);
 
-    public void state(StateMachine sm);
+    public void state(State sm);
 
-    public StateMachine state();
+    public State state();
 
+    public static interface DisposeHandler {
+        public void onDispose(HandlerContext ctx);
+    }
+    
     public static class Adapter implements HandlerContext {
 
         protected Logger log = LoggerFactory.getLogger(this.getClass());
 
-        protected StateMachine state;
+        protected State state;
         private final Map<Object, Object> variables;
         protected final ConcurrentLinkedQueue<Message> queue;
         protected Message current;
@@ -115,12 +123,14 @@ public interface HandlerContext {
         protected ChannelOutboundHandler outboundHandler;
         protected ChannelInboundHandler inboundHandler;
         protected Set<HandlerContext> inboundHandlers;
+        protected Set<DisposeHandler> disposeHandlers;
 
         public Adapter() {
             this.state = new StateMachine();
             this.variables = new HashMap<>();
             this.queue = new ConcurrentLinkedQueue<>();
             this.inboundHandlers = new LinkedHashSet<>();
+            this.disposeHandlers = new LinkedHashSet<>();
             this.current = null;
             this.active = false;
         }
@@ -134,6 +144,11 @@ public interface HandlerContext {
                 Message m = new ChannelActive(this);
                 ctx.fire(m);
             }
+        }
+
+        @Override
+        public void removeInboundContext(HandlerContext ctx) {
+            inboundHandlers.remove(ctx);
         }
 
         @Override
@@ -248,13 +263,25 @@ public interface HandlerContext {
         }
 
         @Override
-        public void state(StateMachine sm) {
+        public void state(State sm) {
             state = sm;
         }
 
         @Override
-        public StateMachine state() {
+        public State state() {
             return this.state;
+        }
+
+        @Override
+        public void dispose() {
+            for(DisposeHandler h : disposeHandlers) {
+                h.onDispose(this);
+            }
+        }
+
+        @Override
+        public void addDisposeHandler(DisposeHandler h) {
+            disposeHandlers.add(h);
         }
     }
 }

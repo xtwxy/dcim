@@ -4,11 +4,10 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,52 +20,38 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private HandlerContext inboundContext;
     private HandlerContext outboundContext;
-    private final Map<Properties, HandlerContext> inbounds;
 
-    CodecImpl() {
-        this.inbounds = new HashMap<>();
+    CodecImpl(final HandlerContext outboundHandlerContext) {
+        inboundContext = new HandlerContextImpl();
+        outboundContext = outboundHandlerContext;
+        outboundContext.addInboundContext(inboundContext);
+        outboundContext.addDisposeHandler(new DisposeHandler(){
+            @Override
+            public void onDispose(HandlerContext ctx) {
+                outboundHandlerContext.removeInboundContext(ctx);
+            }
+        });
     }
 
     @Override
     public HandlerContext openInbound(
-            AgentdService service, Properties props, HandlerContext inboundHandler) {
+            AgentdService service, Properties props) {
         log.info(String.format("%s", props));
 
-        HandlerContext inboundContext = inbounds.get(props);
         if (inboundContext == null) {
-            inboundContext = createInbound0(service, props, inboundHandler);
+            final StateMachineBuilder builder = new StateMachineBuilder();
 
-            inbounds.put(props, inboundContext);
+            StateMachine client = builder
+                    .add("receiveState", new ReceiveState())
+                    .transision("receiveState", "receiveState", "receiveState", null)
+                    .buildWithInitialState("receiveState");
+
+            inboundContext.state(client);
+            client.enter(inboundContext);
         }
 
         return inboundContext;
-    }
-
-    private HandlerContext createInbound0(
-            AgentdService service,
-            Properties props,
-            HandlerContext inboundHandler) {
-        log.info(props.toString());
-
-        final HandlerContext handlerContext = new HandlerContextImpl();
-        handlerContext.addInboundContext(inboundHandler);
-        
-        final StateMachineBuilder builder = new StateMachineBuilder();
-
-        StateMachine client = builder
-                .add("receiveState", new ReceiveState())
-                .transision("receiveState", "receiveState", "receiveState", null)
-                .buildWithInitialState("receiveState");
-
-        handlerContext.state(client);
-                client.enter(handlerContext);
-
-        return handlerContext;
-    }
-
-    @Override
-    public HandlerContext getCodecContext() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

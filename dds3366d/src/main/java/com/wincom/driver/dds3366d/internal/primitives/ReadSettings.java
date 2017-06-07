@@ -9,9 +9,9 @@ import com.wincom.dcim.agentd.primitives.Handler;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
-import com.wincom.driver.dds3366d.internal.ReadSettingsResponseState;
-import com.wincom.driver.dds3366d.internal.ReadSettingsRequestState;
 import com.wincom.dcim.agentd.primitives.AbstractWireable;
+import com.wincom.driver.dds3366d.internal.ReadSettingsRequestState;
+import com.wincom.driver.dds3366d.internal.ReadSettingsResponseState;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -36,26 +36,26 @@ public class ReadSettings {
         KEYS.add("ct");
     }
 
-    public static State initial(Message request, HandlerContext replyTo) {
+    public static State initial(Message request, State stop, HandlerContext outbound, HandlerContext replyTo) {
         if (request instanceof GetSignalValues.Request) {
             GetSignalValues.Request r = (GetSignalValues.Request) request;
             HashSet<String> theKeys = new HashSet<>(r.getKeys());
             theKeys.retainAll(KEYS);
             if (theKeys.isEmpty()) {
-                return stopState();
+                return stop;
             } else {
-                return sendRequestState(replyTo);
+                return sendRequestState(outbound, replyTo, stop);
             }
         }
         return stopState();
     }
 
-    private static State sendRequestState(HandlerContext replyTo) {
+    private static State sendRequestState(HandlerContext outbound, HandlerContext replyTo, State stop) {
         StateMachineBuilder builder = new StateMachineBuilder();
         return builder
-                .add("send", new ReadSettingsRequestState())
+                .add("send", new ReadSettingsRequestState(outbound))
                 .add("receive", new ReadSettingsResponseState(replyTo))
-                .add("stop", stopState())
+                .add("stop", stop)
                 .transision("send", "receive", "stop", "stop")
                 .transision("receive", "stop", "stop", "stop")
                 .transision("stop", "stop", "stop", "stop")

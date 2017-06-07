@@ -1,5 +1,7 @@
 package com.wincom.driver.dds3366d.internal.primitives;
 
+
+
 import com.wincom.dcim.agentd.primitives.AbstractWireable;
 import com.wincom.dcim.agentd.domain.AnalogSignal;
 import com.wincom.dcim.agentd.domain.Signal;
@@ -37,29 +39,29 @@ public class ReadStatus {
         KEYS.add("frequency");
     }
 
-    public static State initial(Message request, HandlerContext replyTo) {
+    public static State initial(Message request, State stop, HandlerContext outbound, HandlerContext replyTo) {
         if (request instanceof GetSignalValues.Request) {
             GetSignalValues.Request r = (GetSignalValues.Request) request;
             HashSet<String> theKeys = new HashSet<>(r.getKeys());
             theKeys.retainAll(KEYS);
             if (theKeys.isEmpty()) {
-                return stopState();
+                return stop;
             } else {
-                return sendRequestState(replyTo);
+                return sendRequestState(outbound, replyTo, stop);
             }
         }
         return stopState();
     }
 
-    private static State sendRequestState(HandlerContext replyTo) {
+    private static State sendRequestState(HandlerContext outbound, HandlerContext replyTo, State stop) {
         StateMachineBuilder builder = new StateMachineBuilder();
         return builder
-                .add("send", new ReadStatusRequestState())
+                .add("send", new ReadStatusRequestState(outbound))
                 .add("receive", new ReadStatusResponseState(replyTo))
                 .add("stop", stopState())
-                .transision("send", "receive", "stop", null)
-                .transision("receive", "stop", "stop", null)
-                .transision("stop", "stop", "stop", null)
+                .transision("send", "receive", "stop", "stop")
+                .transision("receive", "stop", "stop", "stop")
+                .transision("stop", "stop", "stop", "stop")
                 .buildWithInitialAndStop("send", "stop");
     }
 

@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
  * @author master
  */
 public class ReadStatusResponseState extends DefaultReceiveState {
+
     final private HandlerContext replyTo;
 
     public ReadStatusResponseState(HandlerContext replyTo) {

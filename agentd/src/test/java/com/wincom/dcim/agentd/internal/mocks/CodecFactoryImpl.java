@@ -3,6 +3,7 @@ package com.wincom.dcim.agentd.internal.mocks;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecFactory;
+import com.wincom.dcim.agentd.HandlerContext;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +24,9 @@ public class CodecFactoryImpl implements CodecFactory {
 
         Codec outboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
-        CodecImpl theCodec = new CodecImpl();
-        outboundCodec.openInbound(service, 
-                (Properties) props.get(OUTBOUND_CTX_PROPS_KEY),
-                theCodec.getCodecContext());
-        
+        HandlerContext outboundHandlerContext = outboundCodec.openInbound(service, 
+                (Properties) props.get(OUTBOUND_CTX_PROPS_KEY));
 
-        return theCodec;
+        return new CodecImpl(outboundHandlerContext);
     }
 }

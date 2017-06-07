@@ -18,5 +18,4 @@ public class MasterDecodeContextImpl extends HandlerContext.Adapter {
     public boolean isInprogress() {
         return !state().stopped();
     }
-
 }

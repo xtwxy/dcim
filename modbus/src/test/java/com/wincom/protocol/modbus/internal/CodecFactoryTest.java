@@ -95,7 +95,8 @@ public class CodecFactoryTest {
                     });
                 }
             };
-            outboundContext = c.openInbound(agent, modbusOutbound, inboundHandlerContext);
+            outboundContext = c.openInbound(agent, modbusOutbound);
+            outboundContext.addInboundContext(inboundHandlerContext);
 
         } catch (Throwable t) {
             t.printStackTrace();

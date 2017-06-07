@@ -12,14 +12,20 @@ import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
  */
 public class ReadStatusRequestState extends State.Adapter {
 
+    private final HandlerContext outbound;
+
+    public ReadStatusRequestState(HandlerContext outbound) {
+        this.outbound = outbound;
+    }
+
     @Override
     public State enter(HandlerContext ctx) {
         ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
-        request.setStartAddress((short)0x01f4);
-        request.setNumberOfRegisters((short)10);
+        request.setStartAddress((short) 0x01f4);
+        request.setNumberOfRegisters((short) 10);
 
-        ctx.send(request);
-        
+        outbound.send(request);
+
         // FIXME: hack for netty half sync-half-async promise.
         return success();
     }

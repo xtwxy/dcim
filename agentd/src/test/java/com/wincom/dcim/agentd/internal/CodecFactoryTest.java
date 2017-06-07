@@ -52,7 +52,8 @@ public class CodecFactoryTest {
                     log.info(String.format("fire(%s)", m));
                 }
             };
-            c.openInbound(agent, outbound, inboundHandlerContext);
+            HandlerContext outboundHandlerContext = c.openInbound(agent, outbound);
+            outboundHandlerContext.addInboundContext(inboundHandlerContext);
         } catch (Throwable t) {
             t.printStackTrace();
         }

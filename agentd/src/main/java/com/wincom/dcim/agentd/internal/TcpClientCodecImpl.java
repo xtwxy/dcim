@@ -29,7 +29,7 @@ public class TcpClientCodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openInbound(AgentdService service, Properties outbound, HandlerContext inboundContext) {
+    public HandlerContext openInbound(AgentdService service, Properties outbound) {
         log.info(outbound.toString());
 
         final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createStreamHandlerContext();
@@ -47,16 +47,9 @@ public class TcpClientCodecImpl implements Codec {
                 .transision("waitState", "connectState", "connectState", "waitState")
                 .buildWithInitialState("connectState");
 
-        handlerContext.addInboundContext(inboundContext);
-
         handlerContext.state(client);
         client.enter(handlerContext);
 
         return handlerContext;
-    }
-
-    @Override
-    public HandlerContext getCodecContext() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
