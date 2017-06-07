@@ -13,22 +13,16 @@ import java.nio.ByteBuffer;
  */
 public class ReadStatusResponseState extends DefaultReceiveState {
 
-    final private HandlerContext replyTo;
-
-    public ReadStatusResponseState(HandlerContext replyTo) {
-        this.replyTo = replyTo;
-    }
-
     @Override
     public State on(HandlerContext ctx, Message m) {
         // wait for send request to complete.
         if (m instanceof ReadMultipleHoldingRegistersResponse) {
             // To next state: receive state.
             ReadMultipleHoldingRegistersResponse registers = (ReadMultipleHoldingRegistersResponse) m;
-            Response response = new Response();
+            Response response = new Response(ctx);
             response.fromWire(ByteBuffer.wrap(registers.getBytes()));
 
-            replyTo.fire(response);
+            ctx.fireInboundHandlerContexts(response);
 
             return success();
         } else {

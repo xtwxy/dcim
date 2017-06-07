@@ -19,8 +19,8 @@ public class WriteMultipleHoldingRegistersRequestTest {
             0x64, 0x00, 0x00, (byte)0xb2, 0x70
         };
 
-        ModbusFrame frame = new ModbusFrame();
-        WriteMultipleHoldingRegistersRequest request = new WriteMultipleHoldingRegistersRequest();
+        ModbusFrame frame = new ModbusFrame(null);
+        WriteMultipleHoldingRegistersRequest request = new WriteMultipleHoldingRegistersRequest(null);
         frame.setSlaveAddress((byte) 0x01);
         frame.setPayload(request);
         request.setStartAddress((short) 0x00);

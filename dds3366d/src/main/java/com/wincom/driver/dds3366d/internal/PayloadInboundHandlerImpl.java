@@ -18,26 +18,25 @@ public class PayloadInboundHandlerImpl
 
     @Override
     public void handleReadMultipleHoldingRegistersResponse(HandlerContext ctx, ReadMultipleHoldingRegistersResponse m) {
-        ctx.fireInboundHandlerContexts(m);
-        ctx.onRequestCompleted(m);
-        ctx.state().on(ctx, m);
+        handleModbusResponse(ctx, m);
     }
 
     @Override
     public void handleWriteMultipleHoldingRegistersResponse(HandlerContext ctx, WriteMultipleHoldingRegistersResponse m) {
-        ctx.fireInboundHandlerContexts(m);
-        ctx.onRequestCompleted(m);
-        ctx.state().on(ctx, m);
+        handleModbusResponse(ctx, m);
     }
 
     @Override
     public void handleWriteSingleHoldingRegisterResponse(HandlerContext ctx, WriteSingleHoldingRegisterResponse m) {
-        ctx.fireInboundHandlerContexts(m);
-        ctx.onRequestCompleted(m);
-        ctx.state().on(ctx, m);
+        handleModbusResponse(ctx, m);
     }
 
     @Override
     public void handlePayloadSent(HandlerContext ctx, Message m) {
+    }
+
+    private void handleModbusResponse(HandlerContext ctx, Message m) {
+        ctx.state().on(ctx, m);
+        ctx.onRequestCompleted(m);
     }
 }

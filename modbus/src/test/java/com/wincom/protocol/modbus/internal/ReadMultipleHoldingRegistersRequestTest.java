@@ -18,8 +18,8 @@ public class ReadMultipleHoldingRegistersRequestTest {
             0x01, 0x03, 0x09, 0x24, 0x00, 0x0E, (byte) 0x87, (byte) 0x99
         };
 
-        ModbusFrame frame = new ModbusFrame();
-        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
+        ModbusFrame frame = new ModbusFrame(null);
+        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest(null);
         frame.setSlaveAddress((byte) 0x01);
         frame.setPayload(request);
         request.setStartAddress((short) 0x0924);
@@ -39,8 +39,8 @@ public class ReadMultipleHoldingRegistersRequestTest {
             0x01, 0x03, 0x00, 0x32, 0x00, 0x03, (byte) 0xa4, (byte) 0x04
         };
 
-        ModbusFrame frame = new ModbusFrame();
-        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
+        ModbusFrame frame = new ModbusFrame(null);
+        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest(null);
         frame.setSlaveAddress((byte) 0x01);
         frame.setPayload(request);
         request.setStartAddress((short) 0x0032);

@@ -20,7 +20,7 @@ public class ReadSettingsRequestState extends State.Adapter {
 
     @Override
     public State enter(HandlerContext ctx) {
-        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
+        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest(ctx);
         request.setStartAddress((short)0);
         request.setNumberOfRegisters((short)13);
       

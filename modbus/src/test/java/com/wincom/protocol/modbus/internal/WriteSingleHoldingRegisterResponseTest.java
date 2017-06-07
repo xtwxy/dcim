@@ -19,8 +19,8 @@ public class WriteSingleHoldingRegisterResponseTest {
     @Test
     public void testMarshal1() {
 
-        ModbusFrame frame = new ModbusFrame();
-        WriteSingleHoldingRegisterResponse response = new WriteSingleHoldingRegisterResponse();
+        ModbusFrame frame = new ModbusFrame(null);
+        WriteSingleHoldingRegisterResponse response = new WriteSingleHoldingRegisterResponse(null);
         frame.setSlaveAddress((byte) 0x01);
         frame.setPayload(response);
         response.setStartAddress((short) 0x0002);
@@ -40,7 +40,7 @@ public class WriteSingleHoldingRegisterResponseTest {
         buf.put(b);
         buf.flip();
         
-        ModbusFrame frame = new ModbusFrame();
+        ModbusFrame frame = new ModbusFrame(null);
 
         frame.fromWire(buf);
 

@@ -8,6 +8,10 @@ import com.wincom.dcim.agentd.TimerOutboundHandler;
  * @author master
  */
 public final class SetPeriodicTimer extends Message.Adapter {
+
+    public SetPeriodicTimer(HandlerContext sender) {
+        super(sender);
+    }
     
     @Override
     public void apply(HandlerContext ctx, Handler handler) {

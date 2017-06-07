@@ -1,6 +1,7 @@
 package com.wincom.dcim.agentd.primitives;
 
 import com.google.common.primitives.UnsignedBytes;
+import com.wincom.dcim.agentd.HandlerContext;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -11,6 +12,10 @@ import javax.annotation.Nonnull;
 public abstract class AbstractWireable
         extends Message.Adapter
         implements Wireable {
+
+    public AbstractWireable(HandlerContext sender) {
+        super(sender);
+    }
 
     @Nonnull
     protected static StringBuilder indent(@Nonnull StringBuilder buf, int depth) {

@@ -15,7 +15,8 @@ public class WriteSingleHoldingRegisterRequest
     private short startAddress;
     private short valueToWrite;
 
-    public WriteSingleHoldingRegisterRequest() {
+    public WriteSingleHoldingRegisterRequest(HandlerContext sender) {
+        super(sender);
     }
 
     @Override

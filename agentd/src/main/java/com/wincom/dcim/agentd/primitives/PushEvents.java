@@ -1,5 +1,6 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.domain.Event;
 
 import java.util.ArrayList;
@@ -9,11 +10,13 @@ public final class PushEvents extends Message.Adapter {
 
     private List<Event> events;
 
-    public PushEvents() {
+    public PushEvents(HandlerContext sender) {
+        super(sender);
         this.events = new ArrayList<>();
     }
 
-    public PushEvents(List<Event> events) {
+    public PushEvents(HandlerContext sender, List<Event> events) {
+        super(sender);
         this.events = events;
     }
 

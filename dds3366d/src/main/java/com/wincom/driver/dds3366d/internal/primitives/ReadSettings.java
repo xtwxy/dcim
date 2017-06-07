@@ -36,7 +36,7 @@ public class ReadSettings {
         KEYS.add("ct");
     }
 
-    public static State initial(Message request, State stop, HandlerContext outbound, HandlerContext replyTo) {
+    public static State initial(Message request, State stop, HandlerContext outbound) {
         if (request instanceof GetSignalValues.Request) {
             GetSignalValues.Request r = (GetSignalValues.Request) request;
             HashSet<String> theKeys = new HashSet<>(r.getKeys());
@@ -44,17 +44,17 @@ public class ReadSettings {
             if (theKeys.isEmpty()) {
                 return stop;
             } else {
-                return sendRequestState(outbound, replyTo, stop);
+                return sendRequestState(outbound, stop);
             }
         }
         return stopState();
     }
 
-    private static State sendRequestState(HandlerContext outbound, HandlerContext replyTo, State stop) {
+    private static State sendRequestState(HandlerContext outbound, State stop) {
         StateMachineBuilder builder = new StateMachineBuilder();
         return builder
                 .add("send", new ReadSettingsRequestState(outbound))
-                .add("receive", new ReadSettingsResponseState(replyTo))
+                .add("receive", new ReadSettingsResponseState())
                 .add("stop", stop)
                 .transision("send", "receive", "stop", "stop")
                 .transision("receive", "stop", "stop", "stop")
@@ -83,6 +83,10 @@ public class ReadSettings {
         private short slaveAddress;
         private short pt;
         private short ct;
+
+        public Response(HandlerContext sender) {
+            super(sender);
+        }
 
         @Override
         public int getWireLength() {
@@ -121,7 +125,7 @@ public class ReadSettings {
 
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
-            final GetSignalValues.Response response = new GetSignalValues.Response();
+            final GetSignalValues.Response response = new GetSignalValues.Response(ctx);
             final Map<String, Signal> values = response.getValues();
 
             values.put("clock", new TimstampSignal(getDate()));

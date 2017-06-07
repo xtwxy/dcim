@@ -26,21 +26,21 @@ public class MasterPayloadOutboundHandlerImpl
 
     @Override
     public void handleReadMultipleHoldingRegistersRequest(HandlerContext ctx, ReadMultipleHoldingRegistersRequest m) {
-        handleSendModbusPayload(m);
+        handleSendModbusPayload(ctx, m);
     }
 
     @Override
     public void handleWriteMultipleHoldingRegistersRequest(HandlerContext ctx, WriteMultipleHoldingRegistersRequest m) {
-        handleSendModbusPayload(m);
+        handleSendModbusPayload(ctx, m);
     }
 
     @Override
     public void handleWriteSingleHoldingRegisterRequest(HandlerContext ctx, WriteSingleHoldingRegisterRequest m) {
-        handleSendModbusPayload(m);
+        handleSendModbusPayload(ctx, m);
     }
 
-    public void handleSendModbusPayload(ModbusPayload m) {
-        ModbusFrame frame = new ModbusFrame();
+    public void handleSendModbusPayload(HandlerContext ctx, ModbusPayload m) {
+        ModbusFrame frame = new ModbusFrame(ctx);
         frame.setSlaveAddress(slaveAddress);
         frame.setPayload(m);
         outboundContext.send(frame);

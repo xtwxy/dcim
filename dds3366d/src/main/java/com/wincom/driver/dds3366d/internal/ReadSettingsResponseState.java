@@ -12,11 +12,6 @@ import java.nio.ByteBuffer;
  * @author master
  */
 public class ReadSettingsResponseState extends DefaultReceiveState {
-    final private HandlerContext replyTo;
-
-    public ReadSettingsResponseState(HandlerContext replyTo) {
-        this.replyTo = replyTo;
-    }
 
     @Override
     public State on(HandlerContext ctx, Message m) {
@@ -24,10 +19,10 @@ public class ReadSettingsResponseState extends DefaultReceiveState {
         if (m instanceof ReadMultipleHoldingRegistersResponse) {
             // To next state: receive state.
             ReadMultipleHoldingRegistersResponse registers = (ReadMultipleHoldingRegistersResponse) m;
-            Response response = new Response();
+            Response response = new Response(ctx);
             response.fromWire(ByteBuffer.wrap(registers.getBytes()));
 
-            replyTo.fire(response);
+            ctx.fireInboundHandlerContexts(response);
 
             return success();
         } else {

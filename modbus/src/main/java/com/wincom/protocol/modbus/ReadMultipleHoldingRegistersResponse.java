@@ -16,11 +16,12 @@ public class ReadMultipleHoldingRegistersResponse
     private byte numberOfBytes;
     private byte[] bytes;
 
-    public ReadMultipleHoldingRegistersResponse() {
+    public ReadMultipleHoldingRegistersResponse(HandlerContext sender) {
+        super(sender);
     }
 
-    public ReadMultipleHoldingRegistersResponse(byte numberOfBytes) {
-        this();
+    public ReadMultipleHoldingRegistersResponse(HandlerContext sender, byte numberOfBytes) {
+        super(sender);
         bytes = new byte[numberOfBytes];
         this.numberOfBytes = numberOfBytes;
     }

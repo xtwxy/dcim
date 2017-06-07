@@ -7,16 +7,10 @@ import com.wincom.dcim.agentd.ChannelOutboundHandler;
  *
  * @author master
  */
-public abstract class ChannelOutbound implements Message {
+public abstract class ChannelOutbound extends Message.Adapter {
 
-    private final HandlerContext context;
-
-    public ChannelOutbound(HandlerContext c) {
-        this.context = c;
-    }
-
-    public HandlerContext getContext() {
-        return this.context;
+    public ChannelOutbound(HandlerContext sender) {
+        super(sender);
     }
 
     @Override
@@ -32,6 +26,6 @@ public abstract class ChannelOutbound implements Message {
     
     @Override
     public String toString() {
-        return String.format("%s %s", getClass().getSimpleName(), getContext());
+        return String.format("%s %s", getClass().getSimpleName(), getSender());
     }
 }

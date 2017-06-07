@@ -15,7 +15,8 @@ public class WriteSingleHoldingRegisterResponse
     private short startAddress;
     private short valueWritten;
 
-    public WriteSingleHoldingRegisterResponse() {
+    public WriteSingleHoldingRegisterResponse(HandlerContext sender) {
+        super(sender);
     }
 
     @Override

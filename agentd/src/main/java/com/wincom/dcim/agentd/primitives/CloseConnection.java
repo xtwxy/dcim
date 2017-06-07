@@ -9,6 +9,10 @@ import com.wincom.dcim.agentd.ChannelOutboundHandler;
  */
 public final class CloseConnection extends Message.Adapter {
 
+    public CloseConnection(HandlerContext sender) {
+        super(sender);
+    }
+
     @Override
     public void apply(HandlerContext ctx, Handler handler) {
         if (handler instanceof ChannelOutboundHandler) {

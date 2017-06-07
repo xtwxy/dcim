@@ -12,7 +12,8 @@ public final class SetDeadlineTimer extends Message.Adapter {
     
     private final Date time;
     
-    public SetDeadlineTimer(Date time) {
+    public SetDeadlineTimer(HandlerContext sender, Date time) {
+        super(sender);
         this.time = time;
     }
 

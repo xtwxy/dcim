@@ -13,7 +13,6 @@ import io.netty.channel.Channel;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SendBytes;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -140,7 +139,7 @@ public final class TcpOutboundHandlerImpl
             @Override
             public void operationComplete(Future f) throws Exception {
                 if (f.isSuccess()) {
-                    ctx.fire(new ConnectionClosed(channel));
+                    ctx.fire(new ConnectionClosed(ctx, channel));
                 } else {
                     ctx.fire(new ApplicationFailure(ctx, f.cause()));
                 }

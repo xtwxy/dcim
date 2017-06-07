@@ -1,5 +1,6 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.domain.Signal;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,11 +16,13 @@ public final class GetSignalValues {
 
         private Set<String> keys;
 
-        public Request() {
+        public Request(HandlerContext sender) {
+            super(sender);
             this.keys = new HashSet<>();
         }
 
-        public Request(Set<String> keys) {
+        public Request(HandlerContext sender, Set<String> keys) {
+            super(sender);
             this.keys = keys;
         }
 
@@ -35,10 +38,12 @@ public final class GetSignalValues {
     public static class Response extends Message.Adapter {
         private Map<String, Signal> values;
         
-        public Response() {
+        public Response(HandlerContext sender) {
+            super(sender);
             this.values = new HashMap<>();
         }
-        public Response(HashMap<String, Signal> values) {
+        public Response(HandlerContext sender, HashMap<String, Signal> values) {
+            super(sender);
             this.values = values;
         }
 

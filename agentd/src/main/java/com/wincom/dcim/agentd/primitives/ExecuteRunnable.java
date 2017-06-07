@@ -1,5 +1,7 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
+
 /**
  *
  * @author master
@@ -8,7 +10,8 @@ public final class ExecuteRunnable extends Message.Adapter {
 
     private final Runnable runnable;
 
-    public ExecuteRunnable(Runnable runnable) {
+    public ExecuteRunnable(HandlerContext sender, Runnable runnable) {
+        super(sender);
         this.runnable = runnable;
     }
 

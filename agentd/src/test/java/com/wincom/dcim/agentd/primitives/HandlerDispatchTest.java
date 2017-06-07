@@ -22,7 +22,7 @@ public class HandlerDispatchTest {
 
     @Test
     public void testGetSignalValuesRequest() {
-        Message msg = new GetSignalValues.Request();
+        Message msg = new GetSignalValues.Request(null);
         msg.apply(null, handler);
         assertEquals(0, method);
     }

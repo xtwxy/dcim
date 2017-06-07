@@ -16,8 +16,8 @@ public class WriteSingleHoldingRegisterRequestTest {
     public void testMarshal1() {
         byte[] b = new byte[]{0x01, 0x06, 0x00, 0x02, 0x00, 0x02, (byte) 0xa9, (byte) 0xcb};
 
-        ModbusFrame frame = new ModbusFrame();
-        WriteSingleHoldingRegisterRequest request = new WriteSingleHoldingRegisterRequest();
+        ModbusFrame frame = new ModbusFrame(null);
+        WriteSingleHoldingRegisterRequest request = new WriteSingleHoldingRegisterRequest(null);
         frame.setSlaveAddress((byte) 0x01);
         frame.setPayload(request);
         request.setStartAddress((short) 0x0002);

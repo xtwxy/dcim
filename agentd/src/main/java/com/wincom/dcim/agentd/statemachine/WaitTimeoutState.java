@@ -23,7 +23,7 @@ public class WaitTimeoutState extends State.Adapter {
     
     @Override
     public State enter(HandlerContext ctx) {
-        ctx.send(new SetMillsecFromNowTimer(millsec));
+        ctx.send(new SetMillsecFromNowTimer(ctx, millsec));
         return this;
     }
 

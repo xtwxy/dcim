@@ -20,8 +20,8 @@ public class ReadMultipleHoldingRegistersResponseTest {
     @Test
     public void testMarshal1() {
 
-        ModbusFrame frame = new ModbusFrame();
-        ReadMultipleHoldingRegistersResponse response = new ReadMultipleHoldingRegistersResponse();
+        ModbusFrame frame = new ModbusFrame(null);
+        ReadMultipleHoldingRegistersResponse response = new ReadMultipleHoldingRegistersResponse(null);
         frame.setSlaveAddress((byte) 0x01);
         frame.setPayload(response);
         response.setNumberOfBytes((byte) 0xc);
@@ -42,7 +42,7 @@ public class ReadMultipleHoldingRegistersResponseTest {
         buf.put(b);
         buf.flip();
         
-        ModbusFrame frame = new ModbusFrame();
+        ModbusFrame frame = new ModbusFrame(null);
 
         frame.fromWire(buf);
 

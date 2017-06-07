@@ -102,7 +102,7 @@ public class MasterReceiveResponseState extends State.Adapter {
 
     private void decode(HandlerContext ctx, ByteBuffer buf, ModbusFrame request) {
         final int LENGTH = buf.remaining();
-        ModbusFrame response = new ModbusFrame();
+        ModbusFrame response = new ModbusFrame(ctx);
         Message result = null;
         try {
             response.fromWire(buf);

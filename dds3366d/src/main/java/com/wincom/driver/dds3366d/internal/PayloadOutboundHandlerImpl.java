@@ -20,11 +20,11 @@ public class PayloadOutboundHandlerImpl
     public void handleSendPayload(HandlerContext ctx, Message m) {
         if (m instanceof GetSignalValues.Request) {
             State stop = new State.Stop();
-            State state = ReadStatus.initial(m, stop, outboundContext, ctx);
+            State state = ReadStatus.initial(m, stop, outboundContext);
             if (state.stopped()) {
-                state = ReadSettings.initial(m, stop, outboundContext, ctx);
+                state = ReadSettings.initial(m, stop, outboundContext);
             } else {
-                state = ReadSettings.initial(m, state, outboundContext, ctx);
+                state = ReadSettings.initial(m, state, outboundContext);
             }
             ctx.state(state);
         } else if (m instanceof SetSignalValues.Request) {

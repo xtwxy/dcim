@@ -20,6 +20,6 @@ public final class ChannelActive extends ChannelInbound {
 
     @Override
     public String toString() {
-        return String.format("%s %s", getClass().getSimpleName(), getContext());
+        return String.format("%s %s", getClass().getSimpleName(), getSender());
     }
 }

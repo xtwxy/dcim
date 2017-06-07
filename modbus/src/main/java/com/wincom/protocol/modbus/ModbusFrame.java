@@ -25,11 +25,13 @@ public class ModbusFrame
 
     private transient boolean request;
 
-    public ModbusFrame() {
+    public ModbusFrame(HandlerContext sender) {
+        super(sender);
         request = true;
     }
 
-    public ModbusFrame(boolean request) {
+    public ModbusFrame(HandlerContext sender, boolean request) {
+        super(sender);
         this.request = request;
     }
 
@@ -59,7 +61,7 @@ public class ModbusFrame
         slaveAddress = buffer.get();
         function = ModbusFunction.from(buffer.get());
 
-        payload = function.createResponse();
+        payload = function.createResponse(getSender());
         payload.fromWire(buffer);
 
         crc16 = buffer.getShort();
@@ -116,7 +118,7 @@ public class ModbusFrame
 
     public void setFunction(ModbusFunction function) {
         this.function = function;
-        this.payload = isRequest() ? function.createRequest() : function.createResponse();
+        this.payload = isRequest() ? function.createRequest(getSender()) : function.createResponse(getSender());
     }
 
     public ModbusPayload getPayload() {

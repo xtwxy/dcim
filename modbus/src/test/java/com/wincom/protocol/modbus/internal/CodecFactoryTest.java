@@ -71,7 +71,7 @@ public class CodecFactoryTest {
                         public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
                             log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
                             ctx.setActive(true);
-                            sendRequest();
+                            sendRequest(ctx);
                         }
 
                         @Override
@@ -83,13 +83,13 @@ public class CodecFactoryTest {
                         public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
                             log.info(String.format("handleChannelTimeout(%s, %s)", ctx, m));
                             super.handleChannelTimeout(ctx, m);
-                            sendRequest();
+                            sendRequest(ctx);
                         }
 
                         @Override
                         public void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m) {
                             ctx.onRequestCompleted(m);
-                            sendRequest();
+                            sendRequest(ctx);
                         }
 
                     });
@@ -103,8 +103,8 @@ public class CodecFactoryTest {
         }
     }
 
-    private void sendRequest() {
-        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest();
+    private void sendRequest(HandlerContext ctx) {
+        ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest(ctx);
         request.setStartAddress((short) 0x01f4);
         request.setNumberOfRegisters((short) 10);
 

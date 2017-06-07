@@ -11,7 +11,8 @@ public class SetMillsecFromNowTimer extends Message.Adapter {
 
     private final long millsec;
 
-    public SetMillsecFromNowTimer(long millsec) {
+    public SetMillsecFromNowTimer(HandlerContext sender, long millsec) {
+        super(sender);
         this.millsec = millsec;
     }
 

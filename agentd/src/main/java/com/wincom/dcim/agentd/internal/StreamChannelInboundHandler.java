@@ -57,7 +57,7 @@ public class StreamChannelInboundHandler extends ChannelInboundHandlerAdapter {
             buffer = (ByteBuffer) msg;
             clientContext.fire(new BytesReceived(clientContext, buffer));
         } else {
-            clientContext.fire(new Unknown(msg));
+            clientContext.fire(new Unknown(clientContext, msg));
         }
     }
 

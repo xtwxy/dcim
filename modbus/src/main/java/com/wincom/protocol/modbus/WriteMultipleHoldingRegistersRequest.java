@@ -19,11 +19,12 @@ public class WriteMultipleHoldingRegistersRequest
     private short[] registers;
 
 
-    public WriteMultipleHoldingRegistersRequest() {
+    public WriteMultipleHoldingRegistersRequest(HandlerContext sender) {
+        super(sender);
     }
 
-    public WriteMultipleHoldingRegistersRequest(byte numberOfRegisters) {
-        this();
+    public WriteMultipleHoldingRegistersRequest(HandlerContext sender, byte numberOfRegisters) {
+        super(sender);
         registers = new short[numberOfRegisters];
         this.numberOfRegisters = numberOfRegisters;
         this.numberOfBytes = (byte)((2 * numberOfRegisters) & 0xff);

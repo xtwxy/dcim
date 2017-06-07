@@ -14,7 +14,7 @@ import static java.lang.System.out;
 public class ReadSettingsResponseTest {
     @Test
     public void testMarshal0() throws ParseException {
-        ReadSettings.Response response = new ReadSettings.Response();
+        ReadSettings.Response response = new ReadSettings.Response(null);
 
         response.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2017-06-64 00:00:00"));
         response.setCt((short) 0xbabe);
@@ -32,7 +32,5 @@ public class ReadSettingsResponseTest {
             out.printf("0x%02x ", 0xff & b);
         }
         out.println();
-
-
     }
 }

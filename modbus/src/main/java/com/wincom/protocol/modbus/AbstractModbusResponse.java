@@ -10,6 +10,10 @@ import com.wincom.dcim.agentd.HandlerContext;
  */
 public abstract class AbstractModbusResponse extends AbstractWireable {
 
+    public AbstractModbusResponse(HandlerContext sender) {
+        super(sender);
+    }
+
     @Override
     public void apply(HandlerContext ctx, Handler handler) {
         if(handler instanceof ModbusPayloadInboundHandler) {

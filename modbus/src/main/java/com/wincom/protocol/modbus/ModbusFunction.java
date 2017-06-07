@@ -1,6 +1,7 @@
 package com.wincom.protocol.modbus;
 
 import com.google.common.primitives.UnsignedBytes;
+import com.wincom.dcim.agentd.HandlerContext;
 
 /**
  *
@@ -9,91 +10,91 @@ import com.google.common.primitives.UnsignedBytes;
 public enum ModbusFunction {
     READ_COILS((byte) 0x01) {
         @Override
-        public ModbusPayload createRequest() {
+        public ModbusPayload createRequest(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet."); 
         }
 
         @Override
-        public ModbusPayload createResponse() {
+        public ModbusPayload createResponse(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     },
     READ_DISCRETE_INPUTS((byte) 0x02) {
         @Override
-        public ModbusPayload createRequest() {
+        public ModbusPayload createRequest(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet."); 
         }
 
         @Override
-        public ModbusPayload createResponse() {
+        public ModbusPayload createResponse(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     },
     READ_MULTIPLE_HOLDING_REGISTERS((byte) 0x03) {
         @Override
-        public ModbusPayload createRequest() {
-            return new ReadMultipleHoldingRegistersRequest(); 
+        public ModbusPayload createRequest(HandlerContext sender) {
+            return new ReadMultipleHoldingRegistersRequest(sender); 
         }
         
 
         @Override
-        public ModbusPayload createResponse() {
-            return new ReadMultipleHoldingRegistersResponse(); 
+        public ModbusPayload createResponse(HandlerContext sender) {
+            return new ReadMultipleHoldingRegistersResponse(sender); 
         }
     },
     READ_INPUT_REGISTERS((byte) 0x04) {
         @Override
-        public ModbusPayload createRequest() {
+        public ModbusPayload createRequest(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet."); 
         }
 
         @Override
-        public ModbusPayload createResponse() {
+        public ModbusPayload createResponse(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     },
     WRITE_SINGLE_COIL((byte) 0x05) {
         @Override
-        public ModbusPayload createRequest() {
+        public ModbusPayload createRequest(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet."); 
         }
 
         @Override
-        public ModbusPayload createResponse() {
+        public ModbusPayload createResponse(HandlerContext sender) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     },
     WRITE_SINGLE_HOLDING_REGISTER((byte) 0x06) {
         @Override
-        public ModbusPayload createRequest() {
-            return new WriteSingleHoldingRegisterRequest(); 
+        public ModbusPayload createRequest(HandlerContext sender) {
+            return new WriteSingleHoldingRegisterRequest(sender); 
         }
 
         @Override
-        public ModbusPayload createResponse() {
-            return new WriteSingleHoldingRegisterResponse();
+        public ModbusPayload createResponse(HandlerContext sender) {
+            return new WriteSingleHoldingRegisterResponse(sender);
         }
     },
     WRITE_MULTIPLE_HOLDING_COILS((byte) 0x0f) {
         @Override
-        public ModbusPayload createRequest() {
-            return new WriteMultipleHoldingRegistersRequest(); 
+        public ModbusPayload createRequest(HandlerContext sender) {
+            return new WriteMultipleHoldingRegistersRequest(sender); 
         }
 
         @Override
-        public ModbusPayload createResponse() {
-            return new WriteMultipleHoldingRegistersResponse();
+        public ModbusPayload createResponse(HandlerContext sender) {
+            return new WriteMultipleHoldingRegistersResponse(sender);
         }
     },
     WRITE_MULTIPLE_HOLDING_REGISTERS((byte) 0x10) {
         @Override
-        public ModbusPayload createRequest() {
-            return new WriteSingleHoldingRegisterRequest();
+        public ModbusPayload createRequest(HandlerContext sender) {
+            return new WriteSingleHoldingRegisterRequest(sender);
         }
 
         @Override
-        public ModbusPayload createResponse() {
-            return new WriteSingleHoldingRegisterResponse();
+        public ModbusPayload createResponse(HandlerContext sender) {
+            return new WriteSingleHoldingRegisterResponse(sender);
         }
     };
 
@@ -113,7 +114,7 @@ public enum ModbusFunction {
         }
         throw new IllegalArgumentException("Unknown modbus function code 0x" + UnsignedBytes.toString(b, 16));
     }
-    public abstract ModbusPayload createRequest();
-    public abstract ModbusPayload createResponse();
+    public abstract ModbusPayload createRequest(HandlerContext sender);
+    public abstract ModbusPayload createResponse(HandlerContext sender);
     private byte code;
 }

@@ -15,7 +15,8 @@ public class WriteMultipleHoldingRegistersResponse
     private short startAddress;
     private short numberOfRegisters;
 
-    public WriteMultipleHoldingRegistersResponse() {
+    public WriteMultipleHoldingRegistersResponse(HandlerContext sender) {
+        super(sender);
     }
     
     @Override

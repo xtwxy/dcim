@@ -47,7 +47,7 @@ public final class TcpInboundHandlerImpl
 
         // fork a new state machine to handle connection.
         final StreamHandlerContextImpl clientContext
-                = (StreamHandlerContextImpl) m.getContext();
+                = (StreamHandlerContextImpl) m.getSender();
 
         StateMachine state = new StateMachineBuilder()
                 .add("receiveState", new ReceiveState())

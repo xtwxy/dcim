@@ -15,7 +15,8 @@ public class ReadMultipleHoldingRegistersRequest
     private short startAddress;
     private short numberOfRegisters;
 
-    public ReadMultipleHoldingRegistersRequest() {
+    public ReadMultipleHoldingRegistersRequest(HandlerContext sender) {
+        super(sender);
     }
 
     @Override

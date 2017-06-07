@@ -67,7 +67,7 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        this.outboundContext = m.getContext();
+        this.outboundContext = m.getSender();
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
             OutboundHandlerImpl outImpl = (OutboundHandlerImpl) e.getValue().getOutboundHandler();
             outImpl.setOutboundContext(ctx);

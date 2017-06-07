@@ -1,5 +1,7 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
+
 /**
  *
  * @author master
@@ -8,7 +10,8 @@ public final class Unknown extends Message.Adapter {
 
     private final Object message;
 
-    public Unknown(Object msg) {
+    public Unknown(HandlerContext sender, Object msg) {
+        super(sender);
         this.message = msg;
     }
 

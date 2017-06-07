@@ -1,5 +1,6 @@
 package com.wincom.dcim.agentd.primitives;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import io.netty.channel.Channel;
 
 /**
@@ -10,7 +11,8 @@ public final class ConnectionClosed extends Message.Adapter {
 
     private final Channel channel;
 
-    public ConnectionClosed(Channel c) {
+    public ConnectionClosed(HandlerContext sender, Channel c) {
+        super(sender);
         this.channel = c;
     }
 
