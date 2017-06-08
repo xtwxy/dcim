@@ -59,7 +59,7 @@ public class CodecFactoryTest {
         props.put(MasterCodecFactoryImpl.OUTBOUND_CTX_PROPS_KEY, tcpOutbound);
 
         try {
-            Codec c = agent.createCodec(MODBUS_FACTORY_ID, MODBUS_CODEC_ID, props);
+            Codec modbusCodec = agent.createCodec(MODBUS_FACTORY_ID, MODBUS_CODEC_ID, props);
 
             Properties modbusOutbound = new Properties();
             modbusOutbound.put(MasterCodecImpl.ADDRESS_KEY, MODBUS_ADDRESS_1);
@@ -96,7 +96,7 @@ public class CodecFactoryTest {
                     });
                 }
             };
-            outboundContext = c.openInbound(agent, modbusOutbound);
+            outboundContext = modbusCodec.openInbound(agent, modbusOutbound);
             outboundContext.addInboundContext(inboundHandlerContext);
 
         } catch (Throwable t) {
