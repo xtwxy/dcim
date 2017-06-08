@@ -61,7 +61,7 @@ public class ModbusFrame
         slaveAddress = buffer.get();
         function = ModbusFunction.from(buffer.get());
 
-        payload = function.createResponse(getSender());
+        payload = isRequest() ? function.createRequest(getSender()) : function.createResponse(getSender());
         payload.fromWire(buffer);
 
         crc16 = buffer.getShort();

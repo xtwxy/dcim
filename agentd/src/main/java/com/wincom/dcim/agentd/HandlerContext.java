@@ -199,6 +199,9 @@ public interface HandlerContext {
         @Override
         public synchronized void onRequestCompleted(Message m) {
             if (isInprogress()) {
+//                if(this != current.getSender()) {
+//                    current.getSender().fire(m);
+//                }
                 current = null;
             } else {
                 // not possible! should be discarded!

@@ -94,7 +94,7 @@ public final class AgentdServiceActivator implements BundleActivator {
                     @Override
                     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
                         super.handleChannelTimeout(ctx, m);
-                        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+                        log.info(String.format("handleChannelTimeout(%s, %s)", ctx, m));
                     }
                 });
             }

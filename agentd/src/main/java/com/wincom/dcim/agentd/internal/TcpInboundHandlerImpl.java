@@ -47,7 +47,7 @@ public final class TcpInboundHandlerImpl
 
         // fork a new state machine to handle connection.
         final StreamHandlerContextImpl clientContext
-                = (StreamHandlerContextImpl) m.getSender();
+                = (StreamHandlerContextImpl) m.getAccepted();
 
         StateMachine state = new StateMachineBuilder()
                 .add("receiveState", new ReceiveState())
@@ -59,7 +59,7 @@ public final class TcpInboundHandlerImpl
         clientContext.getChannel().pipeline()
                 .addLast(new LoggingHandler(LogLevel.INFO))
                 .addLast(new IdleStateHandler(0, 0, 20))
-                .addLast(new com.wincom.dcim.agentd.internal.StreamChannelInboundHandler(clientContext));
+                .addLast(new StreamChannelInboundHandler(clientContext));
 
         // continue accepting new connections in this state machine...
         ctx.onRequestCompleted(m);
@@ -79,7 +79,7 @@ public final class TcpInboundHandlerImpl
         m.getChannel().pipeline()
                 .addLast(new LoggingHandler(LogLevel.INFO))
                 .addLast(new IdleStateHandler(0, 0, 5))
-                .addLast(new com.wincom.dcim.agentd.internal.StreamChannelInboundHandler(ctx));
+                .addLast(new StreamChannelInboundHandler(ctx));
 
         ctx.onRequestCompleted(m);
 
@@ -106,6 +106,7 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
+        ctx.state().on(ctx, m);
         ctx.fireInboundHandlerContexts(m);
     }
 
@@ -117,6 +118,7 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handleDeadlineTimeout(HandlerContext ctx, DeadlineTimeout m) {
+        ctx.state().on(ctx, m);
         ctx.onRequestCompleted(m);
     }
 
@@ -128,6 +130,7 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handlePeriodicTimeout(HandlerContext ctx, PeriodicTimeout m) {
+        ctx.state().on(ctx, m);
         ctx.onRequestCompleted(m);
     }
 }

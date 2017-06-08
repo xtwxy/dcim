@@ -36,5 +36,14 @@ public class ByteBufferCompactTest {
         assertEquals(0, buf.position());
         assertEquals(bytes.length, buf.remaining());
         assertEquals(bytes.length, buf.capacity());
+        
+        buf.position(1);
+        buf.compact();
+        buf.put((byte)0xff);
+        buf.flip();
+        
+        assertEquals(0, buf.position());
+        assertEquals(bytes.length, buf.remaining());
+        assertEquals(bytes.length, buf.capacity());
     }
 }

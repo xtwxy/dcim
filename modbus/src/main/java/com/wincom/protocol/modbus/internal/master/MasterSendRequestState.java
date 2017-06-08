@@ -20,12 +20,10 @@ public class MasterSendRequestState extends State.Adapter {
 
     final private ModbusFrame request;
     final private HandlerContext outbound;
-    final private HandlerContext replyTo;
     
-    MasterSendRequestState(ModbusFrame m, HandlerContext outbound, HandlerContext replyTo) {
+    MasterSendRequestState(ModbusFrame m, HandlerContext outbound) {
         this.request = m;
         this.outbound = outbound;
-        this.replyTo = replyTo;
     }
 
     @Override
@@ -52,11 +50,9 @@ public class MasterSendRequestState extends State.Adapter {
         } else if (m instanceof ChannelInactive
                 || m instanceof ChannelTimeout
                 || m instanceof ApplicationFailure) {
-            replyTo.fire(m);
             ctx.onRequestCompleted(m);
             return failure();
         } else if (m instanceof SystemError) {
-            replyTo.fire(m);
             ctx.onRequestCompleted(m);
             return error();
         } else {

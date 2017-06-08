@@ -76,7 +76,7 @@ public class CodecFactoryTest {
 
                         @Override
                         public void handlePayloadReceived(HandlerContext ctx, Message m) {
-                            log.info(String.format("handlePayloadReceived(%s, %s)", ctx, m));
+                            sendRequest(ctx);
                         }
 
                         @Override

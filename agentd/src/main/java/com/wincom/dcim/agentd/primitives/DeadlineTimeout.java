@@ -9,6 +9,10 @@ import com.wincom.dcim.agentd.TimerInboundHandler;
  */
 public final class DeadlineTimeout extends Timeout {
 
+    public DeadlineTimeout(HandlerContext sender) {
+        super(sender);
+    }
+
     @Override
     public void applyTimout(HandlerContext ctx, TimerInboundHandler handler) {
         handler.handleDeadlineTimeout(ctx, this);

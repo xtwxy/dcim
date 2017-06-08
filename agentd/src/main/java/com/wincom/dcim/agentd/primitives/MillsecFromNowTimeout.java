@@ -9,6 +9,10 @@ import com.wincom.dcim.agentd.TimerInboundHandler;
  */
 public class MillsecFromNowTimeout extends Timeout {
 
+    public MillsecFromNowTimeout(HandlerContext sender) {
+        super(sender);
+    }
+
     @Override
     public void applyTimout(HandlerContext ctx, TimerInboundHandler handler) {
         handler.handleMillsecFromNowTimeout(ctx, this);

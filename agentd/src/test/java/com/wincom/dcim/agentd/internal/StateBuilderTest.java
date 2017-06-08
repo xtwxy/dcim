@@ -17,7 +17,7 @@ import org.junit.Test;
 public class StateBuilderTest {
 
     private int step = 0;
-    private final Message message = new Message() {
+    private final Message message = new Message.Adapter(null){
         @Override
         public void apply(HandlerContext ctx, Handler handler) {
             handler.handle(null, this);

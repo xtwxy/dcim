@@ -10,6 +10,8 @@ public interface Message {
 
     public void apply(HandlerContext ctx, Handler handler);
 
+    public HandlerContext getSender();
+
     public static class Adapter implements Message {
 
         private final HandlerContext sender;
@@ -18,6 +20,7 @@ public interface Message {
             this.sender = sender;
         }
 
+        @Override
         public HandlerContext getSender() {
             return this.sender;
         }

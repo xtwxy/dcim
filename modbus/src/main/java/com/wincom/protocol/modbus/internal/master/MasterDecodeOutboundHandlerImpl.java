@@ -31,9 +31,9 @@ public class MasterDecodeOutboundHandlerImpl extends ChannelOutboundHandler.Adap
         ModbusFrame request = (ModbusFrame) m;
         StateMachineBuilder builder = new StateMachineBuilder();
         StateMachine machine = builder
-                .add("send", new MasterSendRequestState(request, outboundContext, inboundContexts.get(request.getSlaveAddress())))
-                .add("receive", new MasterReceiveResponseState(inboundContexts.get(request.getSlaveAddress())))
-                .add("stop", new State.Adapter())
+                .add("send", new MasterSendRequestState(request, outboundContext))
+                .add("receive", new MasterReceiveResponseState())
+                .add("stop", new State.Stop())
                 .transision("send", "receive", "stop", "stop")
                 .transision("receive", "stop", "stop", "stop")
                 .transision("stop", "stop", "stop", "stop")

@@ -75,6 +75,7 @@ public class ReadMultipleHoldingRegistersResponse
     }
 
     public void setBytes(byte[] bytes) {
+        this.numberOfBytes = (byte) bytes.length;
         this.bytes = bytes;
     }
 

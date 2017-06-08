@@ -4,6 +4,7 @@ import com.wincom.dcim.agentd.primitives.BytesReceived;
 import com.wincom.dcim.agentd.primitives.ApplicationFailure;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.ChannelInactive;
+import com.wincom.dcim.agentd.primitives.ChannelTimeout;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.SystemError;
 import com.wincom.dcim.agentd.statemachine.State;
@@ -18,12 +19,6 @@ public class MasterReceiveResponseState extends State.Adapter {
 
     private ByteBuffer readBuffer;
     private ModbusFrame request;
-
-    final private HandlerContext replyTo;
-
-    MasterReceiveResponseState(HandlerContext replyTo) {
-        this.replyTo = replyTo;
-    }
 
     @Override
     public State enter(HandlerContext ctx) {
@@ -41,11 +36,15 @@ public class MasterReceiveResponseState extends State.Adapter {
 
         if (m instanceof BytesReceived) {
             decode(ctx, readBuffer);
-        } else if(m instanceof ChannelInactive
+        } else if (m instanceof ChannelInactive
                 || m instanceof ApplicationFailure
                 || m instanceof SystemError) {
-            replyTo.fire(m);
+            request.getSender().fire(m);
+            ctx.onRequestCompleted(m);
             return failure();
+        } else if (m instanceof ChannelTimeout) {
+            request.getSender().fire(m);
+            ctx.onRequestCompleted(m);
         }
         return success();
     }
@@ -102,7 +101,7 @@ public class MasterReceiveResponseState extends State.Adapter {
 
     private void decode(HandlerContext ctx, ByteBuffer buf, ModbusFrame request) {
         final int LENGTH = buf.remaining();
-        ModbusFrame response = new ModbusFrame(ctx);
+        ModbusFrame response = new ModbusFrame(ctx, false);
         Message result = null;
         try {
             response.fromWire(buf);
@@ -121,7 +120,7 @@ public class MasterReceiveResponseState extends State.Adapter {
         }
         readBuffer.position(LENGTH);
         readBuffer.clear();
-        replyTo.fire(result);
+        request.getSender().fire(result);
         ctx.onRequestCompleted(result);
     }
 

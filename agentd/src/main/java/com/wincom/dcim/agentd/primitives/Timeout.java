@@ -7,7 +7,11 @@ import com.wincom.dcim.agentd.TimerInboundHandler;
  *
  * @author master
  */
-public abstract class Timeout implements Message {
+public abstract class Timeout extends Message.Adapter {
+
+    public Timeout(HandlerContext sender) {
+        super(sender);
+    }
 
     @Override
     public void apply(HandlerContext ctx, Handler handler) {

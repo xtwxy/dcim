@@ -36,6 +36,7 @@ import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
 import com.wincom.dcim.agentd.primitives.SetPeriodicTimer;
+import com.wincom.dcim.agentd.primitives.WriteComplete;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -63,8 +64,8 @@ public final class TcpOutboundHandlerImpl
     }
 
     @Override
-    public void handleAccept(HandlerContext ctx, Accept a) {
-        log.info(String.format("creating acceptor on %s:%d", a.getHost(), a.getPort()));
+    public void handleAccept(HandlerContext ctx, Accept m) {
+        log.info(String.format("creating acceptor on %s:%d", m.getHost(), m.getPort()));
         ServerBootstrap boot = new ServerBootstrap();
         boot
                 .group(service.getEventLoopGroup())
@@ -74,22 +75,23 @@ public final class TcpOutboundHandlerImpl
                     protected void initChannel(SocketChannel ch) throws Exception {
                         StreamHandlerContextImpl impl = (StreamHandlerContextImpl) service.createStreamHandlerContext();
                         impl.setChannel(ch);
-                        ctx.fire(new Accepted(impl));
+                        m.getSender().fire(new Accepted(ctx, impl));
                     }
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-        ChannelFuture future = boot.bind(a.getHost(), a.getPort());
+        ChannelFuture future = boot.bind(m.getHost(), m.getPort());
         future.addListener(new GenericFutureListener() {
             @Override
             public void operationComplete(Future f) throws Exception {
                 if (f.isSuccess()) {
-                    log.info(String.format("connection was successful: %s", f));
+                    log.info(String.format("creating acceptor was successful: %s", f));
                 } else {
-                    ctx.fire(new AcceptFailed(ctx, f.cause()));
-                    log.info(String.format("connection was failed: %s", f));
+                    m.getSender().fire(new AcceptFailed(ctx, f.cause()));
+                    log.info(String.format("creating acceptor was failed: %s", f));
                 }
+                ctx.onRequestCompleted(m);
             }
 
         });
@@ -97,7 +99,6 @@ public final class TcpOutboundHandlerImpl
 
     @Override
     public void handleConnect(HandlerContext ctx, Connect m) {
-        Connect a = (Connect) m;
 
         Bootstrap boot = new Bootstrap();
         boot
@@ -108,12 +109,12 @@ public final class TcpOutboundHandlerImpl
                     protected void initChannel(SocketChannel ch) throws Exception {
                         StreamHandlerContextImpl impl = (StreamHandlerContextImpl) ctx;
                         impl.setChannel(ch);
-                        ctx.fire(new Connected(ctx, ch));
+                        m.getSender().fire(new Connected(ctx, ch));
                     }
 
                 })
                 .option(ChannelOption.SO_KEEPALIVE, true);
-        ChannelFuture future = boot.connect(a.getHost(), a.getPort());
+        ChannelFuture future = boot.connect(m.getHost(), m.getPort());
         future.addListener(new GenericFutureListener() {
             @Override
             public void operationComplete(Future f) throws Exception {
@@ -169,7 +170,7 @@ public final class TcpOutboundHandlerImpl
         ByteBuf buf = Unpooled.wrappedBuffer(((SendBytes) m).getByteBuffer());
 
         channel.writeAndFlush(buf);
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted(new WriteComplete(ctx));
     }
 
     @Override
@@ -177,7 +178,7 @@ public final class TcpOutboundHandlerImpl
         TimerTask tt = new TimerTask() {
             @Override
             public void run(Timeout tmt) throws Exception {
-                ctx.fire(new DeadlineTimeout());
+                ctx.fire(new DeadlineTimeout(ctx));
             }
 
         };
@@ -186,7 +187,7 @@ public final class TcpOutboundHandlerImpl
         if (deadline > now) {
             service.getTimer().newTimeout(tt, (deadline - now), TimeUnit.MILLISECONDS);
         } else {
-            ctx.fire(new DeadlineTimeout());
+            ctx.fire(new DeadlineTimeout(ctx));
         }
     }
 
@@ -198,7 +199,7 @@ public final class TcpOutboundHandlerImpl
             public void run(Timeout tmt) throws Exception {
                 log.info("timout.");
                 tmt.cancel();
-                ctx.fire(new MillsecFromNowTimeout());
+                ctx.fire(new MillsecFromNowTimeout(ctx));
             }
 
         };
