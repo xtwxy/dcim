@@ -65,4 +65,27 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <!--
+                        <Require-Bundle>
+                            com.wincom.fsu.mp3000, com.wincom.protocol.modbus, com.wincom.driver.dds3366d
+                        </Require-Bundle>
+                                <Import-Package></Import-Package>
+                                <Import-Package>sun.misc;resolution:=optional</Import-Package>
+                                <Export-Package>org.foo.myproject.api</Export-Package>
+                                <Private-Package>org.foo.myproject.*</Private-Package>
+                                <Bundle-Activator>org.foo.myproject.impl1.Activator</Bundle-Activator>
+                        -->
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

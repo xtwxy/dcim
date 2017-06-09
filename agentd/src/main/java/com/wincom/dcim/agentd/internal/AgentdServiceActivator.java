@@ -1,6 +1,5 @@
 package com.wincom.dcim.agentd.internal;
 
-import java.util.Dictionary;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -18,7 +17,9 @@ import com.wincom.dcim.agentd.primitives.SendBytes;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
 import java.nio.ByteBuffer;
-import java.util.Properties;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Set;
 import org.osgi.framework.ServiceReference;
 
 public final class AgentdServiceActivator implements BundleActivator {
@@ -27,8 +28,8 @@ public final class AgentdServiceActivator implements BundleActivator {
     
     @Override
     public void start(BundleContext bc) throws Exception {
-        Dictionary props = new Properties();
-
+        Hashtable<String, ?> props = new Hashtable<>();
+        
         bc.addServiceListener(new ServiceListenerImpl());
         
         AgentdService agent = new AgentdServiceImpl(bc);

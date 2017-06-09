@@ -53,6 +53,8 @@ public class Slave {
                 }
             }
         };
-        handlerContext.send(new Accept(acceptContext, "0.0.0.0", 9080));
+        for(int i = 0; i < 8; ++i) {
+            handlerContext.send(new Accept(acceptContext, "0.0.0.0", 9080 + i));
+        }
     }
 }

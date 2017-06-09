@@ -24,10 +24,7 @@ import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.TimerOutboundHandler;
 import com.wincom.dcim.agentd.primitives.AcceptFailed;
@@ -49,13 +46,10 @@ public final class TcpOutboundHandlerImpl
         extends ChannelOutboundHandler.Adapter 
         implements TimerOutboundHandler {
 
-    private final Logger log;
-
     private Channel channel;
     private final NetworkService service;
 
     TcpOutboundHandlerImpl(NetworkService service) {
-        this.log = LoggerFactory.getLogger(this.getClass());
         this.service = service;
     }
 
@@ -82,9 +76,9 @@ public final class TcpOutboundHandlerImpl
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
         ChannelFuture future = boot.bind(m.getHost(), m.getPort());
-        future.addListener(new GenericFutureListener() {
+        future.addListener(new GenericFutureListener<ChannelFuture>() {
             @Override
-            public void operationComplete(Future f) throws Exception {
+            public void operationComplete(ChannelFuture f) throws Exception {
                 if (f.isSuccess()) {
                     log.info(String.format("creating acceptor was successful: %s", f));
                 } else {
@@ -115,9 +109,9 @@ public final class TcpOutboundHandlerImpl
                 })
                 .option(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture future = boot.connect(m.getHost(), m.getPort());
-        future.addListener(new GenericFutureListener() {
+        future.addListener(new GenericFutureListener<ChannelFuture>() {
             @Override
-            public void operationComplete(Future f) throws Exception {
+            public void operationComplete(ChannelFuture f) throws Exception {
                 if (f.isSuccess()) {
                     log.info(String.format("connection was successful: %s", f));
                 } else {
@@ -136,9 +130,9 @@ public final class TcpOutboundHandlerImpl
             return;
         }
         ChannelPromise cp = channel.newPromise();
-        cp.addListener(new GenericFutureListener() {
+        cp.addListener(new GenericFutureListener<ChannelFuture>() {
             @Override
-            public void operationComplete(Future f) throws Exception {
+            public void operationComplete(ChannelFuture f) throws Exception {
                 if (f.isSuccess()) {
                     ctx.fire(new ConnectionClosed(ctx, channel));
                 } else {

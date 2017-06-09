@@ -7,6 +7,8 @@ import com.wincom.dcim.agentd.NetworkConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Composition of TCP connections to a MP3000. this CODEC does not handle
@@ -16,6 +18,7 @@ import java.util.Properties;
  */
 public class MP3000CodecImpl implements Codec {
 
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     private String HOST;
     private final int BASE_PORT;
     private final int PORT_COUNT;
@@ -45,10 +48,11 @@ public class MP3000CodecImpl implements Codec {
             if (ctx == null) {
                 Codec inboundCodec = service.getCodec(CODEC_ID);
                 Properties p = new Properties();
-                p.put(NetworkConfig.HOST_KEY, HOST);
-                p.put(NetworkConfig.PORT_KEY, BASE_PORT + comport);
-                p.put(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
+                p.setProperty(NetworkConfig.HOST_KEY, HOST);
+                p.setProperty(NetworkConfig.PORT_KEY, Integer.toString(BASE_PORT + comport));
+                p.setProperty(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
+                log.info(p.toString());
                 ctx = inboundCodec.openInbound(service, p);
                 inbound.put(comport, ctx);
             } else {

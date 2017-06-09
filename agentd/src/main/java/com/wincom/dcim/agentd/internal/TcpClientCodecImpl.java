@@ -35,7 +35,9 @@ public class TcpClientCodecImpl implements Codec {
         final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createStreamHandlerContext();
         final StateMachineBuilder builder = new StateMachineBuilder();
         final String host = outbound.getProperty(NetworkConfig.HOST_KEY);
+        log.info(host);
         final String port = outbound.getProperty(NetworkConfig.PORT_KEY);
+        log.info(port);
         final String waiteTimeout = outbound.getProperty(NetworkConfig.WAITE_TIMEOUT_KEY);
 
         StateMachine client = builder

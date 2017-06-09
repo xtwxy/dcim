@@ -62,7 +62,7 @@ public class CodecFactoryTest {
             Codec modbusCodec = agent.createCodec(MODBUS_FACTORY_ID, MODBUS_CODEC_ID, props);
 
             Properties modbusOutbound = new Properties();
-            modbusOutbound.put(MasterCodecImpl.ADDRESS_KEY, MODBUS_ADDRESS_1);
+            modbusOutbound.put(MasterCodecImpl.MODBUS_SLAVE_ADDRESS_KEY, MODBUS_ADDRESS_1);
 
             HandlerContext inboundHandlerContext = new HandlerContext.Adapter() {
                 public void fire(Message m) {
