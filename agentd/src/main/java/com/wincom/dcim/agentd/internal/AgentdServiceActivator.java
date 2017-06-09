@@ -39,7 +39,6 @@ public final class AgentdServiceActivator implements BundleActivator {
 
         createTcpCodec(agent, network);
         
-        testServerChannelFactory(bc);
     }
 
     @Override

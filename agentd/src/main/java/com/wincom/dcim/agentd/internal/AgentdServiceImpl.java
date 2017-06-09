@@ -29,6 +29,7 @@ public final class AgentdServiceImpl implements AgentdService {
 
     @Override
     public void registerCodecFactory(String key, CodecFactory factory) {
+        log.info(String.format("%s => %s", key, factory));
         this.codecFactories.put(key, factory);
     }
 
@@ -42,6 +43,8 @@ public final class AgentdServiceImpl implements AgentdService {
         log.info(String.format("%s", props));
         Codec codec = getCodec(codecId);
         if (codec == null) {
+            CodecFactory factory = codecFactories.get(factoryId);
+            log.info(String.format("%s => %s", factoryId, factory));
             codec = this.codecFactories.get(factoryId).create(this, props);
             this.codecs.put(codecId, codec);
         }
