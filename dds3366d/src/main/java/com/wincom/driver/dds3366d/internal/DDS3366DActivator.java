@@ -15,7 +15,7 @@ public final class DDS3366DActivator
         ServiceReference<AgentdService> serviceRef = bc.getServiceReference(AgentdService.class);
         AgentdService service = bc.getService(serviceRef);
         CodecFactory factory = new DDS3366DCodecFactoryImpl();
-        service.registerCodecFactory("dds3366d", factory);
+        service.registerCodecFactory("DDS3366D", factory);
     }
 
     @Override

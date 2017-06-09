@@ -23,21 +23,33 @@ import org.osgi.framework.ServiceReference;
 
 public final class AgentdServiceActivator implements BundleActivator {
 
+    private static final String TCP_CODEC_ID = "TCP_CODEC";
+    
     @Override
     public void start(BundleContext bc) throws Exception {
         Dictionary props = new Properties();
 
         bc.addServiceListener(new ServiceListenerImpl());
-
-        bc.registerService(AgentdService.class, new AgentdServiceImpl(bc), props);
+        
+        AgentdService agent = new AgentdServiceImpl(bc);
+        NetworkService network = new NetworkServiceImpl(bc);
+        
+        bc.registerService(AgentdService.class, agent, props);
         bc.registerService(NetworkService.class, new NetworkServiceImpl(bc), props);
 
+        createTcpCodec(agent, network);
+        
         testServerChannelFactory(bc);
     }
 
     @Override
     public void stop(BundleContext bc) throws Exception {
 
+    }
+    
+    private static void createTcpCodec(AgentdService agent, NetworkService network) {
+        TcpClientCodecImpl tcpCodec = new TcpClientCodecImpl(network);
+        agent.setCodec(TCP_CODEC_ID, tcpCodec);
     }
 
     private static void testServerChannelFactory(BundleContext bundleContext) {
