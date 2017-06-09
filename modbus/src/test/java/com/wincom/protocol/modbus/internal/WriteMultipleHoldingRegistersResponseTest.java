@@ -18,7 +18,7 @@ public class WriteMultipleHoldingRegistersResponseTest {
 
     @Test
     public void testMarshal1() {
-        ModbusFrame frame = new ModbusFrame(null);
+        ModbusFrame frame = new ModbusFrame(null, false);
         WriteMultipleHoldingRegistersResponse response = new WriteMultipleHoldingRegistersResponse(null);
         frame.setSlaveAddress((byte) 0x01);
         frame.setPayload(response);
@@ -39,7 +39,7 @@ public class WriteMultipleHoldingRegistersResponseTest {
         buf.put(b);
         buf.flip();
         
-        ModbusFrame frame = new ModbusFrame(null);
+        ModbusFrame frame = new ModbusFrame(null, false);
 
         frame.fromWire(buf);
 
