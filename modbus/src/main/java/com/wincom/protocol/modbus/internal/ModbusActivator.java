@@ -16,7 +16,7 @@ public final class ModbusActivator
         ServiceReference<AgentdService> serviceRef = bc.getServiceReference(AgentdService.class);
         AgentdService service = bc.getService(serviceRef);
         CodecFactory factory = new MasterCodecFactoryImpl();
-        service.registerCodecFactory("modbus-slave", factory);
+        service.registerCodecFactory("MODBUS_SLAVE", factory);
     }
 
     @Override
