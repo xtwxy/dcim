@@ -1,10 +1,8 @@
 package com.wincom.dcim.integration.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
-import com.wincom.dcim.agentd.CodecFactory;
 import com.wincom.dcim.agentd.NetworkConfig;
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.fsu.mp3000.internal.MP3000CodecFactoryImpl;
 import java.util.Properties;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -53,9 +51,6 @@ public final class AggregationActivator
     }
 
     private static void createMp3000Codec(AgentdService agent, NetworkService network) {
-        CodecFactory factory = new MP3000CodecFactoryImpl();
-        agent.registerCodecFactory(MP3000_FACTORY_ID, factory);
-
         for (int i = 0; i < MP3000_COUNT; ++i) {
             Properties props = new Properties();
             props.setProperty(NetworkConfig.HOST_KEY, MP3000_HOST);
