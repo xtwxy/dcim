@@ -17,7 +17,7 @@ public class DefaultReceiveState extends State.Adapter {
     public State on(HandlerContext ctx, Message m) {
         
         if (m instanceof ChannelTimeout) {
-            ctx.onRequestCompleted(m);
+            ctx.onRequestCompleted();
             return success();
         } else if (m instanceof ChannelActive) {
             ctx.setActive(true);

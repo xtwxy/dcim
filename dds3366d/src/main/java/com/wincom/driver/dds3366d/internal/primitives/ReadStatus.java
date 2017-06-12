@@ -58,7 +58,7 @@ public class ReadStatus {
         return builder
                 .add("send", new ReadStatusRequestState(outbound))
                 .add("receive", new ReadStatusResponseState())
-                .add("stop", stopState())
+                .add("stop", stop)
                 .transision("send", "receive", "stop", "stop")
                 .transision("receive", "stop", "stop", "stop")
                 .transision("stop", "stop", "stop", "stop")
@@ -66,12 +66,7 @@ public class ReadStatus {
     }
 
     private static State stopState() {
-        return new State.Adapter() {
-            @Override
-            public boolean stopped() {
-                return true;
-            }
-        };
+        return new State.Stop();
     }
 
     public static class Response extends AbstractWireable implements Message {

@@ -180,13 +180,27 @@ public interface State {
         @Override
         public void exit(HandlerContext ctx) {
         }
-        
+
         @Override
         public String toString() {
             return String.format("%s@%s", getClass().getSimpleName(), hashCode());
         }
     }
+
     public static class Stop extends Adapter {
+
+        @Override
+        public State enter(HandlerContext ctx) {
+            ctx.onRequestCompleted();
+            return this;
+        }
+
+        @Override
+        public State on(HandlerContext ctx, Message m) {
+            log.info(String.format("stop state: on(%s, %s)", ctx, m));
+            return this;
+        }
+
         @Override
         public boolean stopped() {
             return true;

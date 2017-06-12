@@ -33,7 +33,6 @@ import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
 import com.wincom.dcim.agentd.primitives.SetPeriodicTimer;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -85,7 +84,7 @@ public final class TcpOutboundHandlerImpl
                     m.getSender().fire(new AcceptFailed(ctx, f.cause()));
                     log.info(String.format("creating acceptor was failed: %s", f));
                 }
-                ctx.onRequestCompleted(m);
+                ctx.onRequestCompleted();
             }
 
         });
@@ -164,7 +163,7 @@ public final class TcpOutboundHandlerImpl
         ByteBuf buf = Unpooled.wrappedBuffer(((SendBytes) m).getByteBuffer());
 
         channel.writeAndFlush(buf);
-        ctx.onRequestCompleted(new WriteComplete(ctx));
+        ctx.onRequestCompleted();
     }
 
     @Override

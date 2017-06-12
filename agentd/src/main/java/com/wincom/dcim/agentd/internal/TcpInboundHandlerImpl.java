@@ -62,7 +62,7 @@ public final class TcpInboundHandlerImpl
                 .addLast(new StreamChannelInboundHandler(clientContext));
 
         // continue accepting new connections in this state machine...
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted();
 
         state.enter(clientContext);
     }
@@ -81,7 +81,7 @@ public final class TcpInboundHandlerImpl
                 .addLast(new IdleStateHandler(0, 0, 5))
                 .addLast(new StreamChannelInboundHandler(ctx));
 
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted();
 
         ctx.state().on(ctx, m);
     }
@@ -119,18 +119,18 @@ public final class TcpInboundHandlerImpl
     @Override
     public void handleDeadlineTimeout(HandlerContext ctx, DeadlineTimeout m) {
         ctx.state().on(ctx, m);
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted();
     }
 
     @Override
     public void handleMillsecFromNowTimeout(HandlerContext ctx, MillsecFromNowTimeout m) {
         ctx.state().on(ctx, m);
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted();
     }
 
     @Override
     public void handlePeriodicTimeout(HandlerContext ctx, PeriodicTimeout m) {
         ctx.state().on(ctx, m);
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted();
     }
 }

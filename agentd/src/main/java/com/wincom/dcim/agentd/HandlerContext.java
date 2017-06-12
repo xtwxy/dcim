@@ -28,10 +28,8 @@ public interface HandlerContext {
     /**
      * Called by the sender when a message is processed, the result maybe
      * success or not.
-     *
-     * @param m
      */
-    public void onRequestCompleted(Message m);
+    public void onRequestCompleted();
 
     /**
      * Fire message from the underlying service to the state machine.
@@ -186,7 +184,7 @@ public interface HandlerContext {
         @Override
         public synchronized void onClosed(Message m) {
             setActive(false);
-            onRequestCompleted(m);
+            onRequestCompleted();
             /*
              * Do not empty the queue!
              */
@@ -197,11 +195,8 @@ public interface HandlerContext {
         }
 
         @Override
-        public synchronized void onRequestCompleted(Message m) {
+        public synchronized void onRequestCompleted() {
             if (isInprogress()) {
-//                if(this != current.getSender()) {
-//                    current.getSender().fire(m);
-//                }
                 current = null;
             } else {
                 // not possible! should be discarded!

@@ -63,12 +63,7 @@ public class ReadSettings {
     }
 
     private static State stopState() {
-        return new State.Adapter() {
-            @Override
-            public boolean stopped() {
-                return true;
-            }
-        };
+        return new State.Stop();
     }
 
     public static class Response extends AbstractWireable implements Message {

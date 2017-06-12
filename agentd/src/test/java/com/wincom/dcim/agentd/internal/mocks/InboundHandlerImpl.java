@@ -26,12 +26,12 @@ public class InboundHandlerImpl extends ChannelInboundHandler.Adapter {
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted();
     }
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
-        ctx.onRequestCompleted(m);
+        ctx.onRequestCompleted();
         sendBytes(ctx);
     }
 

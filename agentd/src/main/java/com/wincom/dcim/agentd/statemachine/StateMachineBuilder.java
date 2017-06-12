@@ -17,7 +17,13 @@ public class StateMachineBuilder {
     }
 
     public StateMachineBuilder add(String name, State s) {
-        this.states.put(name, s);
+        if (s instanceof StateMachine) {
+            StateMachine sm = (StateMachine) s;
+            this.states.put(name, sm.initial());
+        } else {
+            this.states.put(name, s);
+        }
+
         return this;
     }
 

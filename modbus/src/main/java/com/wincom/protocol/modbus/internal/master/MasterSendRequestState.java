@@ -50,10 +50,10 @@ public class MasterSendRequestState extends State.Adapter {
         } else if (m instanceof ChannelInactive
                 || m instanceof ChannelTimeout
                 || m instanceof ApplicationFailure) {
-            ctx.onRequestCompleted(m);
+            ctx.onRequestCompleted();
             return failure();
         } else if (m instanceof SystemError) {
-            ctx.onRequestCompleted(m);
+            ctx.onRequestCompleted();
             return error();
         } else {
             return this;

@@ -26,7 +26,7 @@ public class StateMachine implements State {
     public StateMachine(
             State initial
     ) {
-        this.initial = initial;
+        this.initial = extractState(initial);
         this.stop = new State.Adapter();
 
         this.current = initial;
@@ -38,10 +38,10 @@ public class StateMachine implements State {
             State stop
     ) {
         this();
-        this.initial = initial;
-        this.stop = stop;
+        this.initial = extractState(initial);
+        this.stop = extractState(stop);
 
-        this.current = initial;
+        this.current = this.initial;
         this.prev = null;
     }
 
@@ -121,7 +121,7 @@ public class StateMachine implements State {
 
     @Override
     public State success(State s) {
-        return current.success(s);
+        return current.success(extractState(s));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class StateMachine implements State {
 
     @Override
     public State failure(State s) {
-        return current.failure(s);
+        return current.failure(extractState(s));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class StateMachine implements State {
 
     @Override
     public State error(State s) {
-        return current.error(s);
+        return current.error(extractState(s));
     }
 
     @Override
@@ -155,5 +155,14 @@ public class StateMachine implements State {
 
     public State stop() {
         return this.stop;
+    }
+    
+    private State extractState(State s) {
+        if(s instanceof StateMachine) {
+            StateMachine sm = (StateMachine) s;
+            return sm.initial();
+        } else {
+            return s;
+        }
     }
 }

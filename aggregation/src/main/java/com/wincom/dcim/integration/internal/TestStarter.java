@@ -1,6 +1,8 @@
 package com.wincom.dcim.integration.internal;
 
 import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.NetworkConfig;
 import com.wincom.dcim.agentd.NetworkService;
 import java.util.HashSet;
@@ -36,9 +38,10 @@ public class TestStarter implements ServiceListener, Runnable {
     private static final String COM_PORT_KEY = "port";
 
     private static final int MP3000_COUNT = 1;
-    private static final int MP3000_PORT_COUNT = 8;
+    private static final int MP3000_PORT_COUNT = 1;
     private static final int MODBUS_CODEC_COUNT = MP3000_COUNT * MP3000_PORT_COUNT;
     private static final int DDS3366D_COUNT_PER_PORT = 1;
+    private static final int DDS3366D_COUNT = MODBUS_CODEC_COUNT * DDS3366D_COUNT_PER_PORT;
     private static final String MP3000_WAITE_TIMEOUT = "60000";
 
     private final Set<String> required;
@@ -73,7 +76,7 @@ public class TestStarter implements ServiceListener, Runnable {
         started = true;
     }
 
-    private static void createMp3000Codec(AgentdService agent, NetworkService network) {
+    private void createMp3000Codec(AgentdService agent, NetworkService network) {
         for (int i = 0; i < MP3000_COUNT; ++i) {
             Properties props = new Properties();
             props.setProperty(NetworkConfig.HOST_KEY, MP3000_HOST);
@@ -86,7 +89,7 @@ public class TestStarter implements ServiceListener, Runnable {
         }
     }
 
-    private static void createModbusCodec(AgentdService agent, NetworkService network) {
+    private void createModbusCodec(AgentdService agent, NetworkService network) {
         for (int i = 0; i < MP3000_COUNT; ++i) {
             for (int j = 0; j < MP3000_PORT_COUNT; ++j) {
                 Properties props = new Properties();
@@ -102,7 +105,7 @@ public class TestStarter implements ServiceListener, Runnable {
         }
     }
 
-    private static void createDds3366dCodec(AgentdService agent, NetworkService network) {
+    private void createDds3366dCodec(AgentdService agent, NetworkService network) {
         for (int i = 0; i < MODBUS_CODEC_COUNT; ++i) {
             for (int j = 0; j < DDS3366D_COUNT_PER_PORT; ++j) {
                 Properties props = new Properties();
@@ -117,15 +120,27 @@ public class TestStarter implements ServiceListener, Runnable {
         }
     }
 
-    private static void createReader(AgentdService agent, NetworkService network) {
-
+    private void createReader(AgentdService agent, NetworkService network) {
+        for(int i = 0; i < DDS3366D_COUNT; ++i) {
+            TestHandlerContextImpl ctx = new TestHandlerContextImpl();
+            Codec codec = agent.getCodec(Integer.toString(MP3000_COUNT + MODBUS_CODEC_COUNT + i + 1));
+            Properties props = new Properties();
+            HandlerContext outbound = codec.openInbound(agent, props);
+            log.info(outbound.toString());
+            outbound.addInboundContext(ctx);
+        }
     }
 
     @Override
     public void run() {
+        log.info(agent.toString());
         createMp3000Codec(agent, network);
+        log.info(agent.toString());
         createModbusCodec(agent, network);
+        log.info(agent.toString());
         createDds3366dCodec(agent, network);
+        log.info(agent.toString());
         createReader(agent, network);
+        log.info(agent.toString());
     }
 }

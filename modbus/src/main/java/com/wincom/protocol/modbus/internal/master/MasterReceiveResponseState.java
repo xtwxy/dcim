@@ -40,11 +40,11 @@ public class MasterReceiveResponseState extends State.Adapter {
                 || m instanceof ApplicationFailure
                 || m instanceof SystemError) {
             request.getSender().fire(m);
-            ctx.onRequestCompleted(m);
+            ctx.onRequestCompleted();
             return failure();
         } else if (m instanceof ChannelTimeout) {
             request.getSender().fire(m);
-            ctx.onRequestCompleted(m);
+            ctx.onRequestCompleted();
         }
         return success();
     }
@@ -107,7 +107,7 @@ public class MasterReceiveResponseState extends State.Adapter {
             response.fromWire(buf);
             if (request.getSlaveAddress() == response.getSlaveAddress()
                     && request.getFunction() == response.getFunction()) {
-                result = response;
+                result = response.getPayload();
             } else {
                 final String error = String.format("request(address = %s, function = %s) != response(address = %s, function = %s)",
                         request.getSlaveAddress(), request.getFunction(),
@@ -121,7 +121,7 @@ public class MasterReceiveResponseState extends State.Adapter {
         readBuffer.position(LENGTH);
         readBuffer.clear();
         request.getSender().fire(result);
-        ctx.onRequestCompleted(result);
+        ctx.onRequestCompleted();
     }
 
     private boolean locateModbusAddress(ModbusFrame request) {

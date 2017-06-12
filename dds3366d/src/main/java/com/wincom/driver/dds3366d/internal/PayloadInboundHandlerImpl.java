@@ -32,11 +32,20 @@ public class PayloadInboundHandlerImpl
     }
 
     @Override
+    public void handlePayloadReceived(HandlerContext ctx, Message m) {
+        handleModbusResponse(ctx, m);
+    }
+
+    @Override
     public void handlePayloadSent(HandlerContext ctx, Message m) {
+        handleModbusResponse(ctx, m);
     }
 
     private void handleModbusResponse(HandlerContext ctx, Message m) {
-        ctx.state().on(ctx, m);
-        ctx.onRequestCompleted(m);
+        if (ctx.state().stopped()) {
+            ctx.fireInboundHandlerContexts(m);
+        } else {
+            ctx.state().on(ctx, m);
+        }
     }
 }

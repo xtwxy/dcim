@@ -66,4 +66,21 @@ public final class AgentdServiceImpl implements AgentdService {
     public void setCodec(String codecId, Codec codec) {
         this.codecs.put(codecId, codec);
     }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("codecFactories:");
+        for (Map.Entry<String, CodecFactory> e : codecFactories.entrySet()) {
+            sb.append(String.format("(%s, %s)\n", e.getKey(), e.getValue()));
+        };
+
+        sb.append("codecs:");
+        for (Map.Entry<String, Codec> e : codecs.entrySet()) {
+            sb.append(String.format("(%s, %s)\n", e.getKey(), e.getValue()));
+        }
+
+        return sb.toString();
+    }
 }
