@@ -20,11 +20,14 @@ public class TestChannelInboundHandlerImpl extends ChannelInboundHandler.Adapter
         log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
         log.info(String.format("getOutboundHandler() = %s", ctx.getOutboundHandler()));
         super.handleChannelActive(ctx, m);
+        sendRequest(ctx);
     }
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
-        log.info(m.toString());
+        log.info(String.format("handlePayloadReceived(%s, %s)", ctx, m));
+        sendRequest(ctx);
+        ctx.onRequestCompleted();
     }
 
     @Override
