@@ -28,5 +28,5 @@ public abstract class Signal {
         this.type = type;
     }
 
-    private Type type;
+    protected Type type;
 }

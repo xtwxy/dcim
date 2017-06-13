@@ -15,4 +15,9 @@ public final class IntegerSignal extends Signal {
     public Integer value() {
         return value;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%s, %s", type, value);
+    }
 }

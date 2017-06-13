@@ -15,4 +15,9 @@ public final class AnalogSignal extends Signal {
     public Double value() {
         return value;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%s, %s", type, value);
+    }
 }

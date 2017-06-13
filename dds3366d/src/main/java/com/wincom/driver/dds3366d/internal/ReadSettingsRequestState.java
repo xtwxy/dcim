@@ -17,13 +17,13 @@ public class ReadSettingsRequestState extends State.Adapter {
     public ReadSettingsRequestState(HandlerContext outbound) {
         this.outbound = outbound;
     }
-
+    
     @Override
     public State enter(HandlerContext ctx) {
         ReadMultipleHoldingRegistersRequest request = new ReadMultipleHoldingRegistersRequest(ctx);
-        request.setStartAddress((short)0x01f4);
-        request.setNumberOfRegisters((short)13);
-      
+        request.setStartAddress((short) 0x01f4);
+        request.setNumberOfRegisters((short) 13);
+
         outbound.send(request);
         // FIXME: hack for netty half sync-half-async promise.
         return success();

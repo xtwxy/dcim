@@ -6,6 +6,8 @@ import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersResponse;
 import com.wincom.driver.dds3366d.internal.primitives.ReadSettings.Response;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -22,7 +24,8 @@ public class ReadSettingsResponseState extends DefaultReceiveState {
             Response response = new Response(ctx);
             response.fromWire(ByteBuffer.wrap(registers.getBytes()));
 
-            ctx.fireInboundHandlerContexts(response);
+            List<Message> responses = (List<Message>) ctx.getOrSetIfNotExist("response", new ArrayList<Message>());
+            responses.add(response);
 
             return success();
         } else {

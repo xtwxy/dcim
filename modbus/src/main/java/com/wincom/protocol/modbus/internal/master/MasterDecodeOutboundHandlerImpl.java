@@ -36,7 +36,6 @@ public class MasterDecodeOutboundHandlerImpl extends ChannelOutboundHandler.Adap
                 .add("stop", new State.Stop())
                 .transision("send", "receive", "stop", "stop")
                 .transision("receive", "stop", "stop", "stop")
-                .transision("stop", "stop", "stop", "stop")
                 .buildWithInitialAndStop("send", "stop");
 
         ctx.state(machine);

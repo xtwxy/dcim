@@ -20,5 +20,8 @@ public final class StringSignal extends Signal {
         value = v;
     }
     
-    
+    @Override
+    public String toString() {
+        return String.format("%s, %s", type, value);
+    }
 }

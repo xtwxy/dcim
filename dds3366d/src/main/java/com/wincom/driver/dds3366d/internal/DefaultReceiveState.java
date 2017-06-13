@@ -35,6 +35,6 @@ public class DefaultReceiveState extends State.Adapter {
 
     @Override
     public String toString() {
-        return "DefaultReceiveState@" + this.hashCode();
+        return String.format("%s@%s", getClass().getSimpleName(), this.hashCode());
     }
 }

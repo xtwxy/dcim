@@ -58,7 +58,6 @@ public class ReadSettings {
                 .add("stop", stop)
                 .transision("send", "receive", "stop", "stop")
                 .transision("receive", "stop", "stop", "stop")
-                .transision("stop", "stop", "stop", "stop")
                 .buildWithInitialAndStop("send", "stop");
     }
 

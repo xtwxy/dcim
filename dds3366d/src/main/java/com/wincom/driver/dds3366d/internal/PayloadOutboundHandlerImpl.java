@@ -19,7 +19,7 @@ public class PayloadOutboundHandlerImpl
     @Override
     public void handleSendPayload(HandlerContext ctx, Message m) {
         if (m instanceof GetSignalValues.Request) {
-            State stop = new State.Stop();
+            State stop = new MergeResponseState();
             State state = ReadSettings.initial(m, stop, outboundContext);
             if (state.stopped()) {
                 state = ReadStatus.initial(m, stop, outboundContext);

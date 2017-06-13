@@ -41,14 +41,16 @@ public final class GetSignalValues {
             handler.handleSendPayload(ctx, this);
         }
     }
-    
+
     public static class Response extends ChannelInbound {
+
         private Map<String, Signal> values;
-        
+
         public Response(HandlerContext sender) {
             super(sender);
             this.values = new HashMap<>();
         }
+
         public Response(HandlerContext sender, HashMap<String, Signal> values) {
             super(sender);
             this.values = values;
@@ -65,6 +67,18 @@ public final class GetSignalValues {
         @Override
         public void applyChannelInbound(HandlerContext ctx, ChannelInboundHandler handler) {
             handler.handlePayloadReceived(ctx, this);
+        }
+
+        @Override
+        public String toString() {
+            StringBuffer sb = new StringBuffer();
+            sb.append("\n");
+            for (Map.Entry<String, Signal> e : values.entrySet()) {
+                sb.append("(");
+                sb.append(e.getKey().toString()).append(", ").append(e.getValue().toString());
+                sb.append(")\n");
+            }
+            return String.format("%s %s %s\n", getClass().getSimpleName(), getSender(), sb.toString());
         }
     }
 }
