@@ -45,7 +45,6 @@
     <module>poms</module>
     <module>provision</module>
     <module>agentd</module>
-    <module>io.netty.all</module>
     <module>mp3000</module>
     <module>aggregation</module>
     <module>dds3366d</module>

@@ -4,8 +4,6 @@ import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.primitives.Message;
 import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
 import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -13,9 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WaitTimeoutState extends State.Adapter {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
-
-    long millsec;
+    private long millsec;
     
     public WaitTimeoutState(long millsec) {
         this.millsec = millsec;
