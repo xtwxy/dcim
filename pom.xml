@@ -50,6 +50,7 @@
     <module>dds3366d</module>
     <module>modbus</module>
     <module>actorsys</module>
+    <module>redis-connector</module>
   </modules>
 
   <build>
