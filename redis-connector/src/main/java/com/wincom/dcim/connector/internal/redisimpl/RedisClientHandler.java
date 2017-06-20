@@ -1,4 +1,4 @@
-package com.wincom.dcim.connector.redisimpl;
+package com.wincom.dcim.connector.internal.redisimpl;
 
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelDuplexHandler;
@@ -7,8 +7,6 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.redis.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +15,11 @@ import java.util.List;
  * Created by master on 6/19/17.
  */
 public class RedisClientHandler extends ChannelDuplexHandler {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
         String[] commands = ((String) msg).split("\\s+");
         List<RedisMessage> children = new ArrayList<>(commands.length);
-        for (String cmdString : commands) {
+        for(String cmdString : commands) {
             children.add(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), cmdString)));
         }
         RedisMessage request = new ArrayRedisMessage(children);
@@ -44,18 +40,17 @@ public class RedisClientHandler extends ChannelDuplexHandler {
         ctx.close();
     }
 
-    private void printAggregatedRedisResponse(RedisMessage msg) {
-        log.info(msg.toString());
-        if (msg instanceof SimpleStringRedisMessage) {
-            System.out.println(((SimpleStringRedisMessage) msg).content());
-        } else if (msg instanceof ErrorRedisMessage) {
-            System.out.println(((ErrorRedisMessage) msg).content());
-        } else if (msg instanceof IntegerRedisMessage) {
-            System.out.println(((IntegerRedisMessage) msg).value());
-        } else if (msg instanceof FullBulkStringRedisMessage) {
-            System.out.println(getString((FullBulkStringRedisMessage) msg));
-        } else if (msg instanceof ArrayRedisMessage) {
-            for (RedisMessage child : ((ArrayRedisMessage) msg).children()) {
+    private static void printAggregatedRedisResponse(RedisMessage msg) {
+        if(msg instanceof SimpleStringRedisMessage) {
+            System.out.println(((SimpleStringRedisMessage)msg).content());
+        } else if(msg instanceof ErrorRedisMessage) {
+            System.out.println(((ErrorRedisMessage)msg).content());
+        } else if(msg instanceof IntegerRedisMessage) {
+            System.out.println(((IntegerRedisMessage)msg).value());
+        } else if(msg instanceof FullBulkStringRedisMessage) {
+            System.out.println(getString((FullBulkStringRedisMessage)msg));
+        } else if(msg instanceof ArrayRedisMessage) {
+            for(RedisMessage child : ((ArrayRedisMessage)msg).children()) {
                 printAggregatedRedisResponse(child);
             }
         } else {
@@ -63,8 +58,8 @@ public class RedisClientHandler extends ChannelDuplexHandler {
         }
     }
 
-    private String getString(FullBulkStringRedisMessage msg) {
-        if (msg.isNull()) {
+    private static String getString(FullBulkStringRedisMessage msg) {
+        if(msg.isNull()) {
             return "(null)";
         }
         return msg.content().toString(CharsetUtil.UTF_8);

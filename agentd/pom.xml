@@ -11,6 +11,7 @@
     <properties>
         <bundle.symbolicName>com.wincom.dcim.agentd</bundle.symbolicName>
         <bundle.namespace>com.wincom.dcim.agentd</bundle.namespace>
+        <os.detected.classifier>linux-x86_64</os.detected.classifier>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
@@ -94,6 +95,21 @@
             <version>4.1.12.Final</version>
         </dependency>
         <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.19.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.19.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>1.19.4</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.12</version>
@@ -161,5 +177,4 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
 </project>
