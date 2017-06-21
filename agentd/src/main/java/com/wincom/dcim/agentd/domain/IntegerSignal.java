@@ -1,11 +1,10 @@
 package com.wincom.dcim.agentd.domain;
 
 /**
- *
  * @author master
  */
 public final class IntegerSignal extends Signal {
-    private final Integer value;
+    private Integer value;
 
     public IntegerSignal(Integer value) {
         super(Type.INTEGER);
@@ -15,9 +14,14 @@ public final class IntegerSignal extends Signal {
     public Integer value() {
         return value;
     }
-    
+
+    @Override
+    public String stringValue() {
+        return String.format("%s", value);
+    }
+
     @Override
     public String toString() {
-        return String.format("%s, %s", type, value);
+        return String.format("(%s, %s)", type, value);
     }
 }

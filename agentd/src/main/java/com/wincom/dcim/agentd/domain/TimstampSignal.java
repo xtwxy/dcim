@@ -1,5 +1,7 @@
 package com.wincom.dcim.agentd.domain;
 
+import com.wincom.dcim.agentd.util.DateFormat;
+
 import java.util.Date;
 
 /**
@@ -8,7 +10,6 @@ import java.util.Date;
  */
 public final class TimstampSignal extends Signal {
     private final Date value;
-
     public TimstampSignal(Date value) {
         super(Type.TIMESTAMP);
         this.value = value;
@@ -17,7 +18,12 @@ public final class TimstampSignal extends Signal {
     public Date value() {
         return value;
     }
-    
+
+    @Override
+    public String stringValue() {
+        return DateFormat.formatTimestamp(value);
+    }
+
     @Override
     public String toString() {
         return String.format("%s, %s", type, value);

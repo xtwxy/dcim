@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd.config;
 
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.api.json.JSONJAXBContext;
+import com.wincom.dcim.agentd.domain.AnalogSignal;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -20,6 +21,7 @@ public class MyJAXBContextResolver implements ContextResolver<JAXBContext> {
 
 	public MyJAXBContextResolver() throws Exception {
 		Class<?>[] types = {
+				AnalogSignal.class
 			};
 		context = new JSONJAXBContext(JSONConfiguration.natural().build(), types);
 		for (Class<?> type : types) {
