@@ -3,6 +3,8 @@ package com.wincom.dcim.agentd.domain;
 import com.sun.jersey.api.json.JSONJAXBContext;
 import com.sun.jersey.api.json.JSONMarshaller;
 import com.sun.jersey.api.json.JSONUnmarshaller;
+import com.wincom.dcim.agentd.json.SignalConverter;
+import com.wincom.dcim.agentd.json.SignalConverterList;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBContext;
@@ -11,6 +13,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,10 +42,11 @@ public class SignalConverterMarshalTest {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         List<SignalConverter> l = new ArrayList<>();
         for (int i = 0; i < 3; ++i) {
-            l.add(new SignalConverter(new DigitalSignal(true)));
+            l.add(new SignalConverter(new DigitalSignal(i % 2 == 0)));
             l.add(new SignalConverter(new IntegerSignal(i)));
             l.add(new SignalConverter(new AnalogSignal(100.0 + i)));
             l.add(new SignalConverter(new StringSignal("" + 100.0 + i)));
+            l.add(new SignalConverter(new TimstampSignal(new Date())));
         }
         SignalConverterList list = new SignalConverterList(l);
         marshaller.marshallToJSON(list, System.out);
@@ -69,7 +73,22 @@ public class SignalConverterMarshalTest {
         });
         Unmarshaller um = context.createUnmarshaller();
         JSONUnmarshaller unmarshaller = JSONJAXBContext.getJSONUnmarshaller(um, context);
-        String json = "{\"list\":[{\"type\":\"DIGITAL\",\"value\":\"true\"},{\"type\":\"INTEGER\",\"value\":\"0\"},{\"type\":\"ANALOG\",\"value\":\"100.0\"},{\"type\":\"STRING\",\"value\":\"100.00\"},{\"type\":\"DIGITAL\",\"value\":\"true\"},{\"type\":\"INTEGER\",\"value\":\"1\"},{\"type\":\"ANALOG\",\"value\":\"101.0\"},{\"type\":\"STRING\",\"value\":\"100.01\"},{\"type\":\"DIGITAL\",\"value\":\"true\"},{\"type\":\"INTEGER\",\"value\":\"2\"},{\"type\":\"ANALOG\",\"value\":\"102.0\"},{\"type\":\"STRING\",\"value\":\"100.02\"}]}\n";
+        String json = "{\"list\":[" +
+                "{\"type\":\"DIGITAL\",\"value\":\"false\"}," +
+                "{\"type\":\"INTEGER\",\"value\":\"0\"}," +
+                "{\"type\":\"ANALOG\",\"value\":\"100.0\"}," +
+                "{\"type\":\"STRING\",\"value\":\"100.00\"}," +
+                "{\"type\":\"TIMESTAMP\",\"value\":\"2017-06-21 15:12:51.326\"}," +
+                "{\"type\":\"DIGITAL\",\"value\":\"true\"}," +
+                "{\"type\":\"INTEGER\",\"value\":\"1\"}," +
+                "{\"type\":\"ANALOG\",\"value\":\"101.0\"}," +
+                "{\"type\":\"STRING\",\"value\":\"100.01\"}," +
+                "{\"type\":\"TIMESTAMP\",\"value\":\"2017-06-21 15:12:51.343\"}," +
+                "{\"type\":\"DIGITAL\",\"value\":\"true\"}," +
+                "{\"type\":\"INTEGER\",\"value\":\"2\"}," +
+                "{\"type\":\"ANALOG\",\"value\":\"102.0\"}," +
+                "{\"type\":\"STRING\",\"value\":\"100.02\"}," +
+                "{\"type\":\"TIMESTAMP\",\"value\":\"2017-06-21 15:12:51.343\"}]}\n";
         byte[] buf = json.getBytes();
         InputStream is = new ByteArrayInputStream(buf);
         SignalConverterList list = unmarshaller.unmarshalFromJSON(is, SignalConverterList.class);

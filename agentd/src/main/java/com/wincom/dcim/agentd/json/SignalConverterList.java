@@ -1,9 +1,8 @@
-package com.wincom.dcim.agentd.domain;
+package com.wincom.dcim.agentd.json;
 
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.List;
 
 /**

@@ -54,6 +54,9 @@ public abstract class Signal {
     protected Signal() {
 
     }
+    public Type type() {
+        return type;
+    }
 
     public abstract String stringValue();
 

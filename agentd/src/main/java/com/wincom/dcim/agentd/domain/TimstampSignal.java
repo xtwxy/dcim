@@ -26,6 +26,6 @@ public final class TimstampSignal extends Signal {
 
     @Override
     public String toString() {
-        return String.format("%s, %s", type, value);
+        return String.format("(%s, \"%s\")", type, DateFormat.formatTimestamp(value));
     }
 }

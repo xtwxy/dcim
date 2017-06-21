@@ -4,13 +4,11 @@ package com.wincom.dcim.agentd.primitives;
  *
  * @author master
  */
-public final class Request {
+public abstract class Request {
 
-    public final Message message;
-    public final Handler handler;
+    private final MessageType type;
 
-    public Request(Message message, Handler handler) {
-        this.message = message;
-        this.handler = handler;
+    public Request(MessageType type) {
+        this.type = type;
     }
 }

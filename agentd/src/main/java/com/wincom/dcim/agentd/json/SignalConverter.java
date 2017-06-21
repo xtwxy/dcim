@@ -1,4 +1,6 @@
-package com.wincom.dcim.agentd.domain;
+package com.wincom.dcim.agentd.json;
+
+import com.wincom.dcim.agentd.domain.Signal;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -16,7 +18,7 @@ public class SignalConverter {
 
     }
     public SignalConverter(Signal signal) {
-        this.type = signal.type;
+        this.type = signal.type();
         this.value = signal.stringValue();
     }
     public Signal getSignal() {
