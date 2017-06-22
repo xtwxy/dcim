@@ -10,7 +10,7 @@ import static org.junit.Assert.assertArrayEquals;
  *
  * @author master
  */
-public class WriteMultipleHoldingRegistersPrimitiveMessageTest {
+public class WriteMultipleHoldingRegistersRequestTest {
 
     @Test
     public void testMarshal1() {
