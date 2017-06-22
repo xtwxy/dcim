@@ -44,11 +44,19 @@ public class ConnectionImpl implements Connection {
                 handler.completed();
             }
         });
-        channel.writeAndFlush(String.format("lpush %s %s", queueName, JSONObject.quote(json)), promise);
+        channel.writeAndFlush(String.format("lpush %s %s", queueName, json), promise);
     }
 
     @Override
-    public Message receive(String queueName) {
+    public Message receive(String queueName, int timeoutSeconds, CompletionHandler handler) {
+        ChannelPromise promise = channel.newPromise();
+        promise.addListener(new GenericFutureListener<ChannelFuture>() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                handler.completed();
+            }
+        });
+        channel.writeAndFlush(String.format("brpop %s %s", queueName, timeoutSeconds));
         return null;
     }
 
@@ -58,7 +66,7 @@ public class ConnectionImpl implements Connection {
     }
 
     @Override
-    public Message get(String key, String hash) {
+    public Message get(String key, String hash, CompletionHandler handler) {
         return null;
     }
 
