@@ -13,4 +13,8 @@ public abstract class ResponseMessage extends ChannelInbound {
         super(sender);
         this.type = type;
     }
+
+    public PrimitiveMessageType type() {
+        return type;
+    }
 }

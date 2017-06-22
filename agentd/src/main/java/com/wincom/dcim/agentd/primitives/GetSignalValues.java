@@ -4,8 +4,6 @@ import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.domain.Signal;
-import com.wincom.dcim.agentd.messages.ChannelInbound;
-import com.wincom.dcim.agentd.messages.ChannelOutbound;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +40,11 @@ public final class GetSignalValues {
         @Override
         public void applyChannelOutbound(HandlerContext ctx, ChannelOutboundHandler handler) {
             handler.handleSendPayload(ctx, this);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s %s %s", getClass().getSimpleName(), getSender(), keys);
         }
     }
 

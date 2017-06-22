@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd.config;
 
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.api.json.JSONJAXBContext;
+import com.wincom.dcim.agentd.json.RequestConverter;
 import com.wincom.dcim.agentd.json.SignalConverter;
 import com.wincom.dcim.agentd.json.SignalConverterList;
 
@@ -18,6 +19,7 @@ public class MyJAXBContextResolver implements ContextResolver<JAXBContext> {
 
     public MyJAXBContextResolver() throws Exception {
         Class<?>[] types = {
+                RequestConverter.class,
                 SignalConverter.class,
                 SignalConverterList.class
         };

@@ -38,6 +38,11 @@ public final class SetSignalValues {
         public void setValues(Map<String, Signal> values) {
             this.values = values;
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s %s %s", getClass().getSimpleName(), getSender(), values);
+        }
     }
 
     public static class Response extends ResponseMessage {

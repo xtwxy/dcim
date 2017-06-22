@@ -1,10 +1,9 @@
-package com.wincom.dcim.agentd.domain;
+package com.wincom.dcim.agentd.json;
 
 import com.sun.jersey.api.json.JSONJAXBContext;
 import com.sun.jersey.api.json.JSONMarshaller;
 import com.sun.jersey.api.json.JSONUnmarshaller;
-import com.wincom.dcim.agentd.json.SignalConverter;
-import com.wincom.dcim.agentd.json.SignalConverterList;
+import com.wincom.dcim.agentd.domain.*;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBContext;

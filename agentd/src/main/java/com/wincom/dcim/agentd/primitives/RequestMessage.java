@@ -13,4 +13,8 @@ public abstract class RequestMessage extends ChannelOutbound {
         super(sender);
         this.type = type;
     }
+
+    public PrimitiveMessageType type() {
+        return type;
+    }
 }
