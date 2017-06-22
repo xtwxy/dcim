@@ -17,13 +17,17 @@ public class MyJAXBContextResolver implements ContextResolver<JAXBContext> {
     private JAXBContext context;
     private HashSet<Class<?>> typeSet = new HashSet<Class<?>>();
 
-    public MyJAXBContextResolver() throws Exception {
+    public MyJAXBContextResolver() {
         Class<?>[] types = {
                 RequestConverter.class,
                 SignalConverter.class,
                 SignalConverterList.class
         };
-        context = new JSONJAXBContext(JSONConfiguration.natural().build(), types);
+        try {
+            context = new JSONJAXBContext(JSONConfiguration.natural().build(), types);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
         for (Class<?> type : types) {
             typeSet.add(type);
         }

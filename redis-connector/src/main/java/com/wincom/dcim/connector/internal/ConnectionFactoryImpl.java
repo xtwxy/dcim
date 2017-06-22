@@ -4,7 +4,6 @@ import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.connector.Connection;
 import com.wincom.dcim.connector.ConnectionCallback;
 import com.wincom.dcim.connector.ConnectionFactory;
-import com.wincom.dcim.connector.internal.redisimpl.ConnectionImpl;
 import com.wincom.dcim.connector.redisimpl.RedisClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -32,6 +31,7 @@ public final class ConnectionFactoryImpl
 
     private static final String HOST = System.getProperty("host", "127.0.0.1");
     private static final int PORT = Integer.parseInt(System.getProperty("port", "6379"));
+    private static final String PASSWORD = System.getProperty("password", "foobared");
     private static final int MAX_CONNECTION_COUNT = 1000;
     private final NetworkService service;
     private final List<Connection> available;
@@ -85,6 +85,7 @@ public final class ConnectionFactoryImpl
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
+                    future.channel().writeAndFlush(String.format("auth %s", PASSWORD));
                     cc.completed(null, new ConnectionImpl(future.channel(),ConnectionFactoryImpl.this));
                 } else {
                     cc.completed(future.cause(), null);

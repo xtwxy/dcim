@@ -1,4 +1,4 @@
-package com.wincom.dcim.connector.internal.redisimpl;
+package com.wincom.dcim.connector.internal;
 
 /**
  * Created by master on 6/19/17.

@@ -1,4 +1,4 @@
-package com.wincom.dcim.connector.internal.redisimpl;
+package com.wincom.dcim.connector.internal;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
