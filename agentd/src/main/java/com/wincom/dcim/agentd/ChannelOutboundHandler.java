@@ -1,10 +1,10 @@
 package com.wincom.dcim.agentd;
 
-import com.wincom.dcim.agentd.primitives.Accept;
-import com.wincom.dcim.agentd.primitives.CloseConnection;
-import com.wincom.dcim.agentd.primitives.Connect;
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Accept;
+import com.wincom.dcim.agentd.messages.CloseConnection;
+import com.wincom.dcim.agentd.messages.Connect;
+import com.wincom.dcim.agentd.messages.Handler;
+import com.wincom.dcim.agentd.messages.Message;
 
 /**
  *

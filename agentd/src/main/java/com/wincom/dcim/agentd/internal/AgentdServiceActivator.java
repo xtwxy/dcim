@@ -8,18 +8,17 @@ import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Accept;
-import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SendBytes;
+import com.wincom.dcim.agentd.messages.Accept;
+import com.wincom.dcim.agentd.messages.BytesReceived;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.SendBytes;
 import com.wincom.dcim.agentd.statemachine.*;
 import static java.lang.System.out;
 import java.nio.ByteBuffer;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
+
 import org.osgi.framework.ServiceReference;
 
 public final class AgentdServiceActivator implements BundleActivator {

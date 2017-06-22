@@ -1,14 +1,14 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.BytesReceived;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.ChannelInactive;
+import com.wincom.dcim.agentd.messages.ChannelTimeout;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.ReadTimeout;
-import com.wincom.dcim.agentd.primitives.SystemError;
-import com.wincom.dcim.agentd.primitives.Unknown;
-import com.wincom.dcim.agentd.primitives.WriteTimeout;
+import com.wincom.dcim.agentd.messages.ReadTimeout;
+import com.wincom.dcim.agentd.messages.SystemError;
+import com.wincom.dcim.agentd.messages.Unknown;
+import com.wincom.dcim.agentd.messages.WriteTimeout;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

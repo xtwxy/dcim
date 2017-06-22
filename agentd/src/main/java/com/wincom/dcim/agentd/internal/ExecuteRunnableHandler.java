@@ -1,10 +1,10 @@
 package com.wincom.dcim.agentd.internal;
 
 import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.primitives.ExecuteRunnable;
-import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.messages.ExecuteRunnable;
+import com.wincom.dcim.agentd.messages.Handler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 import io.netty.channel.Channel;
 
 /**

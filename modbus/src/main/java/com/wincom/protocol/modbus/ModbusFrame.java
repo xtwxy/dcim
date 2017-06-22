@@ -1,12 +1,12 @@
 package com.wincom.protocol.modbus;
 
-import com.wincom.dcim.agentd.primitives.AbstractWireable;
-import com.wincom.dcim.agentd.primitives.Wireable;
+import com.wincom.dcim.agentd.messages.AbstractWireable;
+import com.wincom.dcim.agentd.messages.Wireable;
 import com.google.common.primitives.UnsignedBytes;
 import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.messages.Handler;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 

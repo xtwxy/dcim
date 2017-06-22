@@ -1,10 +1,10 @@
 package com.wincom.dcim.agentd.statemachine;
 
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.Connect;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.Connect;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.ConnectFailed;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.ConnectFailed;
 import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

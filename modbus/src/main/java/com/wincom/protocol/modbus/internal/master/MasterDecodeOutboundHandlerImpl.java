@@ -2,7 +2,7 @@ package com.wincom.protocol.modbus.internal.master;
 
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;

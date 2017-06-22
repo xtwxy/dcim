@@ -1,10 +1,10 @@
 package com.wincom.dcim.agentd.internal.mocks;
 
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
-import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
-import com.wincom.dcim.agentd.primitives.SetPeriodicTimer;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.SetDeadlineTimer;
+import com.wincom.dcim.agentd.messages.SetMillsecFromNowTimer;
+import com.wincom.dcim.agentd.messages.SetPeriodicTimer;
 import com.wincom.dcim.agentd.TimerOutboundHandler;
 
 /**

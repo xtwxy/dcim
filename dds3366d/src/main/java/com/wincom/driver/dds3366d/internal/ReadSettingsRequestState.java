@@ -1,8 +1,8 @@
 package com.wincom.driver.dds3366d.internal;
 
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.WriteComplete;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
 

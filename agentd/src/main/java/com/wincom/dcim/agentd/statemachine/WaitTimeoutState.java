@@ -1,9 +1,9 @@
 package com.wincom.dcim.agentd.statemachine;
 
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.MillsecFromNowTimeout;
-import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.MillsecFromNowTimeout;
+import com.wincom.dcim.agentd.messages.SetMillsecFromNowTimer;
 
 /**
  *

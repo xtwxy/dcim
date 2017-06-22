@@ -5,11 +5,11 @@ import com.wincom.dcim.agentd.domain.Signal;
 import com.wincom.dcim.agentd.domain.TimstampSignal;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.statemachine.State;
-import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.messages.Handler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
-import com.wincom.dcim.agentd.primitives.AbstractWireable;
+import com.wincom.dcim.agentd.messages.AbstractWireable;
 import com.wincom.driver.dds3366d.internal.ReadSettingsRequestState;
 import com.wincom.driver.dds3366d.internal.ReadSettingsResponseState;
 

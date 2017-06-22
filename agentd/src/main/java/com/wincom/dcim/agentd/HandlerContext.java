@@ -1,7 +1,7 @@
 package com.wincom.dcim.agentd;
 
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import java.util.HashMap;
@@ -185,13 +185,6 @@ public interface HandlerContext {
         public synchronized void onClosed(Message m) {
             setActive(false);
             onRequestCompleted();
-            /*
-             * Do not empty the queue!
-             */
- /* while (!queue.isEmpty()) {
-             *   Message s = queue.poll();
-             * }
-             */
         }
 
         @Override

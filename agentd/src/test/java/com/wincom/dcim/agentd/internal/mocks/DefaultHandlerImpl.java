@@ -1,8 +1,8 @@
 package com.wincom.dcim.agentd.internal.mocks;
 
-import com.wincom.dcim.agentd.primitives.Handler;
+import com.wincom.dcim.agentd.messages.Handler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

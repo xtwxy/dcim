@@ -1,17 +1,17 @@
 package com.wincom.dcim.agentd;
 
-import com.wincom.dcim.agentd.primitives.Accepted;
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.Connected;
-import com.wincom.dcim.agentd.primitives.ConnectionClosed;
-import com.wincom.dcim.agentd.primitives.ApplicationFailure;
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.ReadTimeout;
-import com.wincom.dcim.agentd.primitives.SystemError;
-import com.wincom.dcim.agentd.primitives.WriteTimeout;
+import com.wincom.dcim.agentd.messages.Accepted;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.ChannelInactive;
+import com.wincom.dcim.agentd.messages.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.Connected;
+import com.wincom.dcim.agentd.messages.ConnectionClosed;
+import com.wincom.dcim.agentd.messages.ApplicationFailure;
+import com.wincom.dcim.agentd.messages.Handler;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.ReadTimeout;
+import com.wincom.dcim.agentd.messages.SystemError;
+import com.wincom.dcim.agentd.messages.WriteTimeout;
 
 /**
  *

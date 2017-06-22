@@ -1,10 +1,10 @@
 package com.wincom.driver.dds3366d.internal;
 
-import com.wincom.dcim.agentd.primitives.ChannelActive;
-import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.ChannelInactive;
+import com.wincom.dcim.agentd.messages.ChannelTimeout;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 
 /**

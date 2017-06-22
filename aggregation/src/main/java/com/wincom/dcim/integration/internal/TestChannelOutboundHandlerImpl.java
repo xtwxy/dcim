@@ -2,7 +2,7 @@ package com.wincom.dcim.integration.internal;
 
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 
 /**
  *

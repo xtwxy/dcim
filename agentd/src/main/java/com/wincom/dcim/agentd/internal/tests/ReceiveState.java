@@ -1,12 +1,12 @@
 package com.wincom.dcim.agentd.internal.tests;
 
-import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.BytesReceived;
+import com.wincom.dcim.agentd.messages.ChannelInactive;
+import com.wincom.dcim.agentd.messages.ChannelTimeout;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SendBytes;
-import com.wincom.dcim.agentd.primitives.WriteComplete;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.SendBytes;
+import com.wincom.dcim.agentd.messages.WriteComplete;
 import com.wincom.dcim.agentd.statemachine.State;
 import java.nio.ByteBuffer;
 import org.slf4j.Logger;

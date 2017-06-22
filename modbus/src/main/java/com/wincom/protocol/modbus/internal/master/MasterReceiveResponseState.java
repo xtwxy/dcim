@@ -1,12 +1,12 @@
 package com.wincom.protocol.modbus.internal.master;
 
-import com.wincom.dcim.agentd.primitives.BytesReceived;
-import com.wincom.dcim.agentd.primitives.ApplicationFailure;
+import com.wincom.dcim.agentd.messages.BytesReceived;
+import com.wincom.dcim.agentd.messages.ApplicationFailure;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.ChannelInactive;
-import com.wincom.dcim.agentd.primitives.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.Message;
-import com.wincom.dcim.agentd.primitives.SystemError;
+import com.wincom.dcim.agentd.messages.ChannelInactive;
+import com.wincom.dcim.agentd.messages.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.SystemError;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.protocol.modbus.ModbusFrame;
 import java.nio.ByteBuffer;

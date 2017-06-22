@@ -2,6 +2,9 @@ package com.wincom.dcim.agentd.primitives;
 
 import com.wincom.dcim.agentd.HandlerContext;
 import static org.junit.Assert.assertEquals;
+
+import com.wincom.dcim.agentd.messages.Handler;
+import com.wincom.dcim.agentd.messages.Message;
 import org.junit.Test;
 
 /**

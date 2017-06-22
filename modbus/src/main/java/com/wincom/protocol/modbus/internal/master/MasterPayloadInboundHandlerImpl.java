@@ -2,7 +2,7 @@ package com.wincom.protocol.modbus.internal.master;
 
 import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.protocol.modbus.ModbusPayloadInboundHandler;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersResponse;
 import com.wincom.protocol.modbus.WriteMultipleHoldingRegistersResponse;

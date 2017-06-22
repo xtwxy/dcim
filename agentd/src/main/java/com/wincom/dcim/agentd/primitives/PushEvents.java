@@ -2,6 +2,7 @@ package com.wincom.dcim.agentd.primitives;
 
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.domain.Event;
+import com.wincom.dcim.agentd.messages.Message;
 
 import java.util.ArrayList;
 import java.util.List;

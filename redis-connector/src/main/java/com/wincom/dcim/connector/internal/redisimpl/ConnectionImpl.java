@@ -1,6 +1,6 @@
 package com.wincom.dcim.connector.internal.redisimpl;
 
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.connector.Connection;
 import com.wincom.dcim.connector.ConnectionFactory;
 import io.netty.channel.Channel;

@@ -1,6 +1,6 @@
 package com.wincom.dcim.connector;
 
-import com.wincom.dcim.agentd.primitives.Message;
+import com.wincom.dcim.agentd.messages.Message;
 
 /**
  * Created by master on 6/20/17.

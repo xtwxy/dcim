@@ -1,9 +1,9 @@
 package com.wincom.dcim.agentd;
 
-import com.wincom.dcim.agentd.primitives.Handler;
-import com.wincom.dcim.agentd.primitives.SetDeadlineTimer;
-import com.wincom.dcim.agentd.primitives.SetMillsecFromNowTimer;
-import com.wincom.dcim.agentd.primitives.SetPeriodicTimer;
+import com.wincom.dcim.agentd.messages.Handler;
+import com.wincom.dcim.agentd.messages.SetDeadlineTimer;
+import com.wincom.dcim.agentd.messages.SetMillsecFromNowTimer;
+import com.wincom.dcim.agentd.messages.SetPeriodicTimer;
 
 /**
  *

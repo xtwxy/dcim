@@ -4,6 +4,9 @@ import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.domain.Signal;
+import com.wincom.dcim.agentd.messages.ChannelInbound;
+import com.wincom.dcim.agentd.messages.ChannelOutbound;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,17 +17,17 @@ import java.util.Set;
  */
 public final class GetSignalValues {
 
-    public static class Request extends ChannelOutbound {
+    public static class Request extends RequestMessage {
 
         private Set<String> keys;
 
         public Request(HandlerContext sender) {
-            super(sender);
+            super(sender, PrimitiveMessageType.GET_SIGNAL_VALUES_REQUEST);
             this.keys = new HashSet<>();
         }
 
         public Request(HandlerContext sender, Set<String> keys) {
-            super(sender);
+            super(sender, PrimitiveMessageType.GET_SIGNAL_VALUES_REQUEST);
             this.keys = keys;
         }
 
@@ -42,17 +45,17 @@ public final class GetSignalValues {
         }
     }
 
-    public static class Response extends ChannelInbound {
+    public static class Response extends ResponseMessage {
 
         private Map<String, Signal> values;
 
         public Response(HandlerContext sender) {
-            super(sender);
+            super(sender, PrimitiveMessageType.GET_SIGNAL_VALUES_RESPONSE);
             this.values = new HashMap<>();
         }
 
         public Response(HandlerContext sender, HashMap<String, Signal> values) {
-            super(sender);
+            super(sender, PrimitiveMessageType.GET_SIGNAL_VALUES_RESPONSE);
             this.values = values;
         }
 
