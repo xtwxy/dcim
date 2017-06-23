@@ -4,6 +4,7 @@ import com.sun.jersey.api.json.JSONJAXBContext;
 import com.sun.jersey.api.json.JSONMarshaller;
 import com.wincom.dcim.agentd.config.MyJAXBContextResolver;
 import com.wincom.dcim.agentd.json.RequestConverter;
+import com.wincom.dcim.agentd.messages.Handler;
 import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.primitives.RequestMessage;
 import com.wincom.dcim.connector.CompletionHandler;
@@ -57,6 +58,11 @@ public class ConnectionImpl implements Connection {
             }
         });
         channel.writeAndFlush(String.format("brpop %s %s", queueName, timeoutSeconds));
+        return null;
+    }
+
+    @Override
+    public Message listen(String queueName, int timeoutSeconds, Handler handler) {
         return null;
     }
 

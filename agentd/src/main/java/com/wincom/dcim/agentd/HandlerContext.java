@@ -4,16 +4,16 @@ import com.wincom.dcim.agentd.messages.ChannelActive;
 import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.statemachine.State;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author master
  */
 public interface HandlerContext {
@@ -91,6 +91,7 @@ public interface HandlerContext {
     public void setActive(boolean b);
 
     public void addInboundContext(HandlerContext ctx);
+
     public void removeInboundContext(HandlerContext ctx);
 
     public ChannelInboundHandler getInboundHandler();
@@ -98,7 +99,11 @@ public interface HandlerContext {
     public ChannelOutboundHandler getOutboundHandler();
 
     public void onClosed(Message m);
+
+    public void release();
+
     public void dispose();
+
     public void addDisposeHandler(DisposeHandler h);
 
     public void state(State sm);
@@ -108,7 +113,7 @@ public interface HandlerContext {
     public static interface DisposeHandler {
         public void onDispose(HandlerContext ctx);
     }
-    
+
     public static class Adapter implements HandlerContext {
 
         protected Logger log = LoggerFactory.getLogger(this.getClass());
@@ -264,8 +269,12 @@ public interface HandlerContext {
         }
 
         @Override
+        public void release() {
+        }
+
+        @Override
         public void dispose() {
-            for(DisposeHandler h : disposeHandlers) {
+            for (DisposeHandler h : disposeHandlers) {
                 h.onDispose(this);
             }
         }

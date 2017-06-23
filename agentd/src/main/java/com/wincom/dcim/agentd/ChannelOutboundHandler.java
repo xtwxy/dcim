@@ -1,13 +1,8 @@
 package com.wincom.dcim.agentd;
 
-import com.wincom.dcim.agentd.messages.Accept;
-import com.wincom.dcim.agentd.messages.CloseConnection;
-import com.wincom.dcim.agentd.messages.Connect;
-import com.wincom.dcim.agentd.messages.Handler;
-import com.wincom.dcim.agentd.messages.Message;
+import com.wincom.dcim.agentd.messages.*;
 
 /**
- *
  * @author master
  */
 public interface ChannelOutboundHandler extends Handler {
@@ -15,6 +10,8 @@ public interface ChannelOutboundHandler extends Handler {
     public void handleAccept(HandlerContext ctx, Accept m);
 
     public void handleConnect(HandlerContext ctx, Connect m);
+
+    public void handleAuth(HandlerContext ctx, PasswordAuth m);
 
     public void handleClose(HandlerContext ctx, CloseConnection m);
 
@@ -30,17 +27,21 @@ public interface ChannelOutboundHandler extends Handler {
 
         @Override
         public void handleAccept(HandlerContext ctx, Accept m) {
-            log.info(String.format("handleAccept(%s, %s)", ctx, m));
+            log.info("handleAccept({}, {})", ctx, m);
         }
 
         @Override
         public void handleConnect(HandlerContext ctx, Connect m) {
-            log.info(String.format("handleConnect(%s, %s)", ctx, m));
+            log.info("handleConnect({}, {})", ctx, m);
         }
 
         @Override
+        public void handleAuth(HandlerContext ctx, PasswordAuth m) {
+            log.info("PasswordAuth({}, {})", ctx, m);
+        }
+        @Override
         public void handleClose(HandlerContext ctx, CloseConnection m) {
-            log.info(String.format("handleClose(%s, %s)", ctx, m));
+            log.info("handleClose({}, {})", ctx, m);
         }
 
         @Override
