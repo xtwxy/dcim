@@ -1,6 +1,5 @@
 package com.wincom.protocol.modbus.internal.master;
 
-import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
@@ -41,7 +40,7 @@ public class MasterCodecImpl implements Codec {
     
     @Override
     public HandlerContext openInbound(
-            AgentdService service, Properties props) {
+            Properties props) {
         log.info(String.format("%s", props));
         
         Byte address = Byte.valueOf(props.getProperty(MODBUS_SLAVE_ADDRESS_KEY));

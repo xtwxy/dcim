@@ -19,6 +19,10 @@ public class MasterCodecFactoryImpl implements CodecFactory {
     public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
     public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
+    private final AgentdService agent;
+    public MasterCodecFactoryImpl(AgentdService agent) {
+        this.agent = agent;
+    }
     /**
      * Create <code>MP3000CodecImpl</code> instance.
      *
@@ -26,12 +30,12 @@ public class MasterCodecFactoryImpl implements CodecFactory {
      * @return <code>MP3000CodecImpl</code> instance.
      */
     @Override
-    public Codec create(AgentdService service, Properties props) {
+    public Codec create(Properties props) {
         log.info(props.toString());
 
-        Codec outboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
+        Codec outboundCodec = agent.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
-        HandlerContext outboundHandlerContext = outboundCodec.openInbound(service,
+        HandlerContext outboundHandlerContext = outboundCodec.openInbound(
                 (Properties) props.get(OUTBOUND_CTX_PROPS_KEY));
         
         return new MasterCodecImpl(outboundHandlerContext);

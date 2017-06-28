@@ -29,8 +29,10 @@ public class MP3000CodecImpl implements Codec {
     public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
     private final Map<Integer, HandlerContext> inbound;
+    private final AgentdService agent;
 
-    public MP3000CodecImpl(AgentdService service, Properties props) {
+    public MP3000CodecImpl(AgentdService agent, Properties props) {
+        this.agent = agent;
         this.inbound = new HashMap<>();
         this.HOST = props.getProperty("host");
         this.BASE_PORT = Integer.parseInt(props.getProperty("basePort"));
@@ -41,19 +43,19 @@ public class MP3000CodecImpl implements Codec {
 
     @Override
     public HandlerContext openInbound(
-            AgentdService service, Properties props) {
+            Properties props) {
         Integer comport = Integer.valueOf(props.getProperty(COM_PORT_KEY));
         HandlerContext ctx = inbound.get(comport);
         if (comport <= PORT_COUNT) {
             if (ctx == null) {
-                Codec inboundCodec = service.getCodec(CODEC_ID);
+                Codec inboundCodec = agent.getCodec(CODEC_ID);
                 Properties p = new Properties();
                 p.setProperty(NetworkConfig.HOST_KEY, HOST);
                 p.setProperty(NetworkConfig.PORT_KEY, Integer.toString(BASE_PORT + comport));
                 p.setProperty(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
                 log.info(p.toString());
-                ctx = inboundCodec.openInbound(service, p);
+                ctx = inboundCodec.openInbound(p);
                 inbound.put(comport, ctx);
             } else {
                 // already opened.

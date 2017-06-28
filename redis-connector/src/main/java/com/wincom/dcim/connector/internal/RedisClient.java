@@ -1,5 +1,6 @@
 package com.wincom.dcim.connector.internal;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -35,7 +36,7 @@ public class RedisClient {
                             p.addLast(new RedisBulkStringAggregator());
                             p.addLast(new RedisArrayAggregator());
                             p.addLast(new RedisEncoder());
-                            p.addLast(new RedisClientHandler());
+                            p.addLast(new RedisClientHandler(new HandlerContext.Adapter()));
                         }
                     });
             Channel ch = b.connect(HOST, PORT).sync().channel();

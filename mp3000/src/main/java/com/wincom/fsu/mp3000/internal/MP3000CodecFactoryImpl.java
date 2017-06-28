@@ -15,21 +15,24 @@ import org.slf4j.LoggerFactory;
 public class MP3000CodecFactoryImpl implements CodecFactory {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final AgentdService agent;
 
+    public MP3000CodecFactoryImpl(AgentdService agent) {
+        this.agent = agent;
+    }
     /**
      * Create <code>MP3000CodecImpl</code> instance.
      *
-     * @param service
      * @param props
      * @return
      */
     @Override
-    public Codec create(AgentdService service, Properties props) {
+    public Codec create(Properties props) {
         log.info(props.toString());
 
         Codec theCodec
                 = new MP3000CodecImpl(
-                        service,
+                agent,
                         props
                 );
 

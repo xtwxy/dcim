@@ -125,7 +125,7 @@ public class TestStarter implements ServiceListener, Runnable {
             TestHandlerContextImpl ctx = new TestHandlerContextImpl();
             Codec codec = agent.getCodec(Integer.toString(MP3000_COUNT + MODBUS_CODEC_COUNT + i + 1));
             Properties props = new Properties();
-            HandlerContext outbound = codec.openInbound(agent, props);
+            HandlerContext outbound = codec.openInbound(props);
             log.info(outbound.toString());
             outbound.addInboundContext(ctx);
         }

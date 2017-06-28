@@ -14,7 +14,7 @@ public final class MP3000Activator
             throws Exception {
         ServiceReference<AgentdService> serviceRef = bc.getServiceReference(AgentdService.class);
         AgentdService service = bc.getService(serviceRef);
-        CodecFactory factory = new MP3000CodecFactoryImpl();
+        CodecFactory factory = new MP3000CodecFactoryImpl(service);
         service.registerCodecFactory("MP3000", factory);
     }
 

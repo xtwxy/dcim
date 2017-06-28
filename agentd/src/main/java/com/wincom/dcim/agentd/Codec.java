@@ -6,9 +6,8 @@ public interface Codec {
     
     /**
      * Create a port 
-     * @param service
      * @param props
-     * @return 
+     * @return
      */
-    public HandlerContext openInbound(AgentdService service, Properties props);
+    public HandlerContext openInbound(Properties props);
 }

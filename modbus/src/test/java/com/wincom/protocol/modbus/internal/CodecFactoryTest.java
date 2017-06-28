@@ -43,7 +43,7 @@ public class CodecFactoryTest {
         TcpClientCodecImpl tcpCodec = new TcpClientCodecImpl(network);
         agent.setCodec(TCP_CODEC_ID, tcpCodec);
 
-        MasterCodecFactoryImpl modbusFactory = new MasterCodecFactoryImpl();
+        MasterCodecFactoryImpl modbusFactory = new MasterCodecFactoryImpl(agent);
 
         agent.registerCodecFactory(MODBUS_FACTORY_ID, modbusFactory);
 
@@ -97,7 +97,7 @@ public class CodecFactoryTest {
                     });
                 }
             };
-            outboundContext = modbusCodec.openInbound(agent, modbusOutbound);
+            outboundContext = modbusCodec.openInbound(modbusOutbound);
             outboundContext.addInboundContext(inboundHandlerContext);
 
         } catch (Throwable t) {

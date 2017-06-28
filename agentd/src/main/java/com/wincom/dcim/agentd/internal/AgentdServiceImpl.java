@@ -51,7 +51,7 @@ public final class AgentdServiceImpl implements AgentdService {
         if (codec == null) {
             CodecFactory factory = codecFactories.get(factoryId);
             log.info(String.format("%s => %s", factoryId, factory));
-            codec = this.codecFactories.get(factoryId).create(this, props);
+            codec = this.codecFactories.get(factoryId).create(props);
             this.codecs.put(codecId, codec);
         }
         return codec;

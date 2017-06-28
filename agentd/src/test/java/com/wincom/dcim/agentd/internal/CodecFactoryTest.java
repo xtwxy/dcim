@@ -28,7 +28,7 @@ public class CodecFactoryTest {
     public void test() {
         AgentdServiceImpl agent = new AgentdServiceImpl();
         NetworkServiceImpl network = new NetworkServiceImpl();
-        CodecFactoryImpl factory = new CodecFactoryImpl();
+        CodecFactoryImpl factory = new CodecFactoryImpl(agent);
         TcpClientCodecImpl tcpCodec = new TcpClientCodecImpl(network);
         agent.setCodec(TCP_CODEC_ID, tcpCodec);
 
@@ -52,7 +52,7 @@ public class CodecFactoryTest {
                     log.info(String.format("fire(%s)", m));
                 }
             };
-            HandlerContext outboundHandlerContext = c.openInbound(agent, outbound);
+            HandlerContext outboundHandlerContext = c.openInbound(outbound);
             outboundHandlerContext.addInboundContext(inboundHandlerContext);
         } catch (Throwable t) {
             t.printStackTrace();

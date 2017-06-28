@@ -27,8 +27,10 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
     private HandlerContext outboundContext;
     private final Map<Properties, HandlerContext> inbounds;
     private final HandlerContext codecContext;
+    private final AgentdService agent;
 
-    CodecImpl(HandlerContext outboundHandlerContext) {
+    CodecImpl(AgentdService agent, HandlerContext outboundHandlerContext) {
+        this.agent = agent;
         codecContext = new HandlerContextImpl();
         outboundHandlerContext.addInboundContext(codecContext);
         codecContext.addDisposeHandler(new DisposeHandler() {
@@ -42,12 +44,12 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     @Override
     public HandlerContext openInbound(
-            AgentdService service, Properties props) {
+            Properties props) {
         log.info(String.format("%s", props));
 
         HandlerContext inboundContext = inbounds.get(props);
         if (inboundContext == null) {
-            inboundContext = createInbound0(service, props);
+            inboundContext = createInbound0(agent, props);
 
             inbounds.put(props, inboundContext);
         }

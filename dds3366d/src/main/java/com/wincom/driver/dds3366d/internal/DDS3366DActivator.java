@@ -13,9 +13,9 @@ public final class DDS3366DActivator
     public void start(BundleContext bc)
             throws Exception {
         ServiceReference<AgentdService> serviceRef = bc.getServiceReference(AgentdService.class);
-        AgentdService service = bc.getService(serviceRef);
-        CodecFactory factory = new DDS3366DCodecFactoryImpl();
-        service.registerCodecFactory("DDS3366D", factory);
+        AgentdService agent = bc.getService(serviceRef);
+        CodecFactory factory = new DDS3366DCodecFactoryImpl(agent);
+        agent.registerCodecFactory("DDS3366D", factory);
     }
 
     @Override

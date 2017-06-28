@@ -1,11 +1,9 @@
 package com.wincom.dcim.connector.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.messages.Connect;
-import com.wincom.dcim.connector.Connection;
-import com.wincom.dcim.connector.ConnectionCallback;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,11 +19,11 @@ public class RedisClientCodecImpl implements Codec {
     final String PASSWORD;
     final int MAX_CONNECTION_COUNT;
 
-    private final AgentdService service;
+    private final NetworkService service;
     private final List<HandlerContext> available;
     private final List<HandlerContext> used;
 
-    public RedisClientCodecImpl(AgentdService service, Properties props) {
+    public RedisClientCodecImpl(NetworkService service, Properties props) {
         this.HOST = props.getProperty("host", "127.0.0.1");
         this.PORT = Integer.parseInt(props.getProperty("port", "6379"));
         this.PASSWORD = props.getProperty("password", "foobared");
@@ -37,10 +35,10 @@ public class RedisClientCodecImpl implements Codec {
     }
 
     @Override
-    public synchronized HandlerContext openInbound(AgentdService service, Properties props) {
+    public synchronized HandlerContext openInbound(Properties props) {
         HandlerContext ctx = null;
         if(available.isEmpty()) {
-            ctx = new RedisClientHandlerContextImpl(this);
+            ctx = new RedisClientHandlerContextImpl(service, this);
             ctx.send(new Connect(ctx, HOST, PORT));
             used.add(ctx);
         } else {

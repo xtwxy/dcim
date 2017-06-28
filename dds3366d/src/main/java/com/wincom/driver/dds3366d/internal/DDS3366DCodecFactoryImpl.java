@@ -19,6 +19,11 @@ public class DDS3366DCodecFactoryImpl implements CodecFactory {
     public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
     public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
+    private final AgentdService agent;
+
+    public DDS3366DCodecFactoryImpl(AgentdService agent) {
+        this.agent = agent;
+    }
     /**
      * Create <code>DDS3366DCodecImpl</code> instance.
      *
@@ -26,12 +31,12 @@ public class DDS3366DCodecFactoryImpl implements CodecFactory {
      * @return <code>DDS3366DCodecImpl</code> instance.
      */
     @Override
-    public Codec create(AgentdService service, Properties props) {
+    public Codec create(Properties props) {
         log.info(props.toString());
 
-        Codec inboundCodec = service.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
+        Codec inboundCodec = agent.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 
-        HandlerContext outboundHandlerContext = inboundCodec.openInbound(service,
+        HandlerContext outboundHandlerContext = inboundCodec.openInbound(
                 (Properties) props.get(OUTBOUND_CTX_PROPS_KEY));
         
         return new DDS3366DCodecImpl(outboundHandlerContext);

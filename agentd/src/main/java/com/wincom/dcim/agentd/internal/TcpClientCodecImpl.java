@@ -1,6 +1,5 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.HandlerContext;
@@ -29,7 +28,7 @@ public class TcpClientCodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openInbound(AgentdService service, Properties outbound) {
+    public HandlerContext openInbound(Properties outbound) {
         log.info(outbound.toString());
 
         final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createStreamHandlerContext();

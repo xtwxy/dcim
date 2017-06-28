@@ -53,9 +53,9 @@ public class CodecFactoryTest {
         TcpClientCodecImpl tcpCodec = new TcpClientCodecImpl(network);
         agent.setCodec(TCP_CODEC_ID, tcpCodec);
 
-        MasterCodecFactoryImpl modbusFactory = new MasterCodecFactoryImpl();
+        MasterCodecFactoryImpl modbusFactory = new MasterCodecFactoryImpl(agent);
         agent.registerCodecFactory(MODBUS_FACTORY_ID, modbusFactory);
-        DDS3366DCodecFactoryImpl dds3366dFactory = new DDS3366DCodecFactoryImpl();
+        DDS3366DCodecFactoryImpl dds3366dFactory = new DDS3366DCodecFactoryImpl(agent);
         agent.registerCodecFactory(DDS3366D_FACTORY_ID, dds3366dFactory);
     }
 
@@ -117,7 +117,7 @@ public class CodecFactoryTest {
                     });
                 }
             };
-            outboundContext = dds3366dCodec.openInbound(agent, modbusOutbound);
+            outboundContext = dds3366dCodec.openInbound(modbusOutbound);
             outboundContext.addInboundContext(inboundHandlerContext);
 
         } catch (Throwable t) {

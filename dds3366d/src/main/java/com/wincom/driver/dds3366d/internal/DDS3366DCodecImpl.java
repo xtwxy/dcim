@@ -1,6 +1,5 @@
 package com.wincom.driver.dds3366d.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
@@ -30,7 +29,7 @@ public class DDS3366DCodecImpl implements Codec {
     }
 
     @Override
-    public HandlerContext openInbound(AgentdService service, Properties props) {
+    public HandlerContext openInbound(Properties props) {
         return decodeContext;
     }
 

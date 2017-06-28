@@ -15,7 +15,7 @@ public final class ModbusActivator
             throws Exception {
         ServiceReference<AgentdService> serviceRef = bc.getServiceReference(AgentdService.class);
         AgentdService service = bc.getService(serviceRef);
-        CodecFactory factory = new MasterCodecFactoryImpl();
+        CodecFactory factory = new MasterCodecFactoryImpl(service);
         service.registerCodecFactory("MODBUS_SLAVE", factory);
     }
 

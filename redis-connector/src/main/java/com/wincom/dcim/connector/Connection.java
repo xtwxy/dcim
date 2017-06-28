@@ -1,6 +1,5 @@
 package com.wincom.dcim.connector;
 
-import com.sun.xml.internal.ws.api.handler.MessageHandler;
 import com.wincom.dcim.agentd.messages.Handler;
 import com.wincom.dcim.agentd.messages.Message;
 

@@ -10,7 +10,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "SignalConverterList")
 public class SignalConverterList {
-
+    com.sun.ws.rs.ext.RuntimeDelegateImpl impl;
     @XmlElement(name = "list")
     private List<SignalConverter> list;
 

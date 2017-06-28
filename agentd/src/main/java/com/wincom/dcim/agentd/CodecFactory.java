@@ -15,9 +15,8 @@ public interface CodecFactory {
      *      outboundId: 'codecId',
      *  }
      * }
-     * @param service
      * @param props
-     * @return 
+     * @return
      */
-    public Codec create(AgentdService service, Properties props);
+    public Codec create(Properties props);
 }
