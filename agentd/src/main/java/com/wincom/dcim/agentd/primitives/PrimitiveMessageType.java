@@ -14,7 +14,8 @@ import java.util.Set;
  */
 public enum PrimitiveMessageType {
    GET_SIGNAL_VALUES_REQUEST(50) {
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public Message create(Object... params) {
             if (params.length == 1) {
                 return new GetSignalValues.Request((HandlerContext) params[0]);
@@ -24,6 +25,7 @@ public enum PrimitiveMessageType {
         }
     },
     GET_SIGNAL_VALUES_RESPONSE(51) {
+        @SuppressWarnings("unchecked")
         @Override
         public Message create(Object... params) {
             if (params.length == 1) {
@@ -34,6 +36,7 @@ public enum PrimitiveMessageType {
         }
     },
     SET_SIGNAL_VALUES_REQUEST(52) {
+        @SuppressWarnings("unchecked")
         @Override
         public Message create(Object... params) {
             if (params.length == 1) {
@@ -44,6 +47,7 @@ public enum PrimitiveMessageType {
         }
     },
     SET_SIGNAL_VALUES_RESPONSE(53) {
+        @SuppressWarnings("unchecked")
         @Override
         public Message create(Object... params) {
             if (params.length == 1) {

@@ -29,7 +29,7 @@ public class ReadSettings {
     private static final Set<String> KEYS;
 
     static {
-        KEYS = new HashSet();
+        KEYS = new HashSet<>();
         KEYS.add("clock");
         KEYS.add("slaveAddress");
         KEYS.add("pt");

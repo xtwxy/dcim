@@ -1,23 +1,25 @@
 package com.wincom.driver.dds3366d.internal;
 
+import java.util.Properties;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.wincom.dcim.agentd.ChannelInboundHandler;
-import com.wincom.protocol.modbus.internal.master.MasterCodecFactoryImpl;
-import com.wincom.protocol.modbus.internal.master.MasterCodecImpl;
 import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.NetworkConfig;
 import com.wincom.dcim.agentd.internal.AgentdServiceImpl;
 import com.wincom.dcim.agentd.internal.NetworkServiceImpl;
 import com.wincom.dcim.agentd.internal.TcpClientCodecImpl;
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.NetworkConfig;
 import com.wincom.dcim.agentd.messages.ApplicationFailure;
 import com.wincom.dcim.agentd.messages.ChannelActive;
 import com.wincom.dcim.agentd.messages.ChannelTimeout;
-import com.wincom.dcim.agentd.primitives.GetSignalValues;
 import com.wincom.dcim.agentd.messages.Message;
-import java.util.Properties;
-import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.wincom.dcim.agentd.primitives.GetSignalValues;
+import com.wincom.protocol.modbus.internal.master.MasterCodecFactoryImpl;
+import com.wincom.protocol.modbus.internal.master.MasterCodecImpl;
 
 /**
  *
@@ -32,7 +34,6 @@ public class CodecFactoryTest {
     private static final String MODBUS_CODEC_ID = "1001";
     private static final String DDS3366D_CODEC_ID = "1002";
     private static final String MODBUS_ADDRESS_1 = "1";
-    private static final String MODBUS_ADDRESS_2 = "2";
     private static final String HOST = "localhost";
     private static final String PORT = "9080";
     private static final String WAITE_TIMEOUT = "60000";

@@ -1,15 +1,13 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.NetworkService;
-import com.wincom.dcim.agentd.messages.Accepted;
-import io.netty.channel.Channel;
 import com.wincom.dcim.agentd.ChannelInboundHandler;
-import com.wincom.dcim.agentd.messages.Connected;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.TimerInboundHandler;
+import com.wincom.dcim.agentd.messages.Accepted;
 import com.wincom.dcim.agentd.messages.ChannelActive;
 import com.wincom.dcim.agentd.messages.ChannelInactive;
 import com.wincom.dcim.agentd.messages.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.Connected;
 import com.wincom.dcim.agentd.messages.DeadlineTimeout;
 import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.messages.MillsecFromNowTimeout;
@@ -18,6 +16,7 @@ import com.wincom.dcim.agentd.messages.SystemError;
 import com.wincom.dcim.agentd.statemachine.ReceiveState;
 import com.wincom.dcim.agentd.statemachine.StateMachine;
 import com.wincom.dcim.agentd.statemachine.StateMachineBuilder;
+
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -30,15 +29,8 @@ public final class TcpInboundHandlerImpl
         extends ChannelInboundHandler.Adapter
         implements TimerInboundHandler {
 
-    private Channel channel;
-    private final NetworkService service;
 
-    TcpInboundHandlerImpl(NetworkService service) {
-        this.service = service;
-    }
-
-    public final void setChannel(Channel channel) {
-        this.channel = channel;
+    TcpInboundHandlerImpl() {
     }
 
     @Override

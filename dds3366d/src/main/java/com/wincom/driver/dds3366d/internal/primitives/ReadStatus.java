@@ -28,7 +28,7 @@ public class ReadStatus {
     private static final Set<String> KEYS;
 
     static {
-        KEYS = new HashSet();
+        KEYS = new HashSet<>();
         KEYS.add("activePowerCombo");
         KEYS.add("positiveActivePower");
         KEYS.add("reverseActivePower");

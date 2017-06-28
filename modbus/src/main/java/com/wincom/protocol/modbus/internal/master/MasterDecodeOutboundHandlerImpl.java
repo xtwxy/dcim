@@ -11,7 +11,6 @@ import com.wincom.protocol.modbus.ModbusPayloadOutboundHandler;
 import com.wincom.protocol.modbus.ReadMultipleHoldingRegistersRequest;
 import com.wincom.protocol.modbus.WriteMultipleHoldingRegistersRequest;
 import com.wincom.protocol.modbus.WriteSingleHoldingRegisterRequest;
-import java.util.Map;
 
 /**
  *
@@ -19,12 +18,6 @@ import java.util.Map;
  */
 public class MasterDecodeOutboundHandlerImpl extends ChannelOutboundHandler.Adapter
         implements ModbusPayloadOutboundHandler {
-
-    private final Map<Byte, MasterContextImpl> inboundContexts;
-
-    public MasterDecodeOutboundHandlerImpl(Map<Byte, MasterContextImpl> inboundContexts) {
-        this.inboundContexts = inboundContexts;
-    }
 
     @Override
     public void handleSendPayload(HandlerContext ctx, Message m) {

@@ -1,11 +1,10 @@
 package com.wincom.dcim.agentd.internal;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.messages.ExecuteRunnable;
 import com.wincom.dcim.agentd.messages.Handler;
-import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.messages.Message;
-import io.netty.channel.Channel;
 
 /**
  *
@@ -13,11 +12,9 @@ import io.netty.channel.Channel;
  */
 public class ExecuteRunnableHandler implements Handler {
 
-    private final Channel channel;
     private final NetworkService service;
 
-    public ExecuteRunnableHandler(Channel channel, NetworkService service) {
-        this.channel = channel;
+    public ExecuteRunnableHandler(NetworkService service) {
         this.service = service;
     }
 

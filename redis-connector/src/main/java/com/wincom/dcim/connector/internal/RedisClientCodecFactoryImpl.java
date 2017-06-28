@@ -1,11 +1,10 @@
 package com.wincom.dcim.connector.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
+import java.util.Properties;
+
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecFactory;
 import com.wincom.dcim.agentd.NetworkService;
-
-import java.util.Properties;
 
 /**
  * Created by master on 6/23/17.

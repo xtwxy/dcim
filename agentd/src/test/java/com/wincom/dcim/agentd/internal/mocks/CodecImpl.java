@@ -1,20 +1,22 @@
 package com.wincom.dcim.agentd.internal.mocks;
 
-import com.wincom.dcim.agentd.AgentdService;
-import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.messages.ChannelActive;
-import com.wincom.dcim.agentd.messages.ChannelInactive;
-import com.wincom.dcim.agentd.ChannelInboundHandler;
-import com.wincom.dcim.agentd.messages.ChannelTimeout;
-import com.wincom.dcim.agentd.messages.ConnectionClosed;
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
-import com.wincom.dcim.agentd.messages.Message;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.ChannelInboundHandler;
+import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.ChannelInactive;
+import com.wincom.dcim.agentd.messages.ChannelTimeout;
+import com.wincom.dcim.agentd.messages.ConnectionClosed;
+import com.wincom.dcim.agentd.messages.Message;
 
 /**
  *
@@ -24,7 +26,6 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private HandlerContext outboundContext;
     private final Map<Properties, HandlerContext> inbounds;
     private final HandlerContext codecContext;
     private final AgentdService agent;
@@ -69,7 +70,6 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        this.outboundContext = m.getSender();
         for (Map.Entry<Properties, HandlerContext> e : inbounds.entrySet()) {
             OutboundHandlerImpl outImpl = (OutboundHandlerImpl) e.getValue().getOutboundHandler();
             outImpl.setOutboundContext(ctx);

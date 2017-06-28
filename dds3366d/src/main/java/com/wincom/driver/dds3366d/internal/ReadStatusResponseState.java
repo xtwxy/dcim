@@ -14,7 +14,7 @@ import java.util.List;
  * @author master
  */
 public class ReadStatusResponseState extends DefaultReceiveState {
-
+	@SuppressWarnings("unchecked")
     @Override
     public State on(HandlerContext ctx, Message m) {
         // wait for send request to complete.
@@ -23,7 +23,7 @@ public class ReadStatusResponseState extends DefaultReceiveState {
             ReadMultipleHoldingRegistersResponse registers = (ReadMultipleHoldingRegistersResponse) m;
             Response response = new Response(ctx);
             response.fromWire(ByteBuffer.wrap(registers.getBytes()));
-            List<Message> responses = (List<Message>) ctx.getOrSetIfNotExist("response", new ArrayList<Message>());
+            List<Message> responses = (List<Message>) ctx.getOrSetIfNotExist("response", new ArrayList<>());
             responses.add(response);
 
             return success();

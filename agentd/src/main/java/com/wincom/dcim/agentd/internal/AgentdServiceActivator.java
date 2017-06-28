@@ -38,7 +38,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         bc.registerService(NetworkService.class, new NetworkServiceImpl(bc), props);
 
         createTcpCodec(agent, network);
-        
+        testServerChannelFactory(bc);
     }
 
     @Override
@@ -58,7 +58,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         out.println(service);
 
         createAcceptor(service);
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 1; ++i) {
             createConnection(service);
         }
     }

@@ -14,7 +14,6 @@ public final class StreamHandlerContextImpl
         extends HandlerContext.Adapter {
 
     private Channel channel;
-    private final NetworkService service;
 
     @VisibleForTesting
     StreamHandlerContextImpl(
@@ -27,15 +26,13 @@ public final class StreamHandlerContextImpl
     StreamHandlerContextImpl(StateMachine sm,
             NetworkService service
     ) {
-        this.service = service;
         this.outboundHandler = new TcpOutboundHandlerImpl(service);
-        this.inboundHandler = new TcpInboundHandlerImpl(service);
+        this.inboundHandler = new TcpInboundHandlerImpl();
     }
 
     public void setChannel(Channel channel) {
         this.channel = channel;
         ((TcpOutboundHandlerImpl) outboundHandler).setChannel(channel);
-        ((TcpInboundHandlerImpl) inboundHandler).setChannel(channel);
     }
 
     public Channel getChannel() {

@@ -1,9 +1,8 @@
 package com.wincom.protocol.modbus;
 
+import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.messages.AbstractWireable;
 import com.wincom.dcim.agentd.messages.Handler;
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.messages.MessageType;
 
 /**
  *

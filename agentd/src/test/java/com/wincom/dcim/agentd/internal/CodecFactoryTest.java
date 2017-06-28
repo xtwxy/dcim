@@ -1,15 +1,15 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.internal.mocks.CodecFactoryImpl;
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.NetworkConfig;
-import com.wincom.dcim.agentd.messages.Message;
-import com.wincom.dcim.agentd.messages.SendBytes;
-import java.nio.ByteBuffer;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.NetworkConfig;
+import com.wincom.dcim.agentd.internal.mocks.CodecFactoryImpl;
+import com.wincom.dcim.agentd.messages.Message;
 
 /**
  *
@@ -57,18 +57,6 @@ public class CodecFactoryTest {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-    }
-    private static final byte[] BA = new byte[128];
-
-    static {
-        for (int i = 0; i < BA.length; ++i) {
-            BA[i] = (byte) (0xff & (i % 10 + '0'));
-        }
-    }
-
-    private static void sendBytes(HandlerContext ctx) {
-        ByteBuffer buffer = ByteBuffer.wrap(BA);
-        ctx.send(new SendBytes(ctx, buffer));
     }
 
     public static void main(String[] args) {

@@ -1,20 +1,21 @@
 package com.wincom.dcim.agentd.internal;
 
-import com.wincom.dcim.agentd.AgentdService;
-import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.CodecFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.wincom.dcim.agentd.AgentdService;
+import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.CodecFactory;
+
 public final class AgentdServiceImpl implements AgentdService {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
-    private final BundleContext bundleContext;
     private final Map<String, CodecFactory> codecFactories;
     private final Map<String, Codec> codecs;
 
@@ -23,7 +24,6 @@ public final class AgentdServiceImpl implements AgentdService {
     }
 
     public AgentdServiceImpl(BundleContext context) {
-        this.bundleContext = context;
         this.codecFactories = new HashMap<>();
         this.codecs = new HashMap<>();
     }

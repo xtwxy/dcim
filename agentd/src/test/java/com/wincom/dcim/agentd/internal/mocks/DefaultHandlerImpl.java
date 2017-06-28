@@ -1,10 +1,11 @@
 package com.wincom.dcim.agentd.internal.mocks;
 
-import com.wincom.dcim.agentd.messages.Handler;
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.messages.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.messages.Handler;
+import com.wincom.dcim.agentd.messages.Message;
 
 /**
  *
@@ -13,11 +14,6 @@ import org.slf4j.LoggerFactory;
 public class DefaultHandlerImpl implements Handler {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
-    private final HandlerContext outbound;
-
-    DefaultHandlerImpl(HandlerContext outbound) {
-        this.outbound = outbound;
-    }
 
     @Override
     public void handle(HandlerContext ctx, Message m) {

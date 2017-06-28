@@ -3,13 +3,12 @@ package com.wincom.dcim.connector.internal;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import com.wincom.dcim.agentd.AgentdService;
-import com.wincom.dcim.agentd.NetworkService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
-import com.wincom.dcim.connector.ConnectionFactory;
 import org.osgi.framework.ServiceReference;
+
+import com.wincom.dcim.agentd.NetworkService;
+import com.wincom.dcim.connector.ConnectionFactory;
 
 /**
  * Extension of the default OSGi bundle activator

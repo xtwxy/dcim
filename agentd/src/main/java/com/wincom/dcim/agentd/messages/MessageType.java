@@ -1,13 +1,6 @@
 package com.wincom.dcim.agentd.messages;
 
 import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.domain.Signal;
-import com.wincom.dcim.agentd.primitives.GetSignalValues;
-import com.wincom.dcim.agentd.primitives.SetSignalValues;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by master on 6/21/17.

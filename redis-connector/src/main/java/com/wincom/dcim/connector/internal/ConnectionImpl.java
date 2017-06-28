@@ -1,5 +1,11 @@
 package com.wincom.dcim.connector.internal;
 
+import java.io.StringWriter;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
 import com.sun.jersey.api.json.JSONJAXBContext;
 import com.sun.jersey.api.json.JSONMarshaller;
 import com.wincom.dcim.agentd.config.MyJAXBContextResolver;
@@ -10,17 +16,11 @@ import com.wincom.dcim.agentd.primitives.RequestMessage;
 import com.wincom.dcim.connector.CompletionHandler;
 import com.wincom.dcim.connector.Connection;
 import com.wincom.dcim.connector.ConnectionFactory;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPromise;
-import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import org.codehaus.jettison.json.JSONObject;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
 
 /**
  * Created by master on 6/20/17.

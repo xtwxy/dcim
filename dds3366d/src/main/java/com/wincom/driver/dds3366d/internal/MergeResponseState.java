@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class MergeResponseState extends State.Stop {
 
+    @SuppressWarnings("unchecked")
     @Override
     public State enter(HandlerContext ctx) {
         List<Message> responses = (List<Message>) ctx.getOrSetIfNotExist("response", new ArrayList<Message>());

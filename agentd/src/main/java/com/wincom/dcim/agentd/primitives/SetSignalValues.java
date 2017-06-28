@@ -1,14 +1,13 @@
 package com.wincom.dcim.agentd.primitives;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.wincom.dcim.agentd.ChannelInboundHandler;
 import com.wincom.dcim.agentd.ChannelOutboundHandler;
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.domain.Signal;
-import com.wincom.dcim.agentd.messages.Message;
 import com.wincom.dcim.agentd.messages.ResultCode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class SetSignalValues {
 

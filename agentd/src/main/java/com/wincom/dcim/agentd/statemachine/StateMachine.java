@@ -1,9 +1,10 @@
 package com.wincom.dcim.agentd.statemachine;
 
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.messages.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.messages.Message;
 
 /**
  * State Machine.
@@ -50,20 +51,6 @@ public class StateMachine implements State {
         prev = current;
         initial = current;
         stop = current;
-    }
-
-    public StateMachine(StateBuilder builder) {
-        buildWith(builder);
-    }
-
-    public final StateMachine buildWith(StateBuilder builder) {
-        this.initial = builder.build();
-        this.stop = builder.stopState();
-
-        this.current = this.initial;
-        this.prev = null;
-
-        return this;
     }
 
     public final StateMachine buildWith(StateMachine m) {

@@ -1,7 +1,7 @@
 package com.wincom.dcim.actorsys.internal;
 
 import java.util.Dictionary;
-import java.util.Properties;
+import java.util.Hashtable;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -22,7 +22,7 @@ public final class ExampleActivator
     {
         System.out.println( "STARTING com.wincom.dcim.actorsys" );
 
-        Dictionary props = new Properties();
+        Dictionary<String, ?> props = new Hashtable<>();
         // add specific service properties here...
 
         System.out.println( "REGISTER com.wincom.dcim.actorsys.ExampleService" );

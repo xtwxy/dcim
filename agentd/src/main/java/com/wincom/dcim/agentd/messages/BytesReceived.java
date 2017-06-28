@@ -1,10 +1,9 @@
 package com.wincom.dcim.agentd.messages;
 
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.ChannelInboundHandler;
-
-import static com.wincom.dcim.agentd.messages.AbstractWireable.appendValue;
 import java.nio.ByteBuffer;
+
+import com.wincom.dcim.agentd.ChannelInboundHandler;
+import com.wincom.dcim.agentd.HandlerContext;
 
 /**
  *

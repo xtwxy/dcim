@@ -1,5 +1,8 @@
 package com.wincom.dcim.connector.internal;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.wincom.dcim.agentd.NetworkService;
 import com.wincom.dcim.agentd.internal.NetworkServiceImpl;
 import com.wincom.dcim.agentd.primitives.GetSignalValues;
@@ -7,10 +10,6 @@ import com.wincom.dcim.connector.CompletionHandler;
 import com.wincom.dcim.connector.Connection;
 import com.wincom.dcim.connector.ConnectionCallback;
 import com.wincom.dcim.connector.ConnectionFactory;
-import io.netty.channel.ChannelPromise;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by master on 6/19/17.
