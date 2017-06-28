@@ -8,15 +8,15 @@ import com.wincom.dcim.agentd.HandlerContext;
  */
 public interface Message {
 
-    public void apply(HandlerContext ctx, Handler handler);
+    void apply(HandlerContext ctx, Handler handler);
 
-    public HandlerContext getSender();
+    HandlerContext getSender();
 
-    public static class Adapter implements Message {
+    class Adapter implements Message {
 
         private final HandlerContext sender;
 
-        public Adapter(HandlerContext sender) {
+        protected Adapter(HandlerContext sender) {
             this.sender = sender;
         }
 

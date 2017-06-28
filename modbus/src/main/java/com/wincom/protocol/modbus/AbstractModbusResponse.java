@@ -23,5 +23,5 @@ public abstract class AbstractModbusResponse extends AbstractWireable {
         }
     }
     
-    abstract public void applyModbusResponse(HandlerContext ctx, ModbusPayloadInboundHandler handler);
+    abstract protected void applyModbusResponse(HandlerContext ctx, ModbusPayloadInboundHandler handler);
 }

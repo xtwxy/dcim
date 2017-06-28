@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DDS3366DCodecFactoryImpl implements CodecFactory {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
     public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 

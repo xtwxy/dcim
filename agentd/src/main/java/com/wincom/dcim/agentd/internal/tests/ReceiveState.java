@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ReceiveState extends State.Adapter {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
-    byte[] ba = new byte[256];
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final byte[] ba = new byte[256];
 
     public ReceiveState() {
         for (int i = 0; i < ba.length; ++i) {
@@ -48,7 +48,7 @@ public class ReceiveState extends State.Adapter {
         }
     }
 
-    public void sendBytes(HandlerContext ctx) {
+    private void sendBytes(HandlerContext ctx) {
         ctx.send(new SendBytes(ctx, ByteBuffer.wrap(ba)));
     }
 

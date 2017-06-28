@@ -13,12 +13,12 @@ import com.wincom.dcim.agentd.messages.Message;
  */
 public class StateMachine implements State {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    State current;
-    State prev;
-    State initial;
-    State stop;
+    private State current;
+    private State prev;
+    private State initial;
+    private State stop;
 
     public StateMachine() {
         reset();
@@ -46,7 +46,7 @@ public class StateMachine implements State {
         this.prev = null;
     }
 
-    public final void reset() {
+    private void reset() {
         current = new State.Adapter();
         prev = current;
         initial = current;

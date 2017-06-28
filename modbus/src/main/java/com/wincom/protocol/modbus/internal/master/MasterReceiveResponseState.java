@@ -58,7 +58,7 @@ public class MasterReceiveResponseState extends State.Adapter {
             return;
         }
 
-        byte[] src = null;
+        byte[] src;
         switch (request.getFunction()) {
             case READ_COILS:
                 break;
@@ -102,7 +102,7 @@ public class MasterReceiveResponseState extends State.Adapter {
     private void decode(HandlerContext ctx, ByteBuffer buf, ModbusFrame request) {
         final int LENGTH = buf.remaining();
         ModbusFrame response = new ModbusFrame(ctx, false);
-        Message result = null;
+        Message result;
         try {
             response.fromWire(buf);
             if (request.getSlaveAddress() == response.getSlaveAddress()

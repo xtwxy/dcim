@@ -130,7 +130,7 @@ public class ModbusFrame
         this.function = payload.getFunctionCode();
     }
 
-    public boolean isRequest() {
+    private boolean isRequest() {
         return request;
     }
 

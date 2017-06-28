@@ -6,10 +6,10 @@ import java.util.concurrent.ThreadFactory;
 
 public interface NetworkService {
 
-    public Timer getTimer();
-    public ThreadFactory getThreadFactory();
+    Timer getTimer();
+    ThreadFactory getThreadFactory();
 
-    public EventLoopGroup getEventLoopGroup();
+    EventLoopGroup getEventLoopGroup();
 
-    public HandlerContext createStreamHandlerContext();
+    HandlerContext createStreamHandlerContext();
 }

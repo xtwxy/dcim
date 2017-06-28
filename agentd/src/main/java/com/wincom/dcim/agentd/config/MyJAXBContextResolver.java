@@ -15,7 +15,7 @@ import java.util.HashSet;
 public class MyJAXBContextResolver implements ContextResolver<JAXBContext> {
 
     private JAXBContext context;
-    private HashSet<Class<?>> typeSet = new HashSet<Class<?>>();
+    private final HashSet<Class<?>> typeSet = new HashSet<>();
 
     public MyJAXBContextResolver() {
         Class<?>[] types = {

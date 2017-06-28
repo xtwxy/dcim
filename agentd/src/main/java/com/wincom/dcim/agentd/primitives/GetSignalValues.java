@@ -77,10 +77,10 @@ public final class GetSignalValues {
 
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, Signal> e : values.entrySet()) {
                 sb.append("\t\t(");
-                sb.append(e.getKey().toString()).append(", ").append(e.getValue().toString());
+                sb.append(e.getKey()).append(", ").append(e.getValue().toString());
                 sb.append(")\n");
             }
             return String.format("%s \n\tsender: %s, \n\tsignals: \n%s", getClass().getSimpleName(), getSender(), sb.toString());

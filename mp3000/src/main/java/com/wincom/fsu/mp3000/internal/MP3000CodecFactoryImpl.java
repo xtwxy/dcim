@@ -3,9 +3,10 @@ package com.wincom.fsu.mp3000.internal;
 import com.wincom.dcim.agentd.AgentdService;
 import com.wincom.dcim.agentd.Codec;
 import com.wincom.dcim.agentd.CodecFactory;
-import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 /**
  * Factory to create MP3000 <code>Codec</code>.
@@ -20,6 +21,7 @@ public class MP3000CodecFactoryImpl implements CodecFactory {
     public MP3000CodecFactoryImpl(AgentdService agent) {
         this.agent = agent;
     }
+
     /**
      * Create <code>MP3000CodecImpl</code> instance.
      *
@@ -30,12 +32,9 @@ public class MP3000CodecFactoryImpl implements CodecFactory {
     public Codec create(Properties props) {
         log.info(props.toString());
 
-        Codec theCodec
-                = new MP3000CodecImpl(
+        return new MP3000CodecImpl(
                 agent,
-                        props
-                );
-
-        return theCodec;
+                props
+        );
     }
 }

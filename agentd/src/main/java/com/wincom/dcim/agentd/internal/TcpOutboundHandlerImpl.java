@@ -186,7 +186,6 @@ public final class TcpOutboundHandlerImpl
 
     @Override
     public void handleSetMillsecFromNowTimer(HandlerContext ctx, SetMillsecFromNowTimer m) {
-        SetMillsecFromNowTimer setTimer = (SetMillsecFromNowTimer) m;
         TimerTask tt = new TimerTask() {
             @Override
             public void run(Timeout tmt) throws Exception {
@@ -196,7 +195,7 @@ public final class TcpOutboundHandlerImpl
             }
 
         };
-        service.getTimer().newTimeout(tt, setTimer.getMillsec(), TimeUnit.MILLISECONDS);
+        service.getTimer().newTimeout(tt, m.getMillsec(), TimeUnit.MILLISECONDS);
     }
 
     @Override

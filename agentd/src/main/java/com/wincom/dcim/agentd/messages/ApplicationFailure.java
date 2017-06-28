@@ -9,7 +9,7 @@ import com.wincom.dcim.agentd.ChannelInboundHandler;
  */
 public final class ApplicationFailure extends ChannelInbound {
 
-    private Throwable cause;
+    private final Throwable cause;
 
     public ApplicationFailure(HandlerContext c, Throwable cause) {
         super(c);

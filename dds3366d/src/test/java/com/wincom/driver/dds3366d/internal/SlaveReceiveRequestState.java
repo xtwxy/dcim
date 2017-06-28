@@ -24,7 +24,7 @@ import java.util.Date;
  */
 public class SlaveReceiveRequestState extends State.Adapter {
 
-    public static final String READ_BUFFER_KEY = "READ_BUFFER";
+    private static final String READ_BUFFER_KEY = "READ_BUFFER";
 
     private ByteBuffer readBuffer;
 
@@ -91,7 +91,7 @@ public class SlaveReceiveRequestState extends State.Adapter {
         }
     }
 
-    public void handleReadMultipleHoldingRegisters(HandlerContext ctx, ByteBuffer readBuffer) {
+    private void handleReadMultipleHoldingRegisters(HandlerContext ctx, ByteBuffer readBuffer) {
         while (true) {
             if (readBuffer.remaining() >= 8) {
                 ModbusFrame request = new ModbusFrame(ctx, true);

@@ -32,10 +32,10 @@ public class SignalConverterMarshalTest {
 
     @Test
     public void testMarshalList() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(new Class[]{
+        JAXBContext context = JAXBContext.newInstance(
                 SignalConverter.class,
                 SignalConverterList.class
-        });
+        );
         Marshaller m = context.createMarshaller();
         JSONMarshaller marshaller = JSONJAXBContext.getJSONMarshaller(m, context);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -66,10 +66,10 @@ public class SignalConverterMarshalTest {
 
     @Test
     public void testUnMarshalList() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(new Class[]{
+        JAXBContext context = JAXBContext.newInstance(
                 SignalConverter.class,
                 SignalConverterList.class
-        });
+        );
         Unmarshaller um = context.createUnmarshaller();
         JSONUnmarshaller unmarshaller = JSONJAXBContext.getJSONUnmarshaller(um, context);
         String json = "{\"list\":[" +

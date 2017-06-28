@@ -15,7 +15,7 @@ import java.util.Set;
  * Created by master on 6/19/17.
  */
 public class BLPOP {
-    private NetworkService service;
+    private final NetworkService service;
 
     public BLPOP(NetworkService service) {
         this.service = service;
@@ -40,7 +40,7 @@ public class BLPOP {
         });
     }
 
-    public void blpop(Connection c) {
+    protected void blpop(Connection c) {
         Set<String> keys = new HashSet<>();
         for (int i = 0; i < 10; ++i) {
             keys.add("key" + i);

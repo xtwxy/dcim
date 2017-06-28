@@ -20,7 +20,7 @@ public interface State {
      * @param ctx
      * @return
      */
-    public State enter(HandlerContext ctx);
+     State enter(HandlerContext ctx);
 
     /**
      * Life cycle event handler for exit this state.
@@ -29,7 +29,7 @@ public interface State {
      *
      * @param ctx
      */
-    public void exit(HandlerContext ctx);
+     void exit(HandlerContext ctx);
 
     /**
      * Accept incoming <code>Message</code>.
@@ -38,14 +38,14 @@ public interface State {
      * @param m
      * @return
      */
-    public State on(HandlerContext ctx, Message m);
+     State on(HandlerContext ctx, Message m);
 
     /**
      * Test if it is stopped state.
      *
      * @return
      */
-    public boolean stopped();
+     boolean stopped();
 
     /**
      * Set the next <code>State</code> for after current state is completed
@@ -54,7 +54,7 @@ public interface State {
      * @param s
      * @return
      */
-    public State success(State s);
+     State success(State s);
 
     /**
      * Get the next <code>State</code> for after current state is completed
@@ -62,7 +62,7 @@ public interface State {
      *
      * @return
      */
-    public State success();
+     State success();
 
     /**
      * Set the next <code>State</code> for after current state is completed with
@@ -71,7 +71,7 @@ public interface State {
      * @param s
      * @return
      */
-    public State error(State s);
+     State error(State s);
 
     /**
      * Get the next <code>State</code> for after current state is completed with
@@ -79,7 +79,7 @@ public interface State {
      *
      * @return
      */
-    public State error();
+     State error();
 
     /**
      * Set the next <code>State</code> for after current state is completed with
@@ -88,7 +88,7 @@ public interface State {
      * @param s
      * @return
      */
-    public State failure(State s);
+     State failure(State s);
 
     /**
      * Get the next <code>State</code> for after current state is completed with
@@ -96,23 +96,20 @@ public interface State {
      *
      * @return
      */
-    public State failure();
+     State failure();
 
-    public static class Adapter implements State {
+    class Adapter implements State {
 
-        protected Logger log = LoggerFactory.getLogger(this.getClass());
+        protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-        protected State next;
         private State success;
         private State failure;
         private State error;
 
         public Adapter() {
-            this.next = this;
         }
 
         public Adapter(State success, State fail) {
-            this.next = this;
             this.success = success;
             this.error = fail;
         }
@@ -187,7 +184,7 @@ public interface State {
         }
     }
 
-    public static class Stop extends Adapter {
+    class Stop extends Adapter {
 
         @Override
         public State enter(HandlerContext ctx) {

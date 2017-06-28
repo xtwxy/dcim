@@ -8,5 +8,5 @@ import com.wincom.dcim.agentd.messages.Message;
  * @author master
  */
 public interface ModbusPayload extends Wireable, Message {
-    public ModbusFunction getFunctionCode();
+    ModbusFunction getFunctionCode();
 }

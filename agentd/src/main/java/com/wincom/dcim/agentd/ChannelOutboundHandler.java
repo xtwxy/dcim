@@ -7,19 +7,19 @@ import com.wincom.dcim.agentd.messages.*;
  */
 public interface ChannelOutboundHandler extends Handler {
 
-    public void handleAccept(HandlerContext ctx, Accept m);
+    void handleAccept(HandlerContext ctx, Accept m);
 
-    public void handleConnect(HandlerContext ctx, Connect m);
+    void handleConnect(HandlerContext ctx, Connect m);
 
-    public void handleAuth(HandlerContext ctx, PasswordAuth m);
+    void handleAuth(HandlerContext ctx, PasswordAuth m);
 
-    public void handleClose(HandlerContext ctx, CloseConnection m);
+    void handleClose(HandlerContext ctx, CloseConnection m);
 
-    public void handleSendPayload(HandlerContext ctx, Message m);
+    void handleSendPayload(HandlerContext ctx, Message m);
 
-    public void setOutboundContext(HandlerContext ctx);
+    void setOutboundContext(HandlerContext ctx);
 
-    public static abstract class Adapter
+    abstract class Adapter
             extends Handler.Default
             implements ChannelOutboundHandler {
 

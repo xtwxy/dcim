@@ -9,7 +9,7 @@ import com.wincom.dcim.agentd.TimerInboundHandler;
  */
 public abstract class Timeout extends Message.Adapter {
 
-    public Timeout(HandlerContext sender) {
+    Timeout(HandlerContext sender) {
         super(sender);
     }
 
@@ -22,7 +22,7 @@ public abstract class Timeout extends Message.Adapter {
         }
     }
 
-    abstract public void applyTimout(HandlerContext ctx, TimerInboundHandler handler);
+    abstract protected void applyTimout(HandlerContext ctx, TimerInboundHandler handler);
 
     @Override
     public String toString() {

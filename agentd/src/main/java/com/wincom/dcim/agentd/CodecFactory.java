@@ -18,5 +18,5 @@ public interface CodecFactory {
      * @param props
      * @return
      */
-    public Codec create(Properties props);
+    Codec create(Properties props);
 }

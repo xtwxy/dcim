@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConnectState extends State.Adapter {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected final HandlerContext handlerContext;
     protected final String host;

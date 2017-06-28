@@ -11,7 +11,7 @@ import com.wincom.dcim.agentd.messages.SetMillsecFromNowTimer;
  */
 public class WaitTimeoutState extends State.Adapter {
 
-    private long millsec;
+    private final long millsec;
     
     public WaitTimeoutState(long millsec) {
         this.millsec = millsec;

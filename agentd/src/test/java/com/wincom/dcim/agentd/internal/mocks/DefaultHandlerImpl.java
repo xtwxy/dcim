@@ -13,7 +13,7 @@ import com.wincom.dcim.agentd.messages.Message;
  */
 public class DefaultHandlerImpl implements Handler {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void handle(HandlerContext ctx, Message m) {

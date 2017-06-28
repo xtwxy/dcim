@@ -47,11 +47,11 @@ public abstract class Signal {
         private final int code;
     }
 
-    public Signal(Type type) {
+    Signal(Type type) {
         this.type = type;
     }
 
-    protected Signal() {
+    Signal() {
 
     }
     public Type type() {

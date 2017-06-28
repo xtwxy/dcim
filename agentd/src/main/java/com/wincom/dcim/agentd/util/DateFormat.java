@@ -10,7 +10,7 @@ import java.util.Locale;
  */
 public class DateFormat {
     private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static SimpleDateFormat format = new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.ENGLISH);
+    private static final SimpleDateFormat format = new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.ENGLISH);
 
     public static Date parseTimestamp(String s) {
         try {

@@ -10,7 +10,7 @@ import com.wincom.dcim.agentd.messages.Handler;
  */
 public abstract class AbstractModbusRequest extends AbstractWireable {
 
-    public AbstractModbusRequest(HandlerContext sender) {
+    AbstractModbusRequest(HandlerContext sender) {
         super(sender);
     }
 
@@ -23,5 +23,5 @@ public abstract class AbstractModbusRequest extends AbstractWireable {
         }
     }
     
-    abstract public void applyModbusRequest(HandlerContext ctx, ModbusPayloadOutboundHandler handler);
+    abstract protected void applyModbusRequest(HandlerContext ctx, ModbusPayloadOutboundHandler handler);
 }

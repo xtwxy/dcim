@@ -12,9 +12,9 @@ import org.osgi.framework.BundleContext;
 
 public final class NetworkServiceImpl implements NetworkService {
 
-    private ThreadFactory threadFactory;
+    private final ThreadFactory threadFactory;
     private final EventLoopGroup eventLoopGroup;
-    private HashedWheelTimer timer;
+    private final HashedWheelTimer timer;
     
     public NetworkServiceImpl() {
         this(null);

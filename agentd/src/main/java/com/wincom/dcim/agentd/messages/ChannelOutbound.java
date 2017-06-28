@@ -9,7 +9,7 @@ import com.wincom.dcim.agentd.ChannelOutboundHandler;
  */
 public abstract class ChannelOutbound extends Message.Adapter {
 
-    public ChannelOutbound(HandlerContext sender) {
+    protected ChannelOutbound(HandlerContext sender) {
         super(sender);
     }
 

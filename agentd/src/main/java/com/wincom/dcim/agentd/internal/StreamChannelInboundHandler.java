@@ -47,7 +47,7 @@ public class StreamChannelInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ByteBuffer buffer = null;
+        ByteBuffer buffer;
         if (msg instanceof ByteBuf) {
             ByteBuf buf = (ByteBuf) msg;
             buffer = buf.nioBuffer();

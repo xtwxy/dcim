@@ -39,7 +39,7 @@ public class MasterPayloadOutboundHandlerImpl
         handleSendModbusPayload(ctx, m);
     }
 
-    public void handleSendModbusPayload(HandlerContext ctx, ModbusPayload m) {
+    private void handleSendModbusPayload(HandlerContext ctx, ModbusPayload m) {
         ModbusFrame frame = new ModbusFrame(ctx);
         frame.setSlaveAddress(slaveAddress);
         frame.setPayload(m);

@@ -9,7 +9,7 @@ import com.wincom.dcim.agentd.ChannelInboundHandler;
  */
 public class SystemError extends ChannelInbound {
 
-    private Throwable cause;
+    private final Throwable cause;
 
     public SystemError(HandlerContext c, Throwable cause) {
         super(c);

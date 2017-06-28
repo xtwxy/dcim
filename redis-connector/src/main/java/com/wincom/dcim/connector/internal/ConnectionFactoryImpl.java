@@ -27,7 +27,7 @@ import java.util.List;
  */
 public final class ConnectionFactoryImpl
         implements ConnectionFactory {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private static final String HOST = System.getProperty("host", "127.0.0.1");
     private static final int PORT = Integer.parseInt(System.getProperty("port", "6379"));
@@ -46,18 +46,14 @@ public final class ConnectionFactoryImpl
     @Override
     public synchronized void getConnection(final ConnectionCallback cc) {
         Connection c = null;
-        if(available.isEmpty()) {
-            try {
-                newConnection(new ConnectionCallback() {
-                    @Override
-                    public void completed(Throwable cause, Connection c) {
-                        used.add(c);
-                        cc.completed(cause, c);
-                    }
-                });
-            } catch (InterruptedException ie) {
-                cc.completed(ie, c);
-            }
+        if (available.isEmpty()) {
+            newConnection(new ConnectionCallback() {
+                @Override
+                public void completed(Throwable cause, Connection c) {
+                    used.add(c);
+                    cc.completed(cause, c);
+                }
+            });
         } else {
             c = available.remove(0);
             used.add(c);
@@ -65,7 +61,7 @@ public final class ConnectionFactoryImpl
         }
     }
 
-    public void newConnection(ConnectionCallback cc) throws InterruptedException {
+    public void newConnection(ConnectionCallback cc) {
 
         Bootstrap b = new Bootstrap();
         b.group(service.getEventLoopGroup())
@@ -86,7 +82,7 @@ public final class ConnectionFactoryImpl
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
                     future.channel().writeAndFlush(String.format("auth %s", PASSWORD));
-                    cc.completed(null, new ConnectionImpl(future.channel(),ConnectionFactoryImpl.this));
+                    cc.completed(null, new ConnectionImpl(future.channel(), ConnectionFactoryImpl.this));
                 } else {
                     cc.completed(future.cause(), null);
                     log.info(future.cause().toString());
@@ -98,7 +94,7 @@ public final class ConnectionFactoryImpl
     @Override
     public synchronized void release(Connection c) {
         used.remove(c);
-        if(available.size() < MAX_CONNECTION_COUNT) {
+        if (available.size() < MAX_CONNECTION_COUNT) {
             available.add(c);
         } else {
             c.close();

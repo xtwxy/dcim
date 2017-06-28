@@ -27,7 +27,7 @@ public class ExceptionFlowTest {
                         throw new Exception();
                     }
                 } catch (Exception e) {
-                    out.println(e);
+                    e.printStackTrace();
                     break;
                 } finally {
                     out.println("finally.");

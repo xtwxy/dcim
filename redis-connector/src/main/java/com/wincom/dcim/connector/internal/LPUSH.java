@@ -15,7 +15,7 @@ import com.wincom.dcim.connector.ConnectionFactory;
  * Created by master on 6/19/17.
  */
 public class LPUSH {
-    private NetworkService service;
+    private final NetworkService service;
 
     public LPUSH(NetworkService service) {
         this.service = service;
@@ -40,7 +40,7 @@ public class LPUSH {
         });
     }
 
-    public void push(Connection c) {
+    private void push(Connection c) {
         Set<String> keys = new HashSet<>();
         for (int i = 0; i < 10; ++i) {
             keys.add("key" + i);

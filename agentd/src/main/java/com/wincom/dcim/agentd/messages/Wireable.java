@@ -17,21 +17,21 @@ public interface Wireable {
      * @return
      */
     @Nonnegative
-    public int getWireLength();
+     int getWireLength();
 
     /**
      * Writes bytes from this object onto the wire, serializing it.
      *
      * @param buffer
      */
-    public void toWire(@Nonnull ByteBuffer buffer);
+     void toWire(@Nonnull ByteBuffer buffer);
 
     /**
      * Reads bytes from the wire into this object, de-serializing it.
      *
      * @param buffer
      */
-    public void fromWire(@Nonnull ByteBuffer buffer);
+     void fromWire(@Nonnull ByteBuffer buffer);
 
-    public void toStringBuilder(@Nonnull StringBuilder buf, @Nonnegative int depth);
+     void toStringBuilder(@Nonnull StringBuilder buf, @Nonnegative int depth);
 }

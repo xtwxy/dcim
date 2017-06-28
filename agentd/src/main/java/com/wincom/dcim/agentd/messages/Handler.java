@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
  */
 public interface Handler {
 
-    public void handle(HandlerContext ctx, Message m);
+    void handle(HandlerContext ctx, Message m);
 
-    public static class Default implements Handler {
+    class Default implements Handler {
 
-        protected Logger log = LoggerFactory.getLogger(this.getClass());
+        protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
         @Override
         public void handle(HandlerContext ctx, Message m) {

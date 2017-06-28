@@ -33,9 +33,7 @@ public class RequestConverter {
         switch (type) {
             case GET_SIGNAL_VALUES_REQUEST:
                 keys = new ArrayList<>();
-                for (String key : ((GetSignalValues.Request) request).getKeys()) {
-                    keys.add(key);
-                }
+                keys.addAll(((GetSignalValues.Request) request).getKeys());
                 break;
             case SET_SIGNAL_VALUES_REQUEST:
                 signals = new ArrayList<>();
@@ -52,9 +50,7 @@ public class RequestConverter {
         switch (type) {
             case GET_SIGNAL_VALUES_REQUEST:
                 Set<String> keySet = new HashSet<>();
-                for (String s : keys) {
-                    keySet.add(s);
-                }
+                keySet.addAll(keys);
                 return new GetSignalValues.Request(sender, keySet);
             case SET_SIGNAL_VALUES_REQUEST:
                 Map<String, Signal> signalMap = new HashMap<>();

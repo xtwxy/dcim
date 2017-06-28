@@ -12,7 +12,7 @@ import static org.junit.Assert.assertArrayEquals;
  */
 public class WriteSingleHoldingRegisterResponseTest {
 
-    byte[] b = new byte[]{
+    private final byte[] b = new byte[]{
         0x01, 0x06, 0x00, 0x02, 0x00, 0x02, (byte) 0xa9, (byte) 0xcb
     };
 

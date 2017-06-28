@@ -10,7 +10,7 @@ import com.wincom.dcim.agentd.messages.PeriodicTimeout;
  * @author master
  */
 public interface TimerInboundHandler extends Handler {
-    public void handleDeadlineTimeout(HandlerContext ctx, DeadlineTimeout m);
-    public void handleMillsecFromNowTimeout(HandlerContext ctx, MillsecFromNowTimeout m);
-    public void handlePeriodicTimeout(HandlerContext ctx, PeriodicTimeout m);
+    void handleDeadlineTimeout(HandlerContext ctx, DeadlineTimeout m);
+    void handleMillsecFromNowTimeout(HandlerContext ctx, MillsecFromNowTimeout m);
+    void handlePeriodicTimeout(HandlerContext ctx, PeriodicTimeout m);
 }

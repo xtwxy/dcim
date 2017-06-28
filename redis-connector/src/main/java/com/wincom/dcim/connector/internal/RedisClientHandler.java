@@ -77,7 +77,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
                 printAggregatedRedisResponse(child);
             }
         } else {
-
+            // unknown message type, no action.
         }
     }
 

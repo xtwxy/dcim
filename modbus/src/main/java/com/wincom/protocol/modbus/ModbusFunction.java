@@ -116,5 +116,5 @@ public enum ModbusFunction {
     }
     public abstract ModbusPayload createRequest(HandlerContext sender);
     public abstract ModbusPayload createResponse(HandlerContext sender);
-    private byte code;
+    private final byte code;
 }

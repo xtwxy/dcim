@@ -18,14 +18,14 @@ import org.slf4j.LoggerFactory;
  */
 public class MP3000CodecImpl implements Codec {
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-    private String HOST;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final String HOST;
     private final int BASE_PORT;
     private final int PORT_COUNT;
     private final String WAITE_TIMEOUT;
     private final String CODEC_ID;
-    public static final String COM_PORT_KEY = "port";
-    public static final String OUTBOUND_CODEC_ID_KEY = "codecId";
+    private static final String COM_PORT_KEY = "port";
+    private static final String OUTBOUND_CODEC_ID_KEY = "codecId";
     public static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
 
     private final Map<Integer, HandlerContext> inbound;

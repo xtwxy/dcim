@@ -182,5 +182,5 @@ public enum MessageType {
 
     abstract public Message create(Object... params);
 
-    private int code;
+    private final int code;
 }

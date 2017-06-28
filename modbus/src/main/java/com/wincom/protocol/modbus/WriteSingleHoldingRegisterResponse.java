@@ -1,5 +1,6 @@
 package com.wincom.protocol.modbus;
 
+import com.sun.istack.NotNull;
 import com.wincom.dcim.agentd.HandlerContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -32,21 +33,21 @@ public class WriteSingleHoldingRegisterResponse
     }
 
     @Override
-    public void toWire(ByteBuffer buffer) {
+    public void toWire(@NotNull ByteBuffer buffer) {
         buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.putShort(startAddress);
         buffer.putShort(valueWritten);
     }
 
     @Override
-    public void fromWire(ByteBuffer buffer) {
+    public void fromWire(@NotNull ByteBuffer buffer) {
         buffer.order(ByteOrder.BIG_ENDIAN);
         startAddress = buffer.getShort();
         valueWritten = buffer.getShort();
     }
 
     @Override
-    public void toStringBuilder(StringBuilder buf, int depth) {
+    public void toStringBuilder(@NotNull StringBuilder buf, int depth) {
         appendHeader(buf, depth, getClass().getSimpleName());
         depth++;
         appendValue(buf, depth, "Start of Register Address", "0x" + Integer.toHexString(0xffff & startAddress));

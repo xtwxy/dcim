@@ -9,5 +9,5 @@ public interface Codec {
      * @param props
      * @return
      */
-    public HandlerContext openInbound(Properties props);
+    HandlerContext openInbound(Properties props);
 }

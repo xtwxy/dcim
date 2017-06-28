@@ -24,15 +24,14 @@ import com.wincom.dcim.agentd.messages.Message;
  */
 public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final Map<Properties, HandlerContext> inbounds;
-    private final HandlerContext codecContext;
     private final AgentdService agent;
 
     CodecImpl(AgentdService agent, HandlerContext outboundHandlerContext) {
         this.agent = agent;
-        codecContext = new HandlerContextImpl();
+        HandlerContext codecContext = new HandlerContextImpl();
         outboundHandlerContext.addInboundContext(codecContext);
         codecContext.addDisposeHandler(new DisposeHandler() {
             @Override
@@ -63,9 +62,7 @@ public class CodecImpl extends ChannelInboundHandler.Adapter implements Codec {
             Properties props) {
         log.info(props.toString());
 
-        final HandlerContextImpl handlerContext = new HandlerContextImpl();
-
-        return handlerContext;
+        return new HandlerContextImpl();
     }
 
     @Override

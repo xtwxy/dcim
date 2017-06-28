@@ -17,9 +17,9 @@ public class AcceptState extends State.Adapter {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    protected final HandlerContext handlerContext;
-    protected final String host;
-    protected final int port;
+    private final HandlerContext handlerContext;
+    private final String host;
+    private final int port;
 
     public AcceptState(
             HandlerContext handlerContext,

@@ -23,27 +23,27 @@ public interface HandlerContext {
      *
      * @param m
      */
-    public void send(Message m);
+    void send(Message m);
 
     /**
      * Called by the sender when a message is processed, the result maybe
      * success or not.
      */
-    public void onRequestCompleted();
+    void onRequestCompleted();
 
     /**
      * Fire message from the underlying service to the state machine.
      *
      * @param m
      */
-    public void fire(Message m);
+    void fire(Message m);
 
     /**
      * Fire message to upper layer inbound handler contexts.
      *
      * @param m
      */
-    public void fireInboundHandlerContexts(Message m);
+    void fireInboundHandlerContexts(Message m);
 
     /**
      * Set context variables.
@@ -51,9 +51,9 @@ public interface HandlerContext {
      * @param key
      * @param value
      */
-    public void set(Object key, Object value);
+    void set(Object key, Object value);
 
-    public Object get(Object key);
+    Object get(Object key);
 
     /**
      * Get context variables.
@@ -61,7 +61,7 @@ public interface HandlerContext {
      * @param key
      * @return
      */
-    public Object get(Object key, Object defaultValue);
+    Object get(Object key, Object defaultValue);
 
     /**
      * Get context variable if exists, and set default value and return the
@@ -71,7 +71,7 @@ public interface HandlerContext {
      * @param defaultValue
      * @return
      */
-    public Object getOrSetIfNotExist(Object key, Object defaultValue);
+    Object getOrSetIfNotExist(Object key, Object defaultValue);
 
     /**
      * Remove context variables.
@@ -79,44 +79,44 @@ public interface HandlerContext {
      * @param key
      * @return
      */
-    public Object remove(Object key);
+    Object remove(Object key);
 
     /**
      * Test if channel is ready to send & receive.
      *
      * @return
      */
-    public boolean isActive();
+    boolean isActive();
 
-    public void setActive(boolean b);
+    void setActive(boolean b);
 
-    public void addInboundContext(HandlerContext ctx);
+    void addInboundContext(HandlerContext ctx);
 
-    public void removeInboundContext(HandlerContext ctx);
+    void removeInboundContext(HandlerContext ctx);
 
-    public ChannelInboundHandler getInboundHandler();
+    ChannelInboundHandler getInboundHandler();
 
-    public ChannelOutboundHandler getOutboundHandler();
+    ChannelOutboundHandler getOutboundHandler();
 
-    public void onClosed(Message m);
+    void onClosed(Message m);
 
-    public void release();
+    void release();
 
-    public void dispose();
+    void dispose();
 
-    public void addDisposeHandler(DisposeHandler h);
+    void addDisposeHandler(DisposeHandler h);
 
-    public void state(State sm);
+    void state(State sm);
 
-    public State state();
+    State state();
 
-    public static interface DisposeHandler {
-        public void onDispose(HandlerContext ctx);
+    interface DisposeHandler {
+        void onDispose(HandlerContext ctx);
     }
 
-    public static class Adapter implements HandlerContext {
+    class Adapter implements HandlerContext {
 
-        protected Logger log = LoggerFactory.getLogger(this.getClass());
+        protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
         protected State state;
         private final Map<Object, Object> variables;
@@ -125,8 +125,8 @@ public interface HandlerContext {
         private boolean active;
         protected ChannelOutboundHandler outboundHandler;
         protected ChannelInboundHandler inboundHandler;
-        protected Set<HandlerContext> inboundHandlers;
-        protected Set<DisposeHandler> disposeHandlers;
+        protected final Set<HandlerContext> inboundHandlers;
+        protected final Set<DisposeHandler> disposeHandlers;
 
         public Adapter() {
             this.state = new StateMachine();

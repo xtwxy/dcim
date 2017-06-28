@@ -77,5 +77,5 @@ public enum PrimitiveMessageType {
 
     abstract public Message create(Object... params);
 
-    private int code;
+    private final int code;
 }

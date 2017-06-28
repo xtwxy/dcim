@@ -11,7 +11,7 @@ import static org.junit.Assert.assertArrayEquals;
  * @author master
  */
 public class ReadMultipleHoldingRegistersResponseTest {
-    private byte[] b = new byte[]{
+    private final byte[] b = new byte[]{
         0x01, 0x03, 0x0C, 0x41, (byte) 0xC8, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x41, (byte) 0xEA, 0x66, 0x66, 0x27, 
         (byte) 0xAD

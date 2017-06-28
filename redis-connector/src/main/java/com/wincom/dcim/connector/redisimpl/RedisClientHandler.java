@@ -17,7 +17,7 @@ import java.util.List;
  * Created by master on 6/19/17.
  */
 public class RedisClientHandler extends ChannelDuplexHandler {
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
@@ -59,7 +59,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
                 printAggregatedRedisResponse(child);
             }
         } else {
-
+            // unknown message type, no action.
         }
     }
 

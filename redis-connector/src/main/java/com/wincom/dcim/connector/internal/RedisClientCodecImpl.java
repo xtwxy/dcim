@@ -14,10 +14,10 @@ import java.util.Properties;
  */
 public class RedisClientCodecImpl implements Codec {
 
-    final String HOST;
-    final int PORT;
-    final String PASSWORD;
-    final int MAX_CONNECTION_COUNT;
+    private final String HOST;
+    private final int PORT;
+    public final String PASSWORD;
+    private final int MAX_CONNECTION_COUNT;
 
     private final NetworkService service;
     private final List<HandlerContext> available;
@@ -36,7 +36,7 @@ public class RedisClientCodecImpl implements Codec {
 
     @Override
     public synchronized HandlerContext openInbound(Properties props) {
-        HandlerContext ctx = null;
+        HandlerContext ctx;
         if(available.isEmpty()) {
             ctx = new RedisClientHandlerContextImpl(service, this);
             ctx.send(new Connect(ctx, HOST, PORT));

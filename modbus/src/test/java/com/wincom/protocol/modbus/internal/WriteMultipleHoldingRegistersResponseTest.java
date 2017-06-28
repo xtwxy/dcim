@@ -12,7 +12,7 @@ import static org.junit.Assert.assertArrayEquals;
  */
 public class WriteMultipleHoldingRegistersResponseTest {
 
-    byte[] b = new byte[]{
+    private final byte[] b = new byte[]{
         0x01, 0x10, 0x00, 0x00, 0x00, 0x02, 0x41, (byte)0xc8
     };
 

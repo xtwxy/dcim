@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestStarter implements ServiceListener, Runnable {
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private static final String OUTBOUND_CODEC_ID_KEY = "codecId";
     private static final String OUTBOUND_CTX_PROPS_KEY = "outboundProps";
@@ -67,7 +67,7 @@ public class TestStarter implements ServiceListener, Runnable {
         tryStart();
     }
 
-    public synchronized void tryStart() {
+    private synchronized void tryStart() {
         if (started || !required.isEmpty()) {
             return;
         }

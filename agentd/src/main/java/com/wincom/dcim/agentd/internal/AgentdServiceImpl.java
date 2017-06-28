@@ -15,7 +15,7 @@ import com.wincom.dcim.agentd.CodecFactory;
 
 public final class AgentdServiceImpl implements AgentdService {
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final Map<String, CodecFactory> codecFactories;
     private final Map<String, Codec> codecs;
 
@@ -69,12 +69,12 @@ public final class AgentdServiceImpl implements AgentdService {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("codecFactories:");
         for (Map.Entry<String, CodecFactory> e : codecFactories.entrySet()) {
             sb.append(String.format("(%s, %s)\n", e.getKey(), e.getValue()));
-        };
+        }
 
         sb.append("codecs:");
         for (Map.Entry<String, Codec> e : codecs.entrySet()) {

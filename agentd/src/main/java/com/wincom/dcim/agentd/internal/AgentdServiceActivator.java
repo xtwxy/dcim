@@ -69,7 +69,7 @@ public final class AgentdServiceActivator implements BundleActivator {
         handlerContext.send(new Accept(handlerContext, "0.0.0.0", 9080));
     }
 
-    static void createConnection(NetworkService service) {
+    private static void createConnection(NetworkService service) {
         HandlerContext handlerContext = service.createStreamHandlerContext();
 
         StateMachineBuilder builder = new StateMachineBuilder();

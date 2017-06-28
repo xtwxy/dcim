@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class StateMachineBuilder {
 
-    Map<String, State> states;
+    private final Map<String, State> states;
 
     public StateMachineBuilder() {
         this.states = new HashMap<>();

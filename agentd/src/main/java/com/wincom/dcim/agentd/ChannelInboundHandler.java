@@ -19,31 +19,31 @@ import com.wincom.dcim.agentd.messages.WriteTimeout;
  */
 public interface ChannelInboundHandler extends Handler {
 
-    public void handleAccepted(HandlerContext ctx, Accepted m);
+     void handleAccepted(HandlerContext ctx, Accepted m);
 
-    public void handleConnected(HandlerContext ctx, Connected m);
+     void handleConnected(HandlerContext ctx, Connected m);
 
-    public void handleChannelActive(HandlerContext ctx, ChannelActive m);
+     void handleChannelActive(HandlerContext ctx, ChannelActive m);
 
-    public void handleChannelInactive(HandlerContext ctx, ChannelInactive m);
+     void handleChannelInactive(HandlerContext ctx, ChannelInactive m);
 
-    public void handleChannelReadTimeout(HandlerContext ctx, ReadTimeout m);
+     void handleChannelReadTimeout(HandlerContext ctx, ReadTimeout m);
 
-    public void handleChannelWriteTimeout(HandlerContext ctx, WriteTimeout m);
+     void handleChannelWriteTimeout(HandlerContext ctx, WriteTimeout m);
 
-    public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m);
+     void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m);
 
-    public void handleConnectionClosed(HandlerContext ctx, ConnectionClosed m);
+     void handleConnectionClosed(HandlerContext ctx, ConnectionClosed m);
 
-    public void handlePayloadReceived(HandlerContext ctx, Message m);
+     void handlePayloadReceived(HandlerContext ctx, Message m);
 
-    public void handlePayloadSent(HandlerContext ctx, Message m);
+     void handlePayloadSent(HandlerContext ctx, Message m);
 
-    public void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m);
+     void handleApplicationFailure(HandlerContext ctx, ApplicationFailure m);
 
-    public void handleSystemError(HandlerContext ctx, SystemError m);
+     void handleSystemError(HandlerContext ctx, SystemError m);
 
-    public static class Adapter
+    class Adapter
             extends Handler.Default
             implements ChannelInboundHandler {
 
