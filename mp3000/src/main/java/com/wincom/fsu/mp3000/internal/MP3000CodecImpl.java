@@ -54,7 +54,7 @@ public class MP3000CodecImpl implements Codec {
                 p.setProperty(NetworkConfig.PORT_KEY, Integer.toString(BASE_PORT + comport));
                 p.setProperty(NetworkConfig.WAITE_TIMEOUT_KEY, WAITE_TIMEOUT);
 
-                log.info(p.toString());
+                log.debug(p.toString());
                 ctx = inboundCodec.openInbound(p);
                 inbound.put(comport, ctx);
             } else {

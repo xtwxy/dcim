@@ -41,7 +41,7 @@ public class MasterCodecImpl implements Codec {
     @Override
     public HandlerContext openInbound(
             Properties props) {
-        log.info(String.format("%s", props));
+        log.debug(String.format("%s", props));
         
         Byte address = Byte.valueOf(props.getProperty(MODBUS_SLAVE_ADDRESS_KEY));
         // FIXME: add address validation.

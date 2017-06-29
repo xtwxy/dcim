@@ -30,7 +30,7 @@ public class MP3000CodecFactoryImpl implements CodecFactory {
      */
     @Override
     public Codec create(Properties props) {
-        log.info(props.toString());
+        log.debug(props.toString());
 
         return new MP3000CodecImpl(
                 agent,

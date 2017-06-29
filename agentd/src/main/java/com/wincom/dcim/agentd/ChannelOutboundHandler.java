@@ -46,6 +46,9 @@ public interface ChannelOutboundHandler extends Handler {
 
         @Override
         public void setOutboundContext(HandlerContext ctx) {
+            if(ctx == null) {
+                log.info("wangxy bundle {}", ctx);
+            }
             outboundContext = ctx;
         }
     }

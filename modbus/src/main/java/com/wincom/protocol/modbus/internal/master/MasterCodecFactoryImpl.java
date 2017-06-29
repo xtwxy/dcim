@@ -31,7 +31,7 @@ public class MasterCodecFactoryImpl implements CodecFactory {
      */
     @Override
     public Codec create(Properties props) {
-        log.info(props.toString());
+        log.debug(props.toString());
 
         Codec outboundCodec = agent.getCodec(props.getProperty(OUTBOUND_CODEC_ID_KEY));
 

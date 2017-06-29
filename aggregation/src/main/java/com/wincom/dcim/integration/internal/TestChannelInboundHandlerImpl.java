@@ -25,14 +25,12 @@ public class TestChannelInboundHandlerImpl extends ChannelInboundHandler.Adapter
 
     @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
-        log.info(String.format("handlePayloadReceived(%s, %s)", ctx, m));
         sendRequest(ctx);
         ctx.onRequestCompleted();
     }
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
-        log.info(String.format("handleChannelTimeout(%s, %s)", ctx, m));
         super.handleChannelTimeout(ctx, m);
         sendRequest(ctx);
     }

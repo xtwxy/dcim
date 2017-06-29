@@ -12,8 +12,10 @@ public class TestChannelOutboundHandlerImpl extends ChannelOutboundHandler.Adapt
 
     @Override
     public void handleSendPayload(HandlerContext ctx, Message m) {
-        log.info(String.format("handleSendPayload(%s, %s)", ctx, m));
-        outboundContext.send(m);
+        if(outboundContext == null) {
+            outboundContext.send(m);
+        } else {
+        }
     }
 
 }

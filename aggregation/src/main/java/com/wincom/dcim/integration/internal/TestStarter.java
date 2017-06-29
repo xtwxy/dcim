@@ -37,8 +37,8 @@ public class TestStarter implements ServiceListener, Runnable {
     private static final String MP3000_BASE_PORT = "9080";
     private static final String COM_PORT_KEY = "port";
 
-    private static final int MP3000_COUNT = 1;
-    private static final int MP3000_PORT_COUNT = 1;
+    private static final int MP3000_COUNT = 256;
+    private static final int MP3000_PORT_COUNT = 8;
     private static final int MODBUS_CODEC_COUNT = MP3000_COUNT * MP3000_PORT_COUNT;
     private static final int DDS3366D_COUNT_PER_PORT = 1;
     private static final int DDS3366D_COUNT = MODBUS_CODEC_COUNT * DDS3366D_COUNT_PER_PORT;
@@ -71,8 +71,7 @@ public class TestStarter implements ServiceListener, Runnable {
         if (started || !required.isEmpty()) {
             return;
         }
-        Thread t = new Thread(this);
-        t.start();
+        network.getEventLoopGroup().execute(this);
         started = true;
     }
 
@@ -126,21 +125,20 @@ public class TestStarter implements ServiceListener, Runnable {
             Codec codec = agent.getCodec(Integer.toString(MP3000_COUNT + MODBUS_CODEC_COUNT + i + 1));
             Properties props = new Properties();
             HandlerContext outbound = codec.openInbound(props);
-            log.info(outbound.toString());
             outbound.addInboundContext(ctx);
         }
     }
 
     @Override
     public void run() {
-        log.info(agent.toString());
+        //log.info(agent.toString());
         createMp3000Codec(agent, network);
-        log.info(agent.toString());
+        //log.info(agent.toString());
         createModbusCodec(agent, network);
-        log.info(agent.toString());
+        //log.info(agent.toString());
         createDds3366dCodec(agent, network);
-        log.info(agent.toString());
+        //log.info(agent.toString());
         createReader(agent, network);
-        log.info(agent.toString());
+        //log.info(agent.toString());
     }
 }

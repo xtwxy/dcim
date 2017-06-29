@@ -180,7 +180,7 @@ public interface HandlerContext {
         }
 
         @Override
-        public void fireInboundHandlerContexts(Message m) {
+        public synchronized void fireInboundHandlerContexts(Message m) {
             for (HandlerContext ctx : inboundHandlers) {
                 ctx.fire(m);
             }

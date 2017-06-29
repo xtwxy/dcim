@@ -59,6 +59,7 @@ public interface ChannelInboundHandler extends Handler {
 
         @Override
         public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+            log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
             ctx.getOutboundHandler().setOutboundContext(m.getSender());
             ctx.setActive(true);
             ctx.fireInboundHandlerContexts(new ChannelActive(ctx));

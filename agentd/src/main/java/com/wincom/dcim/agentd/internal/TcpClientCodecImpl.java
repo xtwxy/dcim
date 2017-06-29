@@ -29,14 +29,14 @@ public class TcpClientCodecImpl implements Codec {
 
     @Override
     public HandlerContext openInbound(Properties outbound) {
-        log.info(outbound.toString());
+        log.debug(outbound.toString());
 
         final StreamHandlerContextImpl handlerContext = (StreamHandlerContextImpl) network.createStreamHandlerContext();
         final StateMachineBuilder builder = new StateMachineBuilder();
         final String host = outbound.getProperty(NetworkConfig.HOST_KEY);
-        log.info(host);
+        log.debug(host);
         final String port = outbound.getProperty(NetworkConfig.PORT_KEY);
-        log.info(port);
+        log.debug(port);
         final String waiteTimeout = outbound.getProperty(NetworkConfig.WAITE_TIMEOUT_KEY);
 
         StateMachine client = builder
