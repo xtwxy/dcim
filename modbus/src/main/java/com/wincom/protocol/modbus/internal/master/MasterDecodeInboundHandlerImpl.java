@@ -28,7 +28,10 @@ public class MasterDecodeInboundHandlerImpl
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        super.handleChannelActive(ctx, m);
+        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+        ctx.getOutboundHandler().setOutboundContext(m.getSender());
+        ctx.setActive(true);
+
         readBuffer = (ByteBuffer) ctx.getOrSetIfNotExist(MasterCodecImpl.READ_BUFFER_KEY, ByteBuffer.allocate(2048));
         fireToInbounds(new ChannelActive(ctx));
     }

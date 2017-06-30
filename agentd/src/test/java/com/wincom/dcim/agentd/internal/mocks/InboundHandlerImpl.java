@@ -16,7 +16,11 @@ public class InboundHandlerImpl extends ChannelInboundHandler.Adapter {
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        super.handleChannelActive(ctx, m);
+        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+        ctx.getOutboundHandler().setOutboundContext(m.getSender());
+        ctx.setActive(true);
+
+        ctx.fireInboundHandlerContexts(new ChannelActive(ctx));
 
         ByteBuffer buffer = ByteBuffer.wrap("Hello, World!".getBytes());
         Message sendBytes = new SendBytes(ctx, buffer);

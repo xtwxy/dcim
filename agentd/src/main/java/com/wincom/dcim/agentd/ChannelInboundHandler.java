@@ -43,7 +43,7 @@ public interface ChannelInboundHandler extends Handler {
 
      void handleSystemError(HandlerContext ctx, SystemError m);
 
-    class Adapter
+    abstract class Adapter
             extends Handler.Default
             implements ChannelInboundHandler {
 
@@ -55,14 +55,6 @@ public interface ChannelInboundHandler extends Handler {
         @Override
         public void handleConnected(HandlerContext ctx, Connected m) {
             log.info(String.format("handleConnected(%s, %s)", ctx, m));
-        }
-
-        @Override
-        public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-            log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
-            ctx.getOutboundHandler().setOutboundContext(m.getSender());
-            ctx.setActive(true);
-            ctx.fireInboundHandlerContexts(new ChannelActive(ctx));
         }
 
         @Override

@@ -80,8 +80,12 @@ public final class TcpInboundHandlerImpl
 
     @Override
     public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
+        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
+        ctx.getOutboundHandler().setOutboundContext(m.getSender());
+        ctx.setActive(true);
+
         ctx.state().on(ctx, m);
-        super.handleChannelActive(ctx, m);
+        ctx.fireInboundHandlerContexts(new ChannelActive(ctx));
     }
 
     @Override
