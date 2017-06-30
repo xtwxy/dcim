@@ -12,9 +12,10 @@ public class TestChannelOutboundHandlerImpl extends ChannelOutboundHandler.Adapt
 
     @Override
     public void handleSendPayload(HandlerContext ctx, Message m) {
-        if(outboundContext == null) {
+        if(outboundContext != null) {
             outboundContext.send(m);
         } else {
+            log.info("outboundContext = {}", outboundContext);
         }
     }
 

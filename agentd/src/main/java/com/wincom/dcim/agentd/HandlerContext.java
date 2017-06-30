@@ -139,9 +139,11 @@ public interface HandlerContext {
         }
 
         @Override
-        public synchronized void addInboundContext(HandlerContext ctx) {
+        public void addInboundContext(HandlerContext ctx) {
             if (ctx != null) {
-                inboundHandlers.add(ctx);
+                synchronized (inboundHandlers) {
+                    inboundHandlers.add(ctx);
+                }
             }
             if (isActive()) {
                 Message m = new ChannelActive(this);
@@ -151,7 +153,9 @@ public interface HandlerContext {
 
         @Override
         public void removeInboundContext(HandlerContext ctx) {
-            inboundHandlers.remove(ctx);
+            synchronized (inboundHandlers) {
+                inboundHandlers.remove(ctx);
+            }
         }
 
         @Override
@@ -165,8 +169,11 @@ public interface HandlerContext {
         }
 
         @Override
-        public synchronized void send(Message m) {
-            queue.add(m);
+        public void send(Message m) {
+            log.info("send(): message = {},  current = {}, isActive() = {}, queue = {}", m, current, isActive(), queue);
+            synchronized (queue) {
+                queue.add(m);
+            }
             if (!isInprogress()) {
                 sendNext();
             } else {
@@ -180,20 +187,23 @@ public interface HandlerContext {
         }
 
         @Override
-        public synchronized void fireInboundHandlerContexts(Message m) {
-            for (HandlerContext ctx : inboundHandlers) {
-                ctx.fire(m);
+        public void fireInboundHandlerContexts(Message m) {
+            synchronized (inboundHandlers) {
+                for (HandlerContext ctx : inboundHandlers) {
+                    ctx.fire(m);
+                }
             }
         }
 
         @Override
-        public synchronized void onClosed(Message m) {
+        public void onClosed(Message m) {
             setActive(false);
             onRequestCompleted();
         }
 
         @Override
-        public synchronized void onRequestCompleted() {
+        public void onRequestCompleted() {
+            log.info("onRequestCompleted(): current = {}, isActive() = {}, queue = {}", current, isActive(), queue);
             if (isInprogress()) {
                 current = null;
             } else {
@@ -204,9 +214,12 @@ public interface HandlerContext {
 
         protected void sendNext() {
             //synchronized (queue)
-            if (!queue.isEmpty()) {
-                current = queue.poll();
-                current.apply(this, this.outboundHandler);
+            log.info("sendNext(): current = {}, isActive() = {}, queue = {}", current, isActive(), queue);
+            synchronized (queue) {
+                if (!queue.isEmpty()) {
+                    current = queue.poll();
+                    current.apply(this, this.outboundHandler);
+                }
             }
         }
 

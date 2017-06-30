@@ -1,8 +1,9 @@
-package com.wincom.driver.dds3366d.internal;
+package com.wincom.driver.dds3366d.internal.tests;
 
 import java.util.Properties;
 import java.util.Set;
 
+import com.wincom.driver.dds3366d.internal.DDS3366DCodecFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +147,9 @@ public class CodecFactoryTest {
     }
 
     public static void main(String[] args) {
-        CodecFactoryTest t = new CodecFactoryTest();
-        t.test();
+        for(int i = 0; i < 4; ++i) {
+            CodecFactoryTest t = new CodecFactoryTest();
+            t.test();
+        }
     }
 }

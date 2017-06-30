@@ -37,7 +37,7 @@ public class TestStarter implements ServiceListener, Runnable {
     private static final String MP3000_BASE_PORT = "9080";
     private static final String COM_PORT_KEY = "port";
 
-    private static final int MP3000_COUNT = 256;
+    private static final int MP3000_COUNT = 4;
     private static final int MP3000_PORT_COUNT = 8;
     private static final int MODBUS_CODEC_COUNT = MP3000_COUNT * MP3000_PORT_COUNT;
     private static final int DDS3366D_COUNT_PER_PORT = 1;

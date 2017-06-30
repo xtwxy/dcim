@@ -22,7 +22,7 @@ public final class NetworkServiceImpl implements NetworkService {
     public NetworkServiceImpl(BundleContext context) {
         this.threadFactory = new DefaultThreadFactory("agentd-thread-factory");
 
-        int threads = 4;
+        int threads = 16;
         if (context != null) {
             String initialThreads = context.getProperty("initial.threads");
             if (initialThreads != null) {

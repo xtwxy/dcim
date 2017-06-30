@@ -1,4 +1,4 @@
-package com.wincom.driver.dds3366d.internal;
+package com.wincom.driver.dds3366d.internal.tests;
 
 import com.wincom.dcim.agentd.HandlerContext;
 import com.wincom.dcim.agentd.NetworkService;

@@ -16,21 +16,15 @@ import java.util.Set;
 public class TestChannelInboundHandlerImpl extends ChannelInboundHandler.Adapter {
 
     @Override
-    public void handleChannelActive(HandlerContext ctx, ChannelActive m) {
-        log.info(String.format("handleChannelActive(%s, %s)", ctx, m));
-        log.info(String.format("getOutboundHandler() = %s", ctx.getOutboundHandler()));
-        super.handleChannelActive(ctx, m);
-        sendRequest(ctx);
-    }
-
-    @Override
     public void handlePayloadReceived(HandlerContext ctx, Message m) {
         sendRequest(ctx);
         ctx.onRequestCompleted();
+        sendRequest(ctx);
     }
 
     @Override
     public void handleChannelTimeout(HandlerContext ctx, ChannelTimeout m) {
+        log.info(String.format("handleChannelTimeout(%s, %s)", ctx, m));
         super.handleChannelTimeout(ctx, m);
         sendRequest(ctx);
     }

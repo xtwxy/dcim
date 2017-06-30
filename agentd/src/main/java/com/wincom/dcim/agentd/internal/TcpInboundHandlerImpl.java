@@ -69,7 +69,7 @@ public final class TcpInboundHandlerImpl
         clientContext.setChannel(m.getChannel());
 
         m.getChannel().pipeline()
-                //.addLast(new LoggingHandler(LogLevel.INFO))
+                .addLast(new LoggingHandler(LogLevel.INFO))
                 .addLast(new IdleStateHandler(0, 0, 5))
                 .addLast(new StreamChannelInboundHandler(ctx));
 
