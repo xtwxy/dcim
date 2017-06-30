@@ -39,6 +39,7 @@ public class DDS3366DCodecFactoryImpl implements CodecFactory {
         HandlerContext outboundHandlerContext = inboundCodec.openInbound(
                 (Properties) props.get(OUTBOUND_CTX_PROPS_KEY));
         
+        log.info("({}, {})", props, outboundHandlerContext);
         return new DDS3366DCodecImpl(outboundHandlerContext);
     }
 

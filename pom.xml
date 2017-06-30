@@ -61,10 +61,9 @@
         <version>1.6.0</version>
         <configuration>
           <provision>
-            <param>--platform=felix</param>
+            <param>--platform=equinox</param>
           </provision>
         </configuration>
-        <!--
         <executions>
           <execution>
             <id>ide-support</id>
@@ -73,7 +72,6 @@
             </goals>
           </execution>
         </executions>
--->
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

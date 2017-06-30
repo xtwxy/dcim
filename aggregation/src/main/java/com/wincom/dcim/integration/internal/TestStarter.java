@@ -40,7 +40,7 @@ public class TestStarter implements ServiceListener, Runnable {
     private static final int MP3000_COUNT = 32;
     private static final int MP3000_PORT_COUNT = 8;
     private static final int MODBUS_CODEC_COUNT = MP3000_COUNT * MP3000_PORT_COUNT;
-    private static final int DDS3366D_COUNT_PER_PORT = 1;
+    private static final int DDS3366D_COUNT_PER_PORT = 8;
     private static final int DDS3366D_COUNT = MODBUS_CODEC_COUNT * DDS3366D_COUNT_PER_PORT;
     private static final String MP3000_WAITE_TIMEOUT = "60000";
 
@@ -125,6 +125,7 @@ public class TestStarter implements ServiceListener, Runnable {
             Codec codec = agent.getCodec(Integer.toString(MP3000_COUNT + MODBUS_CODEC_COUNT + i + 1));
             Properties props = new Properties();
             HandlerContext outbound = codec.openInbound(props);
+            log.info("createReader: {}", outbound);
             outbound.addInboundContext(ctx);
         }
     }

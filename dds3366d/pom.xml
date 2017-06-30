@@ -103,7 +103,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.wincom.driver.dds3366d.internal.tests.CodecFactoryTest</mainClass>
+                            <mainClass>com.wincom.driver.dds3366d.internal.tests.Slave</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -1,13 +1,17 @@
 package com.wincom.protocol.modbus.internal.master;
 
-import com.wincom.dcim.agentd.Codec;
-import com.wincom.dcim.agentd.HandlerContext;
-import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.wincom.dcim.agentd.Codec;
+import com.wincom.dcim.agentd.HandlerContext;
+import com.wincom.dcim.agentd.HandlerContext.DisposeHandler;
+import com.wincom.dcim.agentd.messages.ChannelActive;
+import com.wincom.dcim.agentd.messages.ChannelInactive;
 
 /**
  * Composition of TCP connections to a MP3000.
@@ -52,11 +56,17 @@ public class MasterCodecImpl implements Codec {
             inboundContext.addDisposeHandler(new DisposeHandler() {
                 @Override
                 public void onDispose(HandlerContext ctx) {
-                    inboundContexts.remove(address);
+                    HandlerContext hc = inboundContexts.remove(address);
+                    if(decodeContext.isActive()) {
+                    	hc.fire(new ChannelInactive(decodeContext));
+                    }
                 }
             });
             
             inboundContexts.put(address, inboundContext);
+            if(decodeContext.isActive()) {
+            	inboundContext.fire(new ChannelActive(decodeContext));
+            }
         }
         
         return inboundContext;

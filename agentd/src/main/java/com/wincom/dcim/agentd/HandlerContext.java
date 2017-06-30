@@ -218,8 +218,10 @@ public interface HandlerContext {
             synchronized (queue) {
                 if (!queue.isEmpty()) {
                     current = queue.poll();
-                    current.apply(this, this.outboundHandler);
                 }
+            }
+            if(current != null) {
+            	current.apply(this, this.outboundHandler);
             }
         }
 
@@ -259,7 +261,7 @@ public interface HandlerContext {
         }
 
         @Override
-        public boolean isActive() {
+        public synchronized boolean isActive() {
             return active;
         }
 
