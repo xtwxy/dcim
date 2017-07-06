@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-Description: Generated using Pax-Construct
+Bundle-SymbolicName: com.wincom.fsu.mp3000
+Built-By: wangxy
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1499134679160
+Import-Package: com.wincom.dcim.agentd;version="1.0.0.SNAPSHOT",com.wi
+ ncom.fsu.mp3000.internal,org.osgi.framework;version="1.8",org.slf4j;v
+ ersion="1.7"
+Tool: Bnd-0.0.255
+Export-Package: com.wincom.fsu.mp3000.internal;uses:="org.osgi.framewo
+ rk,org.slf4j,com.wincom.dcim.agentd"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: com.wincom.fsu.mp3000
+Bundle-Activator: com.wincom.fsu.mp3000.internal.MP3000Activator
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_121
+

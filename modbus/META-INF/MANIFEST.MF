@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-Description: Generated using Pax-Construct
+Bundle-SymbolicName: com.wincom.protocol.modbus
+Built-By: wangxy
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1499134680248
+Import-Package: com.google.common.primitives;version="21.0",com.wincom
+ .dcim.agentd;version="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.messages
+ ;version="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.statemachine;version
+ ="1.0.0.SNAPSHOT",com.wincom.protocol.modbus;version="1.0.0.SNAPSHOT"
+ ,com.wincom.protocol.modbus.internal,com.wincom.protocol.modbus.inter
+ nal.master,org.osgi.framework;version="1.8",org.slf4j;version="1.7"
+Tool: Bnd-0.0.255
+Export-Package: com.wincom.protocol.modbus.internal;uses:="org.osgi.fr
+ amework,com.wincom.protocol.modbus.internal.master,com.wincom.dcim.ag
+ entd",com.wincom.protocol.modbus.internal.master;uses:="org.slf4j,com
+ .wincom.dcim.agentd.statemachine,com.wincom.dcim.agentd.messages,com.
+ wincom.protocol.modbus,com.wincom.dcim.agentd",com.wincom.protocol.mo
+ dbus;uses:="com.google.common.primitives,com.wincom.dcim.agentd.messa
+ ges,com.wincom.dcim.agentd";version="1.0.0.SNAPSHOT"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: com.wincom.protocol.modbus
+Bundle-Activator: com.wincom.protocol.modbus.internal.ModbusActivator
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_121
+

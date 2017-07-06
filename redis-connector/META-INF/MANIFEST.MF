@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Bundle-Description: Generated using Pax-Construct
+Bundle-SymbolicName: com.wincom.dcim.redis-connector
+Built-By: wangxy
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1499134927952
+Import-Package: com.sun.jersey.api.json;version="1.19",com.wincom.dcim
+ .agentd;version="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.config;versio
+ n="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.internal,com.wincom.dcim.ag
+ entd.json;version="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.messages;ve
+ rsion="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.primitives;version="1.0
+ .0.SNAPSHOT",com.wincom.dcim.connector;version="1.0.0.SNAPSHOT",com.w
+ incom.dcim.connector.internal,com.wincom.dcim.connector.redisimpl;ver
+ sion="1.0.0.SNAPSHOT",io.netty.bootstrap;version="4.1",io.netty.buffe
+ r;version="4.1",io.netty.channel;version="4.1",io.netty.channel.nio;v
+ ersion="4.1",io.netty.channel.socket;version="4.1",io.netty.channel.s
+ ocket.nio;version="4.1",io.netty.handler.codec.redis;version="4.1",io
+ .netty.util;version="4.1",io.netty.util.concurrent;version="4.1",java
+ x.xml.bind,org.osgi.framework;version="1.8",org.slf4j;version="1.7"
+Tool: Bnd-0.0.255
+Export-Package: com.wincom.dcim.connector.internal;uses:="org.slf4j,co
+ m.wincom.dcim.agentd.messages,com.wincom.dcim.agentd,io.netty.handler
+ .codec.redis,io.netty.channel.socket.nio,com.sun.jersey.api.json,io.n
+ etty.util.concurrent,io.netty.bootstrap,com.wincom.dcim.agentd.config
+ ,io.netty.channel.nio,io.netty.channel,io.netty.channel.socket,javax.
+ xml.bind,io.netty.buffer,com.wincom.dcim.agentd.primitives,com.wincom
+ .dcim.connector.redisimpl,io.netty.util,com.wincom.dcim.agentd.intern
+ al,org.osgi.framework,com.wincom.dcim.agentd.json,com.wincom.dcim.con
+ nector",com.wincom.dcim.connector.redisimpl;uses:="io.netty.buffer,or
+ g.slf4j,io.netty.util,io.netty.handler.codec.redis,io.netty.channel.s
+ ocket.nio,io.netty.util.concurrent,io.netty.bootstrap,io.netty.channe
+ l.nio,io.netty.channel,io.netty.channel.socket";version="1.0.0.SNAPSH
+ OT",com.wincom.dcim.connector;uses:="com.wincom.dcim.agentd.messages"
+ ;version="1.0.0.SNAPSHOT"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: com.wincom.dcim.redis-connector
+Bundle-Activator: com.wincom.dcim.connector.internal.ConnectorActivato
+ r
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_121
+

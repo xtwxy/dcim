@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-Description: Generated using Pax-Construct
+Bundle-SymbolicName: com.wincom.dcim.actor-system
+Built-By: wangxy
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1499134927578
+Import-Package: com.wincom.dcim.actorsys;version="1.0.0.SNAPSHOT",com.
+ wincom.dcim.actorsys.internal,org.osgi.framework;version="1.8"
+Tool: Bnd-0.0.255
+Export-Package: com.wincom.dcim.actorsys.internal;uses:="org.osgi.fram
+ ework,com.wincom.dcim.actorsys",com.wincom.dcim.actorsys;version="1.0
+ .0.SNAPSHOT"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: com.wincom.dcim.actor-system
+Bundle-Activator: com.wincom.dcim.actorsys.internal.ExampleActivator
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_121
+

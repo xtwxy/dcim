@@ -1,0 +1,57 @@
+Manifest-Version: 1.0
+Bundle-Description: Generated using Pax-Construct
+Bundle-SymbolicName: com.wincom.driver.dds3366d
+Built-By: wangxy
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1499134926964
+Import-Package: com.wincom.dcim.agentd;version="1.0.0.SNAPSHOT",com.wi
+ ncom.dcim.agentd.domain;version="1.0.0.SNAPSHOT",com.wincom.dcim.agen
+ td.internal,com.wincom.dcim.agentd.messages;version="1.0.0.SNAPSHOT",
+ com.wincom.dcim.agentd.primitives;version="1.0.0.SNAPSHOT",com.wincom
+ .dcim.agentd.statemachine;version="1.0.0.SNAPSHOT",com.wincom.driver.
+ dds3366d.internal,com.wincom.driver.dds3366d.internal.primitives,com.
+ wincom.driver.dds3366d.internal.tests,com.wincom.protocol.modbus;vers
+ ion="1.0.0.SNAPSHOT",com.wincom.protocol.modbus.internal.master,io.ne
+ tty.channel;version="4.1",io.netty.handler.logging;version="4.1",io.n
+ etty.handler.timeout;version="4.1",org.osgi.framework;version="1.8",o
+ rg.slf4j;version="1.7"
+Class-Path: lib/agentd-1.0-SNAPSHOT.jar lib/netty-buffer-4.1.12.Final.
+ jar lib/netty-codec-4.1.12.Final.jar lib/netty-codec-http-4.1.12.Fina
+ l.jar lib/netty-codec-http2-4.1.12.Final.jar lib/netty-tcnative-2.0.3
+ .Final-linux-x86_64.jar lib/netty-codec-redis-4.1.12.Final.jar lib/ne
+ tty-common-4.1.12.Final.jar lib/netty-handler-4.1.12.Final.jar lib/ne
+ tty-resolver-4.1.12.Final.jar lib/netty-transport-4.1.12.Final.jar li
+ b/jersey-client-1.19.4.jar lib/jersey-core-1.19.4.jar lib/jersey-bund
+ le-1.19.4.jar lib/jsr311-api-1.1.1.jar lib/jersey-json-1.19.4.jar lib
+ /jettison-1.1.jar lib/jaxb-impl-2.2.3-1.jar lib/jaxb-api-2.2.2.jar li
+ b/stax-api-1.0-2.jar lib/activation-1.1.jar lib/jackson-core-asl-1.9.
+ 2.jar lib/jackson-mapper-asl-1.9.2.jar lib/jackson-jaxrs-1.9.2.jar li
+ b/jackson-xc-1.9.2.jar lib/slf4j-api-1.7.12.jar lib/slf4j-simple-1.7.
+ 12.jar lib/log4j-1.2.12.jar lib/modbus-1.0-SNAPSHOT.jar lib/guava-21.
+ 0.jar lib/annotations-3.0.1.jar lib/jcip-annotations-1.0.jar lib/jsr3
+ 05-3.0.1.jar lib/junit-4.12.jar lib/hamcrest-core-1.3.jar lib/org.osg
+ i.core-6.0.0.jar lib/org.osgi.compendium-5.0.0.jar
+Tool: Bnd-0.0.255
+Main-Class: com.wincom.driver.dds3366d.internal.tests.Slave
+Export-Package: com.wincom.driver.dds3366d.internal.primitives;uses:="
+ com.wincom.dcim.agentd.primitives,com.wincom.dcim.agentd.statemachine
+ ,com.wincom.dcim.agentd.messages,com.wincom.driver.dds3366d.internal,
+ com.wincom.dcim.agentd.domain,com.wincom.dcim.agentd",com.wincom.driv
+ er.dds3366d.internal;uses:="org.osgi.framework,com.wincom.dcim.agentd
+ .primitives,org.slf4j,com.wincom.driver.dds3366d.internal.primitives,
+ com.wincom.dcim.agentd.statemachine,com.wincom.dcim.agentd.messages,c
+ om.wincom.protocol.modbus,com.wincom.dcim.agentd",com.wincom.driver.d
+ ds3366d.internal.tests;uses:="com.wincom.dcim.agentd.primitives,org.s
+ lf4j,com.wincom.protocol.modbus.internal.master,com.wincom.dcim.agent
+ d.statemachine,com.wincom.dcim.agentd.messages,com.wincom.dcim.agentd
+ .internal,com.wincom.dcim.agentd,io.netty.handler.logging,com.wincom.
+ driver.dds3366d.internal.primitives,io.netty.handler.timeout,io.netty
+ .channel,com.wincom.driver.dds3366d.internal,com.wincom.protocol.modb
+ us"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: com.wincom.driver.dds3366d
+Bundle-Activator: com.wincom.driver.dds3366d.internal.DDS3366DActivato
+ r
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_121
+
