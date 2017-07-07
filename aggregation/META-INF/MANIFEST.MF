@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: com.wincom.dcim.integration.aggregation
 Built-By: wangxy
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1499134927408
+Bnd-LastModified: 1499306884416
 Import-Package: com.wincom.dcim.agentd;version="1.0.0.SNAPSHOT",com.wi
  ncom.dcim.agentd.messages;version="1.0.0.SNAPSHOT",com.wincom.dcim.ag
  entd.primitives;version="1.0.0.SNAPSHOT",com.wincom.dcim.integration.

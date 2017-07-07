@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: com.wincom.dcim.actor-system
 Built-By: wangxy
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1499134927578
+Bnd-LastModified: 1499306884564
 Import-Package: com.wincom.dcim.actorsys;version="1.0.0.SNAPSHOT",com.
  wincom.dcim.actorsys.internal,org.osgi.framework;version="1.8"
 Tool: Bnd-0.0.255

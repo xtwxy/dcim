@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: com.wincom.driver.dds3366d
 Built-By: wangxy
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1499134926964
+Bnd-LastModified: 1499306884239
 Import-Package: com.wincom.dcim.agentd;version="1.0.0.SNAPSHOT",com.wi
  ncom.dcim.agentd.domain;version="1.0.0.SNAPSHOT",com.wincom.dcim.agen
  td.internal,com.wincom.dcim.agentd.messages;version="1.0.0.SNAPSHOT",

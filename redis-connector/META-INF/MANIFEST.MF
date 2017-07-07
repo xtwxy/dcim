@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: com.wincom.dcim.redis-connector
 Built-By: wangxy
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1499134927952
+Bnd-LastModified: 1499306884693
 Import-Package: com.sun.jersey.api.json;version="1.19",com.wincom.dcim
  .agentd;version="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.config;versio
  n="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.internal,com.wincom.dcim.ag

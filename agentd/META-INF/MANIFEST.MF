@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: com.wincom.dcim.agentd
 Built-By: wangxy
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1499134678114
+Bnd-LastModified: 1499306880170
 Import-Package: com.google.common.primitives;version="21.0",com.sun.je
  rsey.api.json;version="1.19",com.wincom.dcim.agentd;version="1.0.0.SN
  APSHOT",com.wincom.dcim.agentd.config;version="1.0.0.SNAPSHOT",com.wi

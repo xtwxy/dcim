@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: com.wincom.protocol.modbus
 Built-By: wangxy
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1499134680248
+Bnd-LastModified: 1499306882504
 Import-Package: com.google.common.primitives;version="21.0",com.wincom
  .dcim.agentd;version="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.messages
  ;version="1.0.0.SNAPSHOT",com.wincom.dcim.agentd.statemachine;version

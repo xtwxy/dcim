@@ -118,11 +118,11 @@ public interface HandlerContext {
 
         protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-        protected State state;
+        protected volatile State state;
         private final Map<Object, Object> variables;
         protected final ConcurrentLinkedQueue<Message> queue;
-        protected Message current;
-        private boolean active;
+        protected volatile Message current;
+        private volatile boolean active;
         protected ChannelOutboundHandler outboundHandler;
         protected ChannelInboundHandler inboundHandler;
         protected final Set<HandlerContext> inboundHandlers;
